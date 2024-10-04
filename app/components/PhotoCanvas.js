@@ -141,7 +141,7 @@ export default function PhotoCanvas({images}) {
             width: windowSize.w * 0.75,
             height: windowSize.h * 0.75,
             backgroundColor: '#fff',
-            selection: true
+            selection: true,
         })
         setCanvas(canvas);
 
