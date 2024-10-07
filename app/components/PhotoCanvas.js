@@ -77,8 +77,7 @@ export default function PhotoCanvas({images}) {
         };
     }, [images]);
 
-    // Function to flip the selected image based on the button click
-    const flipImage = (flipType) => {
+    const flipImage = (flipType) => {g
         if (selectedImage) {
             switch (flipType) {
                 case 'horizontal':
