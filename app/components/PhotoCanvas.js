@@ -1,129 +1,3 @@
-// import React, {useEffect, useRef, useState} from 'react'
-//
-// export default function PhotoCanvas({images}) {
-//     const canvasRef = useRef(null);
-//     const [canvasObjects, setCanvasObjects] = useState([]);
-//     const [dragging, setDragging] = useState(null);
-//
-//     useEffect(() => {
-//         drawCanvas();
-//     }, [canvasObjects]);
-//
-//     const drawCanvas = () => {
-//         const canvas = canvasRef.current;
-//         const ctx = canvas.getContext('2d');
-//         ctx.clearRect(0, 0, canvas.width, canvas.height);
-//
-//         canvasObjects.forEach((obj) => {
-//             const image = new Image();
-//             image.src = obj.url;
-//             image.onload = () => {
-//                 ctx.drawImage(image, obj.x, obj.y, obj.width, obj.height);
-//             }
-//         })
-//     }
-//
-//     const handleDrop = ({nativeEvent})=> {
-//         nativeEvent.preventDefault();
-//         const {offsetX, offsetY} = nativeEvent;
-//         const imageUrl = nativeEvent.dataTransfer.getData('imageUrl');
-//         if (imageUrl) {
-//             const newImage = {
-//                 url: imageUrl,
-//                 x: offsetX,
-//                 y: offsetY,
-//                 width: 200,
-//                 height: 100
-//             };
-//             setCanvasObjects((prevObjects) => [...prevObjects, newImage])
-//         }
-//     }
-//
-//     const handleDragOver = (e) => {
-//         e.preventDefault();
-//     }
-//
-//     const handleMouseDown = ({nativeEvent}) => {
-//         const {offsetX, offsetY} = nativeEvent;
-//
-//         const foundIndex = canvasObjects.findIndex((obj) => {
-//             return (
-//                 offsetX >= obj.x
-//                 && offsetX <= obj.x + obj.width
-//                 && offsetY >= obj.y
-//                 && offsetY <= obj.y + obj.height
-//             )
-//         })
-//
-//         if (foundIndex !== 1) {
-//             setDragging(foundIndex)
-//         }
-//     }
-//
-//     const handleMouseMove = ({nativeEvent}) => {
-//         if (dragging !== null) {
-//             const {offsetX, offsetY} = nativeEvent;
-//
-//             requestAnimationFrame(() => {
-//                 const newCanvasObjects = [...canvasObjects];
-//                 const obj = newCanvasObjects[dragging];
-//
-//                 if (obj) {
-//                     obj.x = offsetX - obj?.width / 2;
-//                     obj.y = offsetY - obj?.height / 2;
-//
-//                     setCanvasObjects(newCanvasObjects);
-//                     // drawCanvas();
-//                 }
-//             })
-//
-//         }
-//     }
-//
-//     const handleMouseUp = () => {
-//         setDragging(null);
-//     }
-//
-//     useEffect(() => {
-//         const canvas = canvasRef.current;
-//
-//         if (canvas) {
-//             const initialObjects = images.map((imageUrl, index) => ({
-//                 image: new Image(),
-//                 x: (index % 2) * (canvas.width / 2),
-//                 y: Math.floor(index / 2) * (canvas.height / 2),
-//                 width: canvas.width / 2,
-//                 height: canvas.height / 2,
-//                 dragging: false,
-//             }))
-//
-//             initialObjects.forEach((obj, index) => {
-//                 obj.image.src = images[index];
-//                 obj.image.onload = () => drawCanvas();
-//             });
-//
-//             setCanvasObjects(initialObjects);
-//         }
-//
-//     }, [images]);
-//
-//     return (
-//         <div className="w-full">
-//             <canvas
-//                 className="border border-gray-500"
-//                 ref={canvasRef}
-//                 width={1000}
-//                 height={800}
-//                 onMouseDown={handleMouseDown}
-//                 onMouseUp={handleMouseUp}
-//                 onMouseMove={handleMouseMove}
-//                 onDrop={handleDrop}
-//                 onDragOver={handleDragOver}
-//             >There are no images</canvas>
-//         </div>
-//     )
-// }
-
 import React, {useEffect, useRef, useState} from 'react';
 import * as fabric from "fabric";
 
@@ -131,40 +5,58 @@ export default function PhotoCanvas({images}) {
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [canvas, setCanvas] = useState(null);
-    const [windowSize, setWindowSize] = useState({
-        w: window.innerWidth,
-        h: window.innerHeight
-    })
+    const [croppedObject, setCroppedObject] = useState(null);
+    const [isCropping, setIsCropping] = useState(false);
+    const [croppedDimensions, setCroppedDimensions] = useState({
+        height: 0,
+        width: 0,
+        top: 0,
+        left: 0
+    });
 
     useEffect(() => {
         const canvas = new fabric.Canvas(canvasRef.current, {
-            width: windowSize.w * 0.75,
-            height: windowSize.h * 0.75,
+            width: window.innerWidth * 0.75,
+            height: window.innerHeight * 0.75,
             backgroundColor: '#fff',
             selection: true,
-        })
+        });
         setCanvas(canvas);
 
         const handleDrop = (e) => {
             e.preventDefault();
-            const {offsetX, offsetY} = e;
+            const { offsetX, offsetY } = e;
             const imageUrl = e.dataTransfer.getData('imageUrl');
-            fabric.Image.fromURL(imageUrl, {},).then((img) => {
+            fabric.Image.fromURL(imageUrl).then((img) => {
                 img.set({
                     left: offsetX,
                     top: offsetY,
                     scaleX: 0.5,
                     scaleY: 0.5,
                     selectable: true,
+                    angle: 0,
+                    flipX: false,
+                    flipY: false,
                 });
+
+                img.controls.mtr.visible = true;
+
+                img.controls.flipH = new fabric.Control({
+                    actionHandler: () => flipImage(img, 'horizontal'),
+                });
+
+                img.controls.flipV = new fabric.Control({
+                    actionHandler: () => flipImage(img, 'vertical'),
+                });
+
                 canvas.add(img);
                 canvas.renderAll();
-            })
-        }
+            });
+        };
 
         const handleDragOver = (e) => {
             e.preventDefault();
-        }
+        };
 
         canvas.on('selection:created', (e) => {
             setSelectedImage(e.selected[0]);
@@ -182,8 +74,23 @@ export default function PhotoCanvas({images}) {
             canvasContainer.removeEventListener('drop', handleDrop);
             canvasContainer.removeEventListener('dragover', handleDragOver);
             canvas.dispose();
-        }
+        };
     }, [images]);
+
+    // Function to flip the selected image based on the button click
+    const flipImage = (flipType) => {
+        if (selectedImage) {
+            switch (flipType) {
+                case 'horizontal':
+                    selectedImage.set('flipX', !selectedImage.flipX); // Toggle horizontal flip;
+                    break;
+                case 'vertical':
+                    selectedImage.set('flipY', !selectedImage.flipY); // Toggle vertical flip
+                    break;
+            }
+            canvas.renderAll();
+        }
+    };
 
     const deleteSelectedImage = () => {
         if (selectedImage) {
@@ -193,6 +100,56 @@ export default function PhotoCanvas({images}) {
         }
     };
 
+    const enableCrop = () => {
+        if (selectedImage && !isCropping) {
+            setIsCropping(true);
+
+            const croppedObject = new fabric.Rect({
+                left: selectedImage.left,
+                top: selectedImage.top,
+                width: selectedImage.width * selectedImage.scaleX,
+                height: selectedImage.height * selectedImage.scaleY,
+                fill: 'rgba(255,255,255,0.3)',
+                strokeDashArray: [5, 5],
+                selectable: true,
+                evented: true,
+            });
+
+            setCroppedObject(croppedObject);
+            canvas.add(croppedObject);
+            canvas.setActiveObject(croppedObject);
+            canvas.renderAll();
+        }
+    };
+
+    const applyCrop = () => {
+        if (croppedObject && selectedImage) {
+            croppedObject.set({ fill: null });
+            const croppedImageDataURL = canvas.toDataURL({
+                left: croppedDimensions.left,
+                top: croppedDimensions.top,
+                width: croppedDimensions.width,
+                height: croppedDimensions.height,
+            })
+
+            fabric.Image.fromURL(croppedImageDataURL).then((croppedImg) => {
+                canvas.remove(selectedImage);
+                canvas.remove(croppedObject);
+                setCroppedObject(null);
+                setIsCropping(false);
+
+                canvas.add(croppedImg);
+                canvas.renderAll();
+            });
+        }
+    };
+
+    useEffect(() => {
+        croppedObject?.on('modified', () => {
+            const {top, left, width, height } = croppedObject.getBoundingRect();
+            setCroppedDimensions({top, left, width, height});
+        })
+    }, [croppedObject]);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -209,7 +166,21 @@ export default function PhotoCanvas({images}) {
 
     return (
         <div className="relative bg-white">
+            <div className="flex mb-2">
+                <button onClick={() => flipImage('horizontal')} disabled={!selectedImage} className="px-4 py-2 bg-blue-900 text-white disabled:opacity-20">
+                    Flip Horizontal
+                </button>
+                <button onClick={() => flipImage('vertical')} disabled={!selectedImage} className="px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20">
+                    Flip Vertical
+                </button>
+                <button onClick={enableCrop} disabled={!selectedImage} className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20">
+                    Crop Image
+                </button>
+                <button onClick={applyCrop} disabled={!selectedImage} className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20">
+                    Apply Crop
+                </button>
+            </div>
             <canvas ref={canvasRef} className="border border-gray-500"></canvas>
         </div>
-    )
+    );
 }
