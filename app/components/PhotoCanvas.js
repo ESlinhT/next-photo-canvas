@@ -77,7 +77,7 @@ export default function PhotoCanvas({images}) {
         };
     }, [images]);
 
-    const flipImage = (flipType) => {g
+    const flipImage = (flipType) => {
         if (selectedImage) {
             switch (flipType) {
                 case 'horizontal':
