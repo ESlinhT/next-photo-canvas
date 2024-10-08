@@ -54,8 +54,8 @@ export const setupDragAndDrop = (canvasRef, canvas) => {
 
 export const addFrameToCanvas = (selectedFrame, canvas) => {
     fabric.Image.fromURL(selectedFrame?.src).then((img) => {
-        img.scaleToWidth(canvas?.width);
-        img.scaleToHeight(canvas?.height);
+        img.scaleX = canvas?.width / img.width;
+        img.scaleY = canvas?.height / img.height;
         canvas?.set('backgroundImage', img);
         canvas?.renderAll()
     });
