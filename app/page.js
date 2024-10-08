@@ -1,11 +1,10 @@
 import Link from "next/link";
-import {ChevronRightIcon} from "@heroicons/react/16/solid";
 import BlueBackground from "@/app/components/BlueBackground";
 
 export default function Home() {
     return (
         <BlueBackground>
-            <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-40 lg:flex lg:px-8 lg:pt-40">
+            <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-40 lg:flex lg:px-8 lg:pt-40 h-[100vh] flex justify-center items-center">
                 <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-8">
                     <h1 className="uppercase text-4xl font-bold tracking-tight text-indigo-500">Next Photo Canvas</h1>
                     <h1 className="mt-10 text-4xl font-bold tracking-tight text-white sm:text-6xl capitalize">
