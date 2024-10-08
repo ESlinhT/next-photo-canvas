@@ -51,3 +51,12 @@ export const setupDragAndDrop = (canvasRef, canvas) => {
         canvasContainer.removeEventListener('dragover', handleDragOver);
     };
 };
+
+export const addFrameToCanvas = (selectedFrame, canvas) => {
+    fabric.Image.fromURL(selectedFrame?.src).then((img) => {
+        img.scaleToWidth(canvas?.width);
+        img.scaleToHeight(canvas?.height);
+        canvas?.set('backgroundImage', img);
+        canvas?.renderAll()
+    });
+}

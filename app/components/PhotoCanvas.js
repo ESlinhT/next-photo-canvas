@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { initializeCanvas, setupDragAndDrop } from './CanvasControls';
+import { initializeCanvas, setupDragAndDrop, addFrameToCanvas } from './CanvasControls';
 import { flipImage, enableCrop, applyCrop, deleteImage } from './ImageUtils';
+import {useFramesContext} from "@/app/context/FramesProvider";
 
 export default function PhotoCanvas({ images }) {
+    const {selectedFrame} = useFramesContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [canvas, setCanvas] = useState(null);
@@ -37,6 +39,10 @@ export default function PhotoCanvas({ images }) {
     useEffect(() => {
         deleteImage(canvas, selectedImage, setSelectedImage)
     }, [selectedImage]);
+
+    useEffect(() => {
+        addFrameToCanvas(selectedFrame, canvas);
+    }, [selectedFrame]);
 
     return (
         <div className="relative bg-white">

@@ -2,9 +2,12 @@
 
 import React, {useState} from 'react';
 import {useDropzone} from 'react-dropzone';
+import Image from "next/image";
+import {useFramesContext} from "@/app/context/FramesProvider";
 
 export default function ImageSidebar() {
     const [images, setImages] = useState([]);
+    const {frames, selectedFrame, setSelectedFrame} = useFramesContext();
 
     const handleDrop = (newImages) => {
         const imageUrls = newImages.map(file => URL.createObjectURL(file));
@@ -33,7 +36,7 @@ export default function ImageSidebar() {
                                         <input {...getInputProps()} />
                                         <p>Upload some images</p>
                                     </div>
-                                    <div className="flex flex-col items-center overflow-y-scroll h-[85vh] mt-4">
+                                    <div className="flex flex-col items-center overflow-y-scroll h-[50vh] mt-4">
                                         {images.length ? images.map((url, index) => (
                                             <img
                                                 key={index}
@@ -44,6 +47,19 @@ export default function ImageSidebar() {
                                                 onDragStart={(e) => e.dataTransfer.setData('imageUrl', url)}
                                             />
                                         )) : <p className="text-white text-center">There are no images</p>}
+                                    </div>
+                                    <div className="flex flex-col items-center overflow-y-scroll h-[50vh] mt-10">
+                                        <p className="text-white uppercase mb-3 text-xl font-bold">Choose a frame</p>
+                                        {frames.map((frame, index) => (
+                                            <Image
+                                                key={index}
+                                                src={frame ?? ''}
+                                                alt={`frame-${index}`}
+                                                className={`cursor-pointer h-[100px] w-[150px] mb-2 border ${selectedFrame === frame ? 'border-gray-200 border-[5px] h-[110px] w-[160px]' : ''}`}
+                                                onClick={() => setSelectedFrame(frame)}
+                                                priority={true}
+                                            />
+                                        ))}
                                     </div>
                                 </div>
                             </ul>
