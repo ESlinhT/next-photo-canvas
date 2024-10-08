@@ -52,7 +52,7 @@ export const setupDragAndDrop = (canvasRef, canvas) => {
     };
 };
 
-export const addFrameToCanvas = (selectedFrame, canvas) => {
+export const toggleFrame = (selectedFrame, canvas) => {
     fabric.Image.fromURL(selectedFrame?.src).then((img) => {
         img.scaleX = canvas?.width / img.width;
         img.scaleY = canvas?.height / img.height;

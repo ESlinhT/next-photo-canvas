@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { initializeCanvas, setupDragAndDrop, addFrameToCanvas } from './CanvasControls';
+import { initializeCanvas, setupDragAndDrop, toggleFrame } from './CanvasControls';
 import { flipImage, enableCrop, applyCrop, deleteImage } from './ImageUtils';
 import {useFramesContext} from "@/app/context/FramesProvider";
 
@@ -41,7 +41,7 @@ export default function PhotoCanvas({ images }) {
     }, [selectedImage]);
 
     useEffect(() => {
-        addFrameToCanvas(selectedFrame, canvas);
+        toggleFrame(selectedFrame, canvas);
     }, [selectedFrame]);
 
     return (
