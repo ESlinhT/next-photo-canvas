@@ -3,7 +3,7 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import blackFrame from "@/app/assets/black-frame.png";
 import goldFrame from "@/app/assets/gold-frame.png";
-import geometricFrame from "@/app/assets/geometric-frame.png";
+import silverFrame from "@/app/assets/silver-frame.png";
 
 const FramesContext = createContext();
 
@@ -14,7 +14,7 @@ const FramesProvider = ({children}) => {
     const frames = [
         blackFrame,
         goldFrame,
-        geometricFrame
+        silverFrame
     ];
 
     return (
