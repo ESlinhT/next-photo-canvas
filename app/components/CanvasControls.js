@@ -1,10 +1,10 @@
 import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
 
-export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines) => {
+export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize) => {
     const canvas = new fabric.Canvas(canvasRef.current, {
-        width: window.innerWidth * 0.75,
-        height: window.innerHeight * 0.75,
+        width: canvasSize?.width,
+        height: canvasSize?.height,
         backgroundColor: '#fff',
         selection: true,
     });

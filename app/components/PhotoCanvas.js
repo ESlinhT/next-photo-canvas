@@ -3,7 +3,7 @@ import { initializeCanvas, setupDragAndDrop, toggleFrame } from './CanvasControl
 import { flipImage, enableCrop, applyCrop, deleteImage } from '../utils/ImageUtils';
 import {useFramesContext} from "@/app/context/FramesProvider";
 
-export default function PhotoCanvas({ images }) {
+export default function PhotoCanvas({ images, canvasSize }) {
     const {selectedFrame} = useFramesContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -20,14 +20,14 @@ export default function PhotoCanvas({ images }) {
     });
 
     useEffect(() => {
-        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines);
+        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas);
 
         return () => {
             cleanupDragAndDrop();
             canvas.dispose();
         };
-    }, [images]);
+    }, [images, canvasSize]);
 
     useEffect(() => {
         if (croppedObject) {
@@ -47,22 +47,31 @@ export default function PhotoCanvas({ images }) {
     }, [selectedFrame]);
 
     return (
-        <div className="relative bg-white">
-            <div className="flex mb-2">
-                <button onClick={() => flipImage(selectedImage, 'horizontal', canvas)} disabled={!selectedImage} className="px-4 py-2 bg-blue-900 text-white disabled:opacity-20">
+        <div className="flex flex-col items-center h-[100vh]">
+            <div className="flex mb-5">
+                <button onClick={() => flipImage(selectedImage, 'horizontal', canvas)} disabled={!selectedImage}
+                        className="px-4 py-2 bg-blue-900 text-white disabled:opacity-20">
                     Flip Horizontal
                 </button>
-                <button onClick={() => flipImage(selectedImage, 'vertical', canvas)} disabled={!selectedImage} className="px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20">
+                <button onClick={() => flipImage(selectedImage, 'vertical', canvas)} disabled={!selectedImage}
+                        className="px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20">
                     Flip Vertical
                 </button>
-                <button onClick={() => enableCrop(selectedImage, isCropping, setIsCropping, canvas, croppedObject, setCroppedObject)} disabled={!selectedImage} className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20">
+                <button
+                    onClick={() => enableCrop(selectedImage, isCropping, setIsCropping, canvas, croppedObject, setCroppedObject)}
+                    disabled={!selectedImage} className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20">
                     Crop Image
                 </button>
-                <button onClick={() => applyCrop(croppedObject, selectedImage, croppedDimensions, canvas, setCroppedObject, setIsCropping)} disabled={!selectedImage} className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20">
+                <button
+                    onClick={() => applyCrop(croppedObject, selectedImage, croppedDimensions, canvas, setCroppedObject, setIsCropping)}
+                    disabled={!selectedImage} className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20">
                     Apply Crop
                 </button>
             </div>
-            <canvas ref={canvasRef} className=""></canvas>
+        <div className="relative bg-white">
+            <canvas ref={canvasRef} className="border-2 border-gray-200"></canvas>
         </div>
+        </div>
+
     );
 }
