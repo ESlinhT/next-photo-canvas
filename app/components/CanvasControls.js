@@ -1,6 +1,7 @@
 import * as fabric from "fabric";
+import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
 
-export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage) => {
+export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines) => {
     const canvas = new fabric.Canvas(canvasRef.current, {
         width: window.innerWidth * 0.75,
         height: window.innerHeight * 0.75,
@@ -17,6 +18,14 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage) => {
     canvas.on('selection:cleared', () => {
         setSelectedImage(null);
     });
+
+    canvas.on('object:moving', (event) => {
+        handleObjectMoving(canvas, event.target, guidelines, setGuidelines)
+    })
+
+    canvas.on('object:modified', (event) => {
+        clearGuideLines(canvas, event.target, guidelines, setGuidelines)
+    })
 
     return canvas;
 };

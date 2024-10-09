@@ -33,8 +33,7 @@ const GlobalProvider = ({children}) => {
         <GlobalContext.Provider
             value={{
                 user,
-                loading,
-                init
+                loading
             }}
         >
             {children}

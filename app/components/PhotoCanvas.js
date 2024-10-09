@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { initializeCanvas, setupDragAndDrop, toggleFrame } from './CanvasControls';
-import { flipImage, enableCrop, applyCrop, deleteImage } from './ImageUtils';
+import { flipImage, enableCrop, applyCrop, deleteImage } from '../utils/ImageUtils';
 import {useFramesContext} from "@/app/context/FramesProvider";
 
 export default function PhotoCanvas({ images }) {
@@ -10,6 +10,8 @@ export default function PhotoCanvas({ images }) {
     const [canvas, setCanvas] = useState(null);
     const [isCropping, setIsCropping] = useState(false);
     const [croppedObject, setCroppedObject] = useState(null);
+    const [guidelines, setGuidelines] = useState([]);
+
     const [croppedDimensions, setCroppedDimensions] = useState({
         height: 0,
         width: 0,
@@ -18,7 +20,7 @@ export default function PhotoCanvas({ images }) {
     });
 
     useEffect(() => {
-        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage);
+        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas);
 
         return () => {
@@ -60,7 +62,7 @@ export default function PhotoCanvas({ images }) {
                     Apply Crop
                 </button>
             </div>
-            <canvas ref={canvasRef} className="border border-gray-500"></canvas>
+            <canvas ref={canvasRef} className=""></canvas>
         </div>
     );
 }

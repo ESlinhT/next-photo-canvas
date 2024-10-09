@@ -30,7 +30,7 @@ export default function ImageSidebar() {
                     <ul className="flex flex-1 flex-col gap-y-7">
                         <li>
                             <ul className="-mx-2 space-y-1">
-                                <div className="w-[250px] p-2">
+                                <div className="w-full p-2">
                                     <div {...getRootProps()}
                                          className="border border-gray-200 p-2 cursor-pointer text-center text-white font-bold uppercase hover:bg-gray-400">
                                         <input {...getInputProps()} />
