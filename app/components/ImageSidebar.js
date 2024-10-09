@@ -32,6 +32,7 @@ export default function ImageSidebar({dpi, canvasSize, setCanvasSize}) {
                 {value: {height: 6 * dpi, width: 4 * dpi}, label: '4x6'},
                 {value: {height: 5 * dpi, width: 5 * dpi}, label: '5x5'},
                 {value: {height: 7 * dpi, width: 5 * dpi}, label: '5x7'},
+                {value: {height: 10 * dpi, width: 12 * dpi}, label: '10x12'},
             ],
         },
         {
