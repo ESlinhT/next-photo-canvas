@@ -1,6 +1,6 @@
 'use client'
 
-import {createContext, useContext, useEffect, useState} from "react";
+import {createContext, useContext, useState} from "react";
 import blackFrame from "@/app/assets/black-frame.png";
 import goldFrame from "@/app/assets/gold-frame.png";
 import silverFrame from "@/app/assets/silver-frame.png";

@@ -1,5 +1,6 @@
 import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
+import firstBorder from '../assets/first.jpg'
 
 export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize) => {
     const canvas = new fabric.Canvas(canvasRef.current, {
@@ -8,6 +9,12 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
         backgroundColor: '#fff',
         selection: true,
     });
+
+    // const border = document.querySelector('.canvas-container');
+    // border.style.width = `${canvasSize.width + 80}px`;
+    // border.style.height = `${canvasSize.height + 80}px`;
+    // border.style.border = '40px solid transparent';
+    // border.style.borderImage = `url(${firstBorder.src}) 10 repeat`;
 
     canvas.on('selection:created', (e) => {
         setSelectedImage(e.selected[0]);

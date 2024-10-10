@@ -27,7 +27,7 @@ export default function PhotoCanvas({images}) {
             cleanupDragAndDrop();
             canvas.dispose();
         };
-    }, [images, canvasSize, guidelines]);
+    }, [images, canvasSize]);
 
     useEffect(() => {
         if (croppedObject) {
