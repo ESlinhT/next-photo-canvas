@@ -92,7 +92,7 @@ const Signup = () => {
                             </div>
                         </div>
 
-                        <div>
+                        <div className="pt-4">
                             <button
                                 onClick={async () => {
                                     await signUp(email, password, username);

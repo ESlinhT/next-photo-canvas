@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import randomBg from '@/app/assets/random-bg.jpg';
 import BlueBackground from "@/app/components/BlueBackground";
 
 export default function Home() {
@@ -28,9 +30,11 @@ export default function Home() {
                 <div
                     className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32">
                     <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
-                        <img
+                        <Image
                             alt="App screenshot"
-                            src="https://assets.weimgs.com/weimgs/ab/images/wcm/products/202418/0053/img96xl.jpg"
+                            src={randomBg.src}
+                            width={540}
+                            height={540}
                             className="w-[76rem] bg-white/5 shadow-2xl ring-1 ring-white/10 max-w-[540px]"
                         />
                     </div>

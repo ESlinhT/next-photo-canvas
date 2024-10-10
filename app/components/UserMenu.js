@@ -14,7 +14,7 @@ export default function UserMenu() {
 
     const handleItemClick = (item) => {
         if (item.name === 'Sign out') {
-            signOut().then(() => router.push('/login'));
+            signOut().then(() => router.push('/'));
         } else {
             router.push(item.href);
         }
