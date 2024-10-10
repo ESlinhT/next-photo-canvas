@@ -27,7 +27,7 @@ export default function PhotoCanvas({images}) {
             cleanupDragAndDrop();
             canvas.dispose();
         };
-    }, [images, canvasSize]);
+    }, [images, canvasSize, guidelines]);
 
     useEffect(() => {
         if (croppedObject) {
@@ -40,11 +40,11 @@ export default function PhotoCanvas({images}) {
 
     useEffect(() => {
         deleteImage(canvas, selectedImage, setSelectedImage)
-    }, [selectedImage]);
+    }, [canvas, selectedImage]);
 
     useEffect(() => {
         toggleFrame(selectedFrame, canvas);
-    }, [selectedFrame]);
+    }, [canvas, selectedFrame]);
 
     return (
         <div className="flex flex-col items-center h-[100vh]">

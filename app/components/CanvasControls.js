@@ -9,8 +9,6 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
         selection: true,
     });
 
-    setCanvas(canvas);
-
     canvas.on('selection:created', (e) => {
         setSelectedImage(e.selected[0]);
     });
@@ -26,6 +24,10 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
     canvas.on('object:modified', (event) => {
         clearGuideLines(canvas, event.target, guidelines, setGuidelines)
     })
+
+    canvas.renderAll();
+
+    setCanvas(canvas);
 
     return canvas;
 };
