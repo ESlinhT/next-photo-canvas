@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { initializeCanvas, setupDragAndDrop, toggleFrame } from './CanvasControls';
-import { flipImage, enableCrop, applyCrop, deleteImage } from '../utils/ImageUtils';
+import React, {useEffect, useRef, useState} from 'react';
+import {initializeCanvas, setupDragAndDrop, toggleFrame} from './CanvasControls';
+import {flipImage, enableCrop, applyCrop, deleteImage} from '../utils/ImageUtils';
 import {useFramesContext} from "@/app/context/FramesProvider";
 
-export default function PhotoCanvas({ images, canvasSize }) {
+export default function PhotoCanvas({images, canvasSize}) {
     const {selectedFrame} = useFramesContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -32,8 +32,8 @@ export default function PhotoCanvas({ images, canvasSize }) {
     useEffect(() => {
         if (croppedObject) {
             croppedObject.on('modified', () => {
-                const { top, left, width, height } = croppedObject.getBoundingRect();
-                setCroppedDimensions({ top, left, width, height });
+                const {top, left, width, height} = croppedObject.getBoundingRect();
+                setCroppedDimensions({top, left, width, height});
             });
         }
     }, [croppedObject]);
@@ -68,9 +68,9 @@ export default function PhotoCanvas({ images, canvasSize }) {
                     Apply Crop
                 </button>
             </div>
-        <div className="relative bg-white">
-            <canvas ref={canvasRef} className="border-2 border-gray-200"></canvas>
-        </div>
+            <div className="relative bg-white pb-5">
+                <canvas ref={canvasRef} className="border-2 border-gray-200"></canvas>
+            </div>
         </div>
 
     );
