@@ -1,10 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {initializeCanvas, setupDragAndDrop, toggleFrame} from './CanvasControls';
 import {flipImage, enableCrop, applyCrop, deleteImage} from '../utils/ImageUtils';
-import {useFramesContext} from "@/app/context/FramesProvider";
+import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
-export default function PhotoCanvas({images, canvasSize}) {
-    const {selectedFrame} = useFramesContext();
+export default function PhotoCanvas({images}) {
+    const {selectedFrame, canvasSize} = useCanvasOptionsContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [canvas, setCanvas] = useState(null);

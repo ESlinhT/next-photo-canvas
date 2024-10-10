@@ -10,11 +10,6 @@ import Loading from "@/app/components/Loading";
 
 export default function Images() {
     const {user, loading} = useGlobalContext();
-    const dpi = 96;
-    const [canvasSize, setCanvasSize] = useState({
-        height: 7 * dpi,
-        width: 5 * dpi,
-    });
 
     if (loading) {
         return <Loading/>;
@@ -25,7 +20,7 @@ export default function Images() {
             {!user ?
                 <AuthCheck/>
                 : <>
-                    <ImageSidebar dpi={dpi} canvasSize={canvasSize} setCanvasSize={setCanvasSize}/>
+                    <ImageSidebar />
                     <div className="lg:pl-72 bg-white">
                         <div
                             className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
@@ -38,7 +33,7 @@ export default function Images() {
 
                         <main className="py-2">
                             <div className="flex m-2 justify-center">
-                                <PhotoCanvas canvasSize={canvasSize}/>
+                                <PhotoCanvas />
                             </div>
                         </main>
                     </div>

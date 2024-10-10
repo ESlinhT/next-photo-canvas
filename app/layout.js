@@ -3,7 +3,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import GlobalProvider from "@/app/context/GlobalProvider";
-import FramesProvider from "@/app/context/FramesProvider";
+import CanvasOptionsProvider from "@/app/context/CanvasOptionsProvider";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -21,9 +21,9 @@ export default function RootLayout({children}) {
         <GlobalProvider>
             <html lang="en">
                 <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                    <FramesProvider>
+                    <CanvasOptionsProvider>
                         {children}
-                    </FramesProvider>
+                    </CanvasOptionsProvider>
                 </body>
             </html>
         </GlobalProvider>

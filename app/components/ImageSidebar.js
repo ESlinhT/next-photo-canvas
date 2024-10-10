@@ -3,14 +3,14 @@
 import React, {useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import Image from "next/image";
-import {useFramesContext} from "@/app/context/FramesProvider";
+import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import {Disclosure, DisclosureButton, DisclosurePanel} from "@headlessui/react";
 import {MinusIcon, PlusIcon} from "@heroicons/react/16/solid";
 
 
-export default function ImageSidebar({dpi, canvasSize, setCanvasSize}) {
+export default function ImageSidebar() {
     const [images, setImages] = useState([]);
-    const {frames, selectedFrame, setSelectedFrame} = useFramesContext();
+    const {frames, selectedFrame, setSelectedFrame, dpi, canvasSize, setCanvasSize} = useCanvasOptionsContext();
 
     const handleDrop = (newImages) => {
         const imageUrls = newImages.map(file => URL.createObjectURL(file));
@@ -47,7 +47,6 @@ export default function ImageSidebar({dpi, canvasSize, setCanvasSize}) {
         },
     ]
 
-    console.log(canvasSize, filters[0].options[2].value)
     return (
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
             <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 pb-4">
@@ -80,7 +79,6 @@ export default function ImageSidebar({dpi, canvasSize, setCanvasSize}) {
                                                         key={option.label}
                                                         src={option.value ?? ''}
                                                         alt={`frame-${option.value}`}
-                                                        // TODO: figure out why selectedFrame doesn't match option.value
                                                         className={`cursor-pointer h-[100px] w-[150px] mb-2 border ${selectedFrame === option.value ? 'border-gray-200 border-[5px] h-[110px] w-[160px]' : ''}`}
                                                         onClick={() => setSelectedFrame(option.value)}
                                                         priority={true}
@@ -91,7 +89,7 @@ export default function ImageSidebar({dpi, canvasSize, setCanvasSize}) {
                                                         <button
                                                             onClick={() => setCanvasSize(option.value)}
                                                             id={`filter-mobile-${section.id}-${optionIdx}`}
-                                                            className={`border py-1 px-4 border-gray-300 text-white focus:ring-indigo-500 ${canvasSize === option.value ? 'bg-gray-500' : ''}`}
+                                                            className={`border py-1 px-4 border-gray-300 text-white focus:ring-indigo-500 ${JSON.stringify(canvasSize) === JSON.stringify(option.value) ? 'bg-gray-500' : ''}`}
                                                         >{option.label}</button>
                                                     </div>
                                             ))}
