@@ -11,7 +11,9 @@ export const useCanvasOptionsContext = () => useContext(CanvasOptionsContext);
 
 const CanvasOptionsProvider = ({children}) => {
     const dpi = 96;
-    const [selectedFrame, setSelectedFrame] = useState(null);
+    const [primaryBorder, setPrimaryBorder] = useState(false);
+    const [secondaryBorder, setSecondaryBorder] = useState(false);
+    const [selectedPhoto, setSelectedPhoto] = useState(false);
     const [canvasSize, setCanvasSize] = useState({
         height: 7 * dpi,
         width: 5 * dpi,
@@ -25,12 +27,16 @@ const CanvasOptionsProvider = ({children}) => {
     return (
         <CanvasOptionsContext.Provider
             value={{
-                selectedFrame,
-                setSelectedFrame,
+                primaryBorder,
+                setPrimaryBorder,
+                secondaryBorder,
+                setSecondaryBorder,
                 frames,
                 dpi,
                 canvasSize,
-                setCanvasSize
+                setCanvasSize,
+                selectedPhoto,
+                setSelectedPhoto
             }}
         >
             {children}

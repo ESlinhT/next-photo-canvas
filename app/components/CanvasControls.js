@@ -1,6 +1,5 @@
 import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
-import firstBorder from '../assets/first.jpg'
 
 export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize) => {
     const canvas = new fabric.Canvas(canvasRef.current, {
@@ -9,12 +8,6 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
         backgroundColor: '#fff',
         selection: true,
     });
-
-    // const border = document.querySelector('.canvas-container');
-    // border.style.width = `${canvasSize.width + 80}px`;
-    // border.style.height = `${canvasSize.height + 80}px`;
-    // border.style.border = '40px solid transparent';
-    // border.style.borderImage = `url(${firstBorder.src}) 10 repeat`;
 
     canvas.on('selection:created', (e) => {
         setSelectedImage(e.selected[0]);
@@ -70,8 +63,29 @@ export const setupDragAndDrop = (canvasRef, canvas) => {
     };
 };
 
-export const toggleFrame = (selectedFrame, canvas) => {
-    fabric.Image.fromURL(selectedFrame?.src).then((img) => {
+export const toggleBorder = (primaryBorder, secondaryBorder, canvas) => {
+    const border = document.querySelector('.lower-canvas');
+
+    if (primaryBorder) {
+        border.style.border = `2em solid ${primaryBorder}`;
+        border.style.width = `${canvas?.width + 40}px`;
+        border.style.height = `${canvas?.height + 40}px`;
+    }
+    if (secondaryBorder) {
+        border.style.border = '2em solid transparent';
+        border.style.backgroundImage = `linear-gradient(white, white), linear-gradient(to right, ${primaryBorder}, ${secondaryBorder})`;
+        border.style.width = `${canvas?.width + 40}px`;
+        border.style.height = `${canvas?.height + 40}px`;
+    }
+    if (!primaryBorder && !secondaryBorder) {
+        border.style.border = 'none';
+        border.style.width = `${canvas?.width}px`;
+        border.style.height = `${canvas?.height}px`;
+    }
+}
+
+export const setCanvasPhoto = (selectedPhoto, canvas) => {
+    fabric.Image.fromURL(selectedPhoto).then((img) => {
         img.scaleX = canvas?.width / img.width;
         img.scaleY = canvas?.height / img.height;
         canvas?.set('backgroundImage', img);
