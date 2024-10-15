@@ -90,9 +90,9 @@ export default function PhotoCanvas({images}) {
             <div className="relative bg-white pb-5">
                 <canvas ref={canvasRef} className=""></canvas>
             </div>
-            {selectedPhoto && <p className={`text-xl text-center ${!primaryBorder ? 'mt-2' : 'mt-10'}`}>
-                (Scroll on image to zoom)
-            </p>}
+                {selectedPhoto && <p className={`text-xl text-center ${JSON.stringify(primaryBorder).includes('#') ? 'pt-6' : 'pt-1'}`}>
+                    (Scroll on image to zoom)
+                </p>}
 
         </div>
 
