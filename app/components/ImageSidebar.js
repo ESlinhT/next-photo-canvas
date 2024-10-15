@@ -2,7 +2,6 @@
 
 import React, {useState} from 'react';
 import {useDropzone} from 'react-dropzone';
-import Image from "next/image";
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import {
     Dialog,
@@ -13,7 +12,7 @@ import {
     DisclosureButton,
     DisclosurePanel
 } from "@headlessui/react";
-import {CheckIcon, MinusIcon, PlusIcon} from "@heroicons/react/16/solid";
+import {MinusIcon, PlusIcon} from "@heroicons/react/16/solid";
 import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/css";
 
