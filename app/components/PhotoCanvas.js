@@ -50,8 +50,6 @@ export default function PhotoCanvas({images}) {
         toggleBorder(primaryBorder, secondaryBorder, canvas);
     }, [canvas, primaryBorder, secondaryBorder]);
 
-
-
     return (
         <div className="flex flex-col items-center h-[100vh]">
             <div className="flex my-5 mb-10">
@@ -91,10 +89,11 @@ export default function PhotoCanvas({images}) {
             </div>
             <div className="relative bg-white pb-5">
                 <canvas ref={canvasRef} className=""></canvas>
-                <p className="text-xl text-center mt-2">
-                    (Scroll on image to zoom)
-                </p>
             </div>
+            {selectedPhoto && <p className={`text-xl text-center ${!primaryBorder ? 'mt-2' : 'mt-10'}`}>
+                (Scroll on image to zoom)
+            </p>}
+
         </div>
 
     );
