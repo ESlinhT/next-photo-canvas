@@ -1,20 +1,6 @@
 import * as fabric from "fabric";
 
-export const flipImage = (selectedImage, flipType, canvas) => {
-    if (selectedImage) {
-        switch (flipType) {
-            case 'horizontal':
-                selectedImage.set('flipX', !selectedImage.flipX);
-                break;
-            case 'vertical':
-                selectedImage.set('flipY', !selectedImage.flipY);
-                break;
-        }
-        canvas.renderAll();
-    }
-};
-
-export const flipCanvas = (flipType, canvas) => {
+export const flipImage = (flipType, canvas) => {
     const img = canvas?.getActiveObject();
 
     switch (flipType) {

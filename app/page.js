@@ -20,10 +20,10 @@ export default function Home() {
                     <div className="mt-10 flex items-center gap-x-6">
                         <Link
                             className="bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-                            href={'/photos'}>Go To Photos</Link>
-                        <a href="#"
-                           className="bg-gray-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-200">
-                            PhotoBooks (coming soon)
+                            href="/photos" >Photos</Link>
+                        <a href="/photobooks"
+                           className="bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700">
+                            PhotoBooks
                         </a>
                     </div>
                 </div>

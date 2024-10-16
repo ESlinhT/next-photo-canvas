@@ -13,14 +13,22 @@ import {
     DisclosurePanel
 } from "@headlessui/react";
 import {MinusIcon, PlusIcon} from "@heroicons/react/16/solid";
-import { ColorPicker, useColor } from "react-color-palette";
+import {ColorPicker, useColor} from "react-color-palette";
 import "react-color-palette/css";
 
 
-
-export default function ImageSidebar() {
+export default function Sidebar({path}) {
     const [images, setImages] = useState([]);
-    const {primaryBorder, setPrimaryBorder, secondaryBorder, setSecondaryBorder, dpi, canvasSize, setCanvasSize, setSelectedPhoto} = useCanvasOptionsContext();
+    const {
+        primaryBorder,
+        setPrimaryBorder,
+        secondaryBorder,
+        setSecondaryBorder,
+        dpi,
+        canvasSize,
+        setCanvasSize,
+        setSelectedPhoto
+    } = useCanvasOptionsContext();
     const [color, setColor] = useColor("#fff");
     const [secondColor, setSecondColor] = useColor("#fff");
     const [open, setOpen] = useState(false);
@@ -29,7 +37,7 @@ export default function ImageSidebar() {
     const handleDrop = (newImages) => {
         const imageUrls = newImages.map(file => URL.createObjectURL(file));
         setImages((prevImages) => [...prevImages, ...imageUrls]);
-        setSelectedPhoto(imageUrls[0])
+        path === 'photos' && setSelectedPhoto(imageUrls[0])
     }
 
     const {getRootProps, getInputProps} = useDropzone({
@@ -45,9 +53,11 @@ export default function ImageSidebar() {
             name: 'Choose a Size',
             options: [
                 {value: {height: 6 * dpi, width: 4 * dpi}, label: '4x6'},
-                {value: {height: 5 * dpi, width: 5 * dpi}, label: '5x5'},
                 {value: {height: 7 * dpi, width: 5 * dpi}, label: '5x7'},
                 {value: {height: 10 * dpi, width: 12 * dpi}, label: '10x12'},
+                {value: {height: 5 * dpi, width: 5 * dpi}, label: '5x5'},
+                {value: {height: 8 * dpi, width: 8 * dpi}, label: '8x8'},
+                {value: {height: 10 * dpi, width: 10 * dpi}, label: '10x10'},
             ],
         },
         {
@@ -80,16 +90,17 @@ export default function ImageSidebar() {
     }
 
     return (
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-58 lg:flex-col">
             <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 pb-4">
                 <div className="flex h-16 shrink-0 items-center justify-center w-full">
-                    <p className="text-white font-bold text-3xl uppercase">Photos</p>
+                    <p className="text-white font-bold text-3xl uppercase">{path}</p>
                 </div>
                 <nav className="flex flex-1 flex-col px-6">
                     <ul className="flex flex-1 flex-col gap-y-7">
                         <li>
                             {filters.map((section, index) => (
-                                <Disclosure key={section.id} as="div" className={`${index === 0 ? '' : 'border-t border-gray-200'} relative px-4 py-6`}>
+                                <Disclosure key={section.id} as="div"
+                                            className={`${index === 0 ? '' : 'border-t border-gray-200'} relative px-4 py-6 ${path === 'photobooks' && section.id === 'border' ? 'hidden' : ''}`}>
                                     <h3 className="-mx-2 -my-3 flow-root">
                                         <DisclosureButton
                                             className="group flex w-full items-center justify-between bg-transparent px-2 py-3 text-white hover:text-gray-500">
@@ -107,14 +118,23 @@ export default function ImageSidebar() {
                                             {section.options.map((option, optionIdx) => (
                                                 section.id === 'border'
                                                     ?
-                                                    <div key={optionIdx} className="flex flex-col">
-                                                        <button className={`text-white border border-gray-200 px-4 py-1 hover:bg-gray-500 uppercase ${primaryBorder && !secondaryBorder ? 'bg-gray-500' : ''}`} onClick={() => handleChooseBorderColor(false)}>Solid</button>
-                                                        <button className={`text-white border border-gray-200 px-4 py-1 hover:bg-gray-500 uppercase ${secondaryBorder ? 'bg-gray-500' : ''}`} onClick={() => handleChooseBorderColor(true)}>Gradient</button>
-                                                        <button className="mt-2 text-red-600 font-bold px-4 py-1 hover:text-red-400 uppercase" onClick={handleClearBorders}>Clear</button>
+                                                    <div key={optionIdx} className={`flex flex-col`}>
+                                                        <button
+                                                            className={`text-white border border-gray-200 px-4 py-1 hover:bg-gray-500 uppercase ${primaryBorder && !secondaryBorder ? 'bg-gray-500' : ''}`}
+                                                            onClick={() => handleChooseBorderColor(false)}>Solid
+                                                        </button>
+                                                        <button
+                                                            className={`text-white border border-gray-200 px-4 py-1 hover:bg-gray-500 uppercase ${secondaryBorder ? 'bg-gray-500' : ''}`}
+                                                            onClick={() => handleChooseBorderColor(true)}>Gradient
+                                                        </button>
+                                                        <button
+                                                            className="mt-2 text-red-600 font-bold px-4 py-1 hover:text-red-400 uppercase"
+                                                            onClick={handleClearBorders}>Clear
+                                                        </button>
                                                     </div>
                                                     :
                                                     <div key={option.label}
-                                                         className="flex items-center w-full justify-center">
+                                                         className={`flex items-center w-full justify-center`}>
                                                         <button
                                                             onClick={() => setCanvasSize(option.value)}
                                                             id={`filter-mobile-${section.id}-${optionIdx}`}
@@ -160,14 +180,16 @@ export default function ImageSidebar() {
                     />
 
                     <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <div
+                            className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                             <DialogPanel
                                 transition
                                 className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-lg sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
                             >
                                 <div>
                                     <div className="mt-3 text-center sm:mt-5">
-                                        <DialogTitle as="h3" className="text-base font-semibold leading-6 text-gray-900 uppercase">
+                                        <DialogTitle as="h3"
+                                                     className="text-base font-semibold leading-6 text-gray-900 uppercase">
                                             {isGradient ? 'Choose your colors' : 'Choose a color'}
                                         </DialogTitle>
                                         <div className="mt-2 flex justify-center gap-5">
@@ -179,11 +201,11 @@ export default function ImageSidebar() {
                                             />
                                             {isGradient &&
                                                 <ColorPicker
-                                                hideInput={["rgb", "hsv"]}
-                                                color={secondColor}
-                                                onChange={setSecondColor}
-                                                onChangeComplete={onSecondChangeComplete}
-                                            />}
+                                                    hideInput={["rgb", "hsv"]}
+                                                    color={secondColor}
+                                                    onChange={setSecondColor}
+                                                    onChangeComplete={onSecondChangeComplete}
+                                                />}
                                         </div>
                                     </div>
                                 </div>

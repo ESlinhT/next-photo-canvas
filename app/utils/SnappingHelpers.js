@@ -94,7 +94,7 @@ export const createHorizontalGuideline = (canvas, y, id) => {
 export const clearGuideLines = (canvas) => {
     const objects = canvas.getObjects('line');
     objects.forEach((obj) => {
-        if (obj.id && obj.id.startsWith('vertical-') || obj.id.startsWith('horizontal-')) {
+        if (obj.id && obj.id?.startsWith('vertical-') || obj.id?.startsWith('horizontal-')) {
             canvas.remove(obj)
         }
     });
