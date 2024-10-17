@@ -72,7 +72,7 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
     });
 
     canvas.on('object:moving', (event) => {
-        if (disableHalf && gevent.target.left < canvas.getWidth() / 2) {
+        if (disableHalf && event.target.left < canvas.getWidth() / 2) {
             // Restrict the object to the right half
             event.target.set({left: canvas.getWidth() / 2});
         }
