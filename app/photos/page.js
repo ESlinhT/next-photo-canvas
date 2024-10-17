@@ -12,7 +12,7 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
 export default function Images() {
     const {user, loading} = useGlobalContext();
-    const {canvasSize, dpi} = useCanvasOptionsContext();
+    const {canvasSize, dpi, primaryBorder} = useCanvasOptionsContext();
 
     if (loading) {
         return <Loading/>;
@@ -38,13 +38,13 @@ export default function Images() {
                             <div className="ml-[250px] flex flex-col justify-center items-center">
                                 <div className="my-1 p-2 relative w-fit">
                                     <div
-                                        className="vertical-text absolute -left-8 bottom-8 flex justify-center items-center">
+                                        className={`vertical-text absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-12 bottom-0' : '-left-8 bottom-8'} flex justify-center items-center`}>
                                         <p className="text-gray-500 text-sm">{canvasSize.height / dpi} in </p>
                                         <ArrowLongDownIcon
                                             aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>
                                     </div>
                                     <PhotoCanvas path="photos"/>
-                                    <div className="absolute left-3 -bottom-3 flex justify-center items-center">
+                                    <div className={`absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-1 -bottom-12' : 'left-3 -bottom-3'} left-3 -bottom-3 flex justify-center items-center`}>
                                         <p className="text-gray-500 text-sm">{canvasSize.width / dpi} in </p>
                                         <ArrowLongRightIcon
                                             aria-hidden="true" className="h-[30px] w-8 text-gray-400"/>
