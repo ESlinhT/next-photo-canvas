@@ -72,6 +72,10 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
     });
 
     canvas.on('object:moving', (event) => {
+        if (disableHalf && gevent.target.left < canvas.getWidth() / 2) {
+            // Restrict the object to the right half
+            event.target.set({left: canvas.getWidth() / 2});
+        }
         handleObjectMoving(canvas, event.target, guidelines, setGuidelines)
     })
 
@@ -279,7 +283,7 @@ export const setupDragAndDrop = (canvasRef, canvas, disableHalf) => {
                     // Check if the object is being dragged into the left half
                     if (obj.left < canvasWidth / 2) {
                         // Restrict the object to the right half
-                        obj.set({ left: canvasWidth / 2 });
+                        obj.set({left: canvasWidth / 2});
                         canvas.renderAll();
                     }
                 });
