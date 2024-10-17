@@ -52,9 +52,9 @@ export default function Sidebar({path}) {
             id: 'size',
             name: 'Choose a Size',
             options: [
-                {value: {height: 6 * dpi, width: 4 * dpi}, label: '4x6'},
-                {value: {height: 7 * dpi, width: 5 * dpi}, label: '5x7'},
-                {value: {height: 10 * dpi, width: 12 * dpi}, label: '10x12'},
+                {value: {height: 6 * dpi, width: 4 * dpi}, label: '6x4'},
+                {value: {height: 7 * dpi, width: 5 * dpi}, label: '7x5'},
+                {value: {height: 12 * dpi, width: 10 * dpi}, label: '12x10'},
                 {value: {height: 5 * dpi, width: 5 * dpi}, label: '5x5'},
                 {value: {height: 8 * dpi, width: 8 * dpi}, label: '8x8'},
                 {value: {height: 10 * dpi, width: 10 * dpi}, label: '10x10'},

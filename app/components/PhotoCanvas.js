@@ -1,13 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {initializeCanvas, setupDragAndDrop, toggleBorder} from './CanvasControls';
-import {
-    deleteImage,
-    rotateCanvas,
-    flipCanvas, flipImage, enableCrop, applyCrop
-} from '../utils/ImageUtils';
+import {deleteImage, rotateCanvas, flipImage, enableCrop, applyCrop, addText} from '../utils/ImageUtils';
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
-export default function PhotoCanvas({images, path = "photos", index}) {
+export default function PhotoCanvas({images, path = "photos", disableHalf = false}) {
     const {primaryBorder, secondaryBorder, canvasSize, selectedPhoto, setSelectedPhoto} = useCanvasOptionsContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -24,8 +20,8 @@ export default function PhotoCanvas({images, path = "photos", index}) {
     });
 
     useEffect(() => {
-        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path);
-        const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas);
+        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf);
+        const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
 
         return () => {
             cleanupDragAndDrop();
@@ -54,28 +50,31 @@ export default function PhotoCanvas({images, path = "photos", index}) {
 
     return (
         <div className="relative">
-            {/*<div className="vertical-text absolute -left-10 bottom-0">*/}
-            {/*    Vertical Text*/}
-            {/*</div>*/}
-            <div className={`flex flex-col items-center ${path === 'photos' ? 'h-[100vh]' : ''}`}>
+            <div className="flex flex-col items-center">
                 {path === 'photobooks' && <>
                     <div className="flex my-5 mb-10">
-                        <button onClick={() => flipImage( 'horizontal', canvas)} disabled={!selectedImage}
-                                className="px-4 py-2 bg-blue-900 text-white disabled:opacity-20">
+                        <button onClick={() => addText(canvas)}
+                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20">
+                            Add Text
+                        </button>
+                        <button onClick={() => flipImage('horizontal', canvas)} disabled={!selectedImage}
+                                className="px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20">
                             Flip Horizontal
                         </button>
-                        <button onClick={() => flipImage( 'vertical', canvas)} disabled={!selectedImage}
+                        <button onClick={() => flipImage('vertical', canvas)} disabled={!selectedImage}
                                 className="px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20">
                             Flip Vertical
                         </button>
                         <button
                             onClick={() => enableCrop(selectedImage, isCropping, setIsCropping, canvas, croppedObject, setCroppedObject)}
-                            disabled={!selectedImage} className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20">
+                            disabled={!selectedImage}
+                            className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20">
                             Crop Image
                         </button>
                         <button
                             onClick={() => applyCrop(croppedObject, selectedImage, croppedDimensions, canvas, setCroppedObject, setIsCropping)}
-                            disabled={!selectedImage} className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20">
+                            disabled={!selectedImage}
+                            className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20">
                             Apply Crop
                         </button>
                     </div>
@@ -83,8 +82,12 @@ export default function PhotoCanvas({images, path = "photos", index}) {
                 }
                 {path === 'photos' && <>
                     <div className="flex my-5 mb-10">
+                        <button onClick={() => addText(canvas)}
+                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20">
+                            Add Text
+                        </button>
                         <button onClick={() => flipImage('horizontal', canvas)} disabled={!selectedPhoto}
-                                className="px-4 py-2 bg-blue-900 text-white disabled:opacity-20">
+                                className="px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20">
                             Flip Horizontal
                         </button>
                         <button onClick={() => flipImage('vertical', canvas)} disabled={!selectedPhoto}
@@ -102,11 +105,15 @@ export default function PhotoCanvas({images, path = "photos", index}) {
                 }
                 {path === 'photobookcover' && <>
                     <div className="flex my-5 mb-10">
-                        WIP: need to add text and color options
+                        <button onClick={() => addText(canvas)}
+                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20">
+                            Add Text
+                        </button>
                     </div>
                 </>}
 
                 <div className="relative bg-white pb-5">
+                    {path === 'photobooks' && <div className={`${canvasSize.height === canvasSize.width ? 'h-[97%]' : 'h-[97.5%]'} w-[2px] bg-gray-600 opacity-30 z-50 absolute right-[50%]`} />}
                     <canvas ref={canvasRef}></canvas>
                 </div>
                 {selectedPhoto &&

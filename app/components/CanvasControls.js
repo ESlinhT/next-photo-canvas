@@ -1,19 +1,22 @@
 import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
 
-export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path) => {
+export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf) => {
     let canvasWidth;
+    let canvasHeight;
     switch (path) {
-        case "photobooks":
         case "photos":
             canvasWidth = canvasSize?.width;
+            canvasHeight = canvasSize?.height;
             break;
+        case "photobooks":
         case "photobookcover":
-            canvasWidth = canvasSize?.width * 2.1;
+            canvasWidth = 1200;
+            canvasHeight = canvasSize?.width === canvasSize?.height ? 600 : 800;
     }
     const canvas = new fabric.Canvas(canvasRef.current, {
         width: canvasWidth,
-        height: canvasSize.height,
+        height: canvasHeight,
         backgroundColor: '#fff',
         selection: true,
     });
@@ -22,14 +25,42 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
         const line1 = new fabric.Line([canvas.width / 2 - 25, 0, canvas.width / 2 - 25, canvas.height], {
             strokeDashArray: [5, 5],
             stroke: 'black',
+            selectable: false
         });
 
         const line2 = new fabric.Line([canvas.width / 2 + 25, 0, canvas.width / 2 + 25, canvas.height], {
             strokeDashArray: [5, 5],
             stroke: 'black',
+            selectable: false
         });
 
         canvas.add(line1, line2);
+    }
+
+    if (disableHalf) {
+        canvas.on('mouse:down', (options) => {
+            const pointer = canvas.getPointer(options.e);
+            if (pointer.x < canvas.width / 2) {
+                canvas.discardActiveObject();
+                canvas.renderAll();
+            }
+        });
+
+        const boldText = new fabric.Text('Inside Cover', {
+            left: canvas.getWidth() / 5.1, // Center on left half
+            top: canvas.getHeight() / 2.5, // Center vertically
+            fontSize: 20,
+            fontWeight: 'bold',
+            selectable: false
+        });
+        const text = new fabric.Text('Note: This must remain empty', {
+            left: canvas.getWidth() / 6, // Center on left half
+            top: canvas.getHeight() / 2.25, // Center vertically
+            fontSize: 15,
+            selectable: false
+        });
+
+        canvas.add(boldText, text);
     }
 
     canvas.on('selection:created', (e) => {
@@ -42,6 +73,7 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
 
     canvas.on('object:moving', (event) => {
         handleObjectMoving(canvas, event.target, guidelines, setGuidelines)
+        canvas.bringObjectForward(canvas._objects[0])
     })
 
     canvas.on('object:modified', (event) => {
@@ -190,11 +222,7 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
             enclose(canvas, img);
         }
 
-        function onMouseUp(opt) {
-            // const {
-            //     x,
-            //     y
-            // } = opt.absolutePointer;
+        function onMouseUp() {
             canvas.setViewportTransform(canvas.viewportTransform);
             isDragging = false;
             canvas.selection = true;
@@ -208,36 +236,67 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
     return canvas;
 };
 
-export const setupDragAndDrop = (canvasRef, canvas) => {
-    const handleDrop = (e) => {
-        e.preventDefault();
-        const {offsetX, offsetY} = e;
-        const imageUrl = e.dataTransfer.getData('imageUrl');
+export const setupDragAndDrop = (canvasRef, canvas, disableHalf) => {
+        const canvasWidth = canvas.getWidth();
+        const handleDrop = (e) => {
+            e.preventDefault();
+            const {offsetX, offsetY} = e;
+            const imageUrl = e.dataTransfer.getData('imageUrl');
 
-        fabric.Image.fromURL(imageUrl).then((img) => {
-            img.set({
-                left: offsetX,
-                top: offsetY,
-                scaleX: 0.5,
-                scaleY: 0.5,
-                selectable: true,
-            });
-            canvas.add(img);
-            canvas.renderAll();
-        });
-    };
+            if (disableHalf) {
+                fabric.Image.fromURL(imageUrl).then((img) => {
+                    img.set({
+                        left: offsetX < (canvasWidth / 2) ? (canvasWidth / 2) : offsetX,
+                        top: offsetY,
+                        scaleX: 0.5,
+                        scaleY: 0.5,
+                        selectable: true,
+                    });
+                    canvas.add(img);
+                    canvas.renderAll();
+                });
+            } else {
+                fabric.Image.fromURL(imageUrl).then((img) => {
+                    img.set({
+                        left: offsetX,
+                        top: offsetY,
+                        scaleX: 0.5,
+                        scaleY: 0.5,
+                        selectable: true,
+                    });
+                    canvas.add(img);
+                    canvas.renderAll();
+                });
+            }
+        };
 
-    const handleDragOver = (e) => e.preventDefault();
+        const handleDragOver = (e) => {
+            e.preventDefault();
+            if (disableHalf) {
+                canvas.on('object:moving', (event) => {
+                    const obj = event.target;
+                    const canvasWidth = canvas.getWidth();
 
-    const canvasContainer = canvasRef.current.parentElement;
-    canvasContainer.addEventListener('drop', handleDrop);
-    canvasContainer.addEventListener('dragover', handleDragOver);
+                    // Check if the object is being dragged into the left half
+                    if (obj.left < canvasWidth / 2) {
+                        // Restrict the object to the right half
+                        obj.set({ left: canvasWidth / 2 });
+                        canvas.renderAll();
+                    }
+                });
+            }
+        }
 
-    return () => {
-        canvasContainer.removeEventListener('drop', handleDrop);
-        canvasContainer.removeEventListener('dragover', handleDragOver);
-    };
-};
+        const canvasContainer = canvasRef.current.parentElement;
+        canvasContainer.addEventListener('drop', handleDrop);
+        canvasContainer.addEventListener('dragover', handleDragOver);
+
+        return () => {
+            canvasContainer.removeEventListener('drop', handleDrop);
+            canvasContainer.removeEventListener('dragover', handleDragOver);
+        };
+    }
+;
 
 export const toggleBorder = (primaryBorder, secondaryBorder, canvas) => {
     const border = document.querySelector('.lower-canvas');

@@ -1,15 +1,18 @@
 'use client'
 
 import React from "react";
-import PhotoCanvas from "../components/PhotoCanvas";
+import PhotoCanvas from "@/app/components/PhotoCanvas";
 import Sidebar from "@/app/components/Sidebar";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
 import AuthCheck from "@/app/components/AuthCheck";
 import UserMenu from "@/app/components/UserMenu";
 import Loading from "@/app/components/Loading";
+import {ArrowLongDownIcon, ArrowLongRightIcon} from "@heroicons/react/16/solid";
+import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
 export default function Images() {
     const {user, loading} = useGlobalContext();
+    const {canvasSize, dpi} = useCanvasOptionsContext();
 
     if (loading) {
         return <Loading/>;
@@ -32,8 +35,21 @@ export default function Images() {
                         </div>
 
                         <main className="py-2">
-                            <div className="flex ml-[250px] justify-center ">
-                                <PhotoCanvas path="photos" />
+                            <div className="ml-[250px] flex flex-col justify-center items-center">
+                                <div className="my-1 p-2 relative w-fit">
+                                    <div
+                                        className="vertical-text absolute -left-8 bottom-8 flex justify-center items-center">
+                                        <p className="text-gray-500 text-sm">{canvasSize.height / dpi} in </p>
+                                        <ArrowLongDownIcon
+                                            aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>
+                                    </div>
+                                    <PhotoCanvas path="photos"/>
+                                    <div className="absolute left-3 -bottom-3 flex justify-center items-center">
+                                        <p className="text-gray-500 text-sm">{canvasSize.width / dpi} in </p>
+                                        <ArrowLongRightIcon
+                                            aria-hidden="true" className="h-[30px] w-8 text-gray-400"/>
+                                    </div>
+                                </div>
                             </div>
                         </main>
                     </div>

@@ -52,29 +52,6 @@ export const enableCrop = (selectedImage, isCropping, setIsCropping, canvas, cro
     }
 };
 
-// export const enableCanvasCrop = (isCropping, setIsCropping, canvas, croppedObject, setCroppedObject) => {
-//     if (canvas && !isCropping) {
-//         setIsCropping(true)
-//         const newObject = new fabric.Rect({
-//             left: canvas.left,
-//             top: canvas.top,
-//             width: canvas.width,
-//             height: canvas.height,
-//             fill: 'rgba(255,255,255,0.3)',
-//             strokeDashArray: [5, 5],
-//             selectable: true,
-//         });
-//
-//         setCroppedObject(newObject);
-//         canvas?.add(newObject);
-//         canvas?.setActiveObject(newObject);
-//         canvas?.renderAll();
-//     } else {
-//         canvas?.remove(croppedObject);
-//         setIsCropping(false)
-//     }
-// };
-
 export const applyCrop = (croppedObject, selectedImage, croppedDimensions, canvas, setCroppedObject, setIsCropping) => {
     if (croppedObject && selectedImage) {
         croppedObject.set({fill: null});
@@ -97,29 +74,6 @@ export const applyCrop = (croppedObject, selectedImage, croppedDimensions, canva
     }
 };
 
-// export const applyCanvasCrop = (croppedObject, croppedDimensions, canvas, setCroppedObject, setIsCropping) => {
-//     if (croppedObject) {
-//         croppedObject.set({fill: null});
-//         const croppedImageDataURL = canvas.toDataURL({
-//             left: croppedDimensions.left,
-//             top: croppedDimensions.top,
-//             width: croppedDimensions.width,
-//             height: croppedDimensions.height,
-//         });
-//
-//         fabric.Image.fromURL(croppedImageDataURL).then((croppedImg) => {
-//             croppedImg.scaleX = canvas?.width / croppedImg.width;
-//             croppedImg.scaleY = canvas?.height / croppedImg.height;
-//
-//             canvas.remove(croppedObject);
-//             setCroppedObject(null);
-//             setIsCropping(false);
-//             canvas?.set('backgroundImage', croppedImg);
-//             canvas?.renderAll()
-//         });
-//     }
-// };
-
 export const deleteImage = (canvas, selectedImage, setSelectedImage, selectedPhoto, setSelectedPhoto) => {
     const handleKeyDown = (event) => {
         if ((event.key === 'Delete' || event.key === 'Backspace' || event.key === 'd') && selectedImage) {
@@ -141,3 +95,21 @@ export const deleteImage = (canvas, selectedImage, setSelectedImage, selectedPho
         window.removeEventListener('keydown', handleKeyDown);
     };
 }
+
+export const addText = (canvas) => {
+    // WIP
+    // const text = new fabric.IText("Add Text", {
+    //     left: canvas.getWidth() / 2,
+    //     top: canvas.getHeight() / 2,
+    //     fontSize: 20,
+    //     fontFamily: "Arial",
+    //     fill: "black",
+    //     originX: "center",
+    //     hasRotatingPoint: false,
+    // });
+    // canvas.add(text);
+    // canvas.setActiveObject(text);
+    // text.enterEditing();
+    // text.selectAll();
+    // canvas.renderAll();
+};
