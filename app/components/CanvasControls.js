@@ -73,7 +73,6 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
 
     canvas.on('object:moving', (event) => {
         handleObjectMoving(canvas, event.target, guidelines, setGuidelines)
-        canvas.bringObjectForward(canvas._objects[0])
     })
 
     canvas.on('object:modified', (event) => {

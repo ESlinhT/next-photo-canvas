@@ -24,7 +24,6 @@ export const rotateCanvas = (canvas) => {
     if (activeObject) {
         activeObject.set('scaleX', canvas.getWidth() / activeObject.width);
         activeObject.set('scaleY', canvas.getHeight() / activeObject.height);
-
     }
     canvas.renderAll()
 }
@@ -74,11 +73,16 @@ export const applyCrop = (croppedObject, selectedImage, croppedDimensions, canva
     }
 };
 
-export const deleteImage = (canvas, selectedImage, setSelectedImage, selectedPhoto, setSelectedPhoto) => {
+export const deleteImage = (canvas, selectedObject, setSelectedImage, selectedPhoto, setSelectedPhoto) => {
+    let ableToDelete = true;
+
+    selectedObject?.on('mousedblclick', () => {
+        ableToDelete = false;
+    });
     const handleKeyDown = (event) => {
-        if ((event.key === 'Delete' || event.key === 'Backspace' || event.key === 'd') && selectedImage) {
-            if (selectedImage) {
-                canvas.remove(selectedImage);
+        if ((event.key === 'Delete' || event.key === 'Backspace' || event.key === 'd') && (selectedObject?.objectType !== 'textbox' || selectedObject?.objectType === 'textbox' && ableToDelete)) {
+            if (selectedObject) {
+                canvas.remove(selectedObject);
                 canvas.requestRenderAll();
                 setSelectedImage(null);
             }
@@ -97,19 +101,15 @@ export const deleteImage = (canvas, selectedImage, setSelectedImage, selectedPho
 }
 
 export const addText = (canvas) => {
-    // WIP
-    // const text = new fabric.IText("Add Text", {
-    //     left: canvas.getWidth() / 2,
-    //     top: canvas.getHeight() / 2,
-    //     fontSize: 20,
-    //     fontFamily: "Arial",
-    //     fill: "black",
-    //     originX: "center",
-    //     hasRotatingPoint: false,
-    // });
-    // canvas.add(text);
-    // canvas.setActiveObject(text);
-    // text.enterEditing();
-    // text.selectAll();
-    // canvas.renderAll();
+    const text = new fabric.Textbox("Add Text", {
+        left: canvas?.getWidth() / 2,
+        top: canvas?.getHeight() / 2,
+        fontSize: 20,
+        fontFamily: "Arial",
+        fill: "black",
+        objectType: 'textbox'
+    });
+    canvas?.add(text);
+    canvas?.setActiveObject(text);
+    canvas?.renderAll();
 };
