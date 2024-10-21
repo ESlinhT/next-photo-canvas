@@ -22,13 +22,13 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
     });
 
     if (path === 'photobookcover') {
-        const line1 = new fabric.Line([canvas.width / 2 - 25, 0, canvas.width / 2 - 25, canvas.height], {
+        const line1 = new fabric.Line([canvas.width / 2 - 15, 0, canvas.width / 2 - 15, canvas.height], {
             strokeDashArray: [5, 5],
             stroke: 'black',
-            selectable: false
+            selectable: false,
         });
 
-        const line2 = new fabric.Line([canvas.width / 2 + 25, 0, canvas.width / 2 + 25, canvas.height], {
+        const line2 = new fabric.Line([canvas.width / 2 + 15, 0, canvas.width / 2 + 15, canvas.height], {
             strokeDashArray: [5, 5],
             stroke: 'black',
             selectable: false
@@ -321,3 +321,60 @@ export const toggleBorder = (primaryBorder, secondaryBorder, canvas) => {
         border.style.height = `${canvas?.height}px`;
     }
 }
+
+export const toggleBookCoverColor = (canvas, color) => {
+    fabric.Image.fromURL(color.src).then((img) => {
+        img.scaleToWidth(canvas?.width);
+        img.scaleToHeight(canvas?.height);
+        canvas?.set('backgroundImage', img);
+        canvas?.renderAll()
+    });
+}
+
+export const addText = (canvas) => {
+    const text = new fabric.Textbox("Add Text", {
+        left: canvas?.getWidth() / 2,
+        top: canvas?.getHeight() / 2,
+        fontSize: 20,
+        fontFamily: "Arial",
+        fill: "black",
+    });
+    canvas?.add(text);
+    canvas?.setActiveObject(text);
+    canvas?.renderAll();
+};
+
+export const displayBookCoverText = (canvas, text, bookCoverColor) => {
+    removeAllTextObjects(canvas);
+
+    const mainText = new fabric.Text(text, {
+        fontSize: 50,
+        fontFamily: 'Arial',
+        fill: 'rgb(209 213 219)',
+        top: canvas?.height / 2,
+        left: canvas?.width * 0.75,
+        selectable: false,
+        originX: 'center',
+        originY: 'center',
+        textAlign: 'center',
+        shadow: new fabric.Shadow({
+            color: 'rgba(0, 0, 0, 0.8)',
+            offsetX: -1,
+            offsetY: -1,
+            blur: 3,
+        }),
+    });
+
+    canvas?.add(mainText);
+    canvas?.renderAll();
+}
+
+const removeAllTextObjects = (canvas) => {
+    const textObjects = canvas.getObjects().filter(obj =>
+        obj.type === 'text' || obj.type === 'i-text' || obj.type === 'textbox'
+    );
+
+    textObjects.forEach(textObj => canvas.remove(textObj));
+
+    canvas.renderAll();
+};

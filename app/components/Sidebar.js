@@ -15,6 +15,7 @@ import {
 import {MinusIcon, PlusIcon} from "@heroicons/react/16/solid";
 import {ColorPicker, useColor} from "react-color-palette";
 import "react-color-palette/css";
+import ReusableDialog from "@/app/components/ReusableDialog";
 
 
 export default function Sidebar({path}) {
@@ -90,10 +91,10 @@ export default function Sidebar({path}) {
     }
 
     return (
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-58 lg:flex-col">
+        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
             <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 pb-4">
                 <div className="flex h-16 shrink-0 items-center justify-center w-full">
-                    <p className="text-white font-bold text-3xl uppercase">{path}</p>
+                    <p className="text-white font-bold text-2xl uppercase">{path}</p>
                 </div>
                 <nav className="flex flex-1 flex-col px-6">
                     <ul className="flex flex-1 flex-col gap-y-7">
@@ -104,7 +105,7 @@ export default function Sidebar({path}) {
                                     <h3 className="-mx-2 -my-3 flow-root">
                                         <DisclosureButton
                                             className="group flex w-full items-center justify-between bg-transparent px-2 py-3 text-white hover:text-gray-500">
-                                            <span className="font-medium">{section.name}</span>
+                                            <span className="font-medium text-sm">{section.name}</span>
                                             <span className="ml-6 flex items-center">
                                               <PlusIcon aria-hidden="true"
                                                         className="h-5 w-5 group-data-[open]:hidden"/>
@@ -153,7 +154,7 @@ export default function Sidebar({path}) {
                                     <div {...getRootProps()}
                                          className="border border-gray-200 p-2 cursor-pointer text-center text-white font-bold uppercase hover:bg-gray-400">
                                         <input {...getInputProps()} />
-                                        <p>Upload some images</p>
+                                        <p className="text-sm">Upload some images</p>
                                     </div>
                                     <div className="flex flex-col items-center overflow-y-scroll h-[75vh] mt-4">
                                         {images.length ? images.map((url, index) => (
@@ -166,70 +167,37 @@ export default function Sidebar({path}) {
                                                 draggable={true}
                                                 onDragStart={(e) => e.dataTransfer.setData('imageUrl', url)}
                                             />
-                                        )) : <p className="text-white text-center">There are no images</p>}
+                                        )) : <p className="text-white text-center text-sm">There are no images</p>}
                                     </div>
                                 </div>
                             </ul>
                         </li>
                     </ul>
                 </nav>
-                <Dialog open={open} onClose={setOpen} className="relative z-10">
-                    <DialogBackdrop
-                        transition
-                        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
-                    />
-
-                    <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                        <div
-                            className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                            <DialogPanel
-                                transition
-                                className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-lg sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
-                            >
-                                <div>
-                                    <div className="mt-3 text-center sm:mt-5">
-                                        <DialogTitle as="h3"
-                                                     className="text-base font-semibold leading-6 text-gray-900 uppercase">
-                                            {isGradient ? 'Choose your colors' : 'Choose a color'}
-                                        </DialogTitle>
-                                        <div className="mt-2 flex justify-center gap-5">
-                                            <ColorPicker
-                                                hideInput={["rgb", "hsv"]}
-                                                color={color}
-                                                onChange={setColor}
-                                                onChangeComplete={onChangeComplete}
-                                            />
-                                            {isGradient &&
-                                                <ColorPicker
-                                                    hideInput={["rgb", "hsv"]}
-                                                    color={secondColor}
-                                                    onChange={setSecondColor}
-                                                    onChangeComplete={onSecondChangeComplete}
-                                                />}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                                    <button
-                                        type="button"
-                                        onClick={handleBorderConfirm}
-                                        className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                                    >
-                                        Confirm
-                                    </button>
-                                    <button
-                                        type="button"
-                                        data-autofocus=""
-                                        onClick={handleClearBorders}
-                                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            </DialogPanel>
-                        </div>
+                <ReusableDialog
+                    open={open}
+                    setOpen={setOpen}
+                    title={isGradient ? 'Choose your colors' : 'Choose a color'}
+                    handleConfirm={handleBorderConfirm}
+                    handleCancel={handleClearBorders}
+                >
+                    <div className="flex justify-center gap-5">
+                        <ColorPicker
+                            hideInput={["rgb", "hsv"]}
+                            color={color}
+                            onChange={setColor}
+                            onChangeComplete={onChangeComplete}
+                        />
+                        {isGradient && (
+                            <ColorPicker
+                                hideInput={["rgb", "hsv"]}
+                                color={secondColor}
+                                onChange={setSecondColor}
+                                onChangeComplete={onSecondChangeComplete}
+                            />
+                        )}
                     </div>
-                </Dialog>
+                </ReusableDialog>
             </div>
         </div>
     )

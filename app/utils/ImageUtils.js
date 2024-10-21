@@ -80,7 +80,7 @@ export const deleteImage = (canvas, selectedObject, setSelectedImage, selectedPh
         ableToDelete = false;
     });
     const handleKeyDown = (event) => {
-        if ((event.key === 'Delete' || event.key === 'Backspace' || event.key === 'd') && (selectedObject?.objectType !== 'textbox' || selectedObject?.objectType === 'textbox' && ableToDelete)) {
+        if ((event.key === 'Delete' || event.key === 'Backspace' || event.key === 'd') && (selectedObject?.type !== 'textbox' || selectedObject?.objectType === 'textbox' && ableToDelete)) {
             if (selectedObject) {
                 canvas.remove(selectedObject);
                 canvas.requestRenderAll();
@@ -99,17 +99,3 @@ export const deleteImage = (canvas, selectedObject, setSelectedImage, selectedPh
         window.removeEventListener('keydown', handleKeyDown);
     };
 }
-
-export const addText = (canvas) => {
-    const text = new fabric.Textbox("Add Text", {
-        left: canvas?.getWidth() / 2,
-        top: canvas?.getHeight() / 2,
-        fontSize: 20,
-        fontFamily: "Arial",
-        fill: "black",
-        objectType: 'textbox'
-    });
-    canvas?.add(text);
-    canvas?.setActiveObject(text);
-    canvas?.renderAll();
-};

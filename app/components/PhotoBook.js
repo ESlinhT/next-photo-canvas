@@ -5,7 +5,7 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
 export default function PhotoBook() {
     const {canvasSize, dpi} = useCanvasOptionsContext();
-    const [pages, setPages] = useState([[]]);
+    const [pages, setPages] = useState([[], []]);
     const addNewPage = () => {
         setPages([...pages, []])
     }

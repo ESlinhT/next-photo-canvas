@@ -35,7 +35,7 @@ export default function Images() {
                         </div>
 
                         <main className="py-2">
-                            <div className="ml-[250px] flex flex-col justify-center items-center">
+                            <div className="ml-[14rem] flex flex-col justify-center items-center">
                                 <div className="my-1 p-2 relative w-fit">
                                     <div
                                         className={`vertical-text absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-12 bottom-0' : '-left-8 bottom-8'} flex justify-center items-center`}>

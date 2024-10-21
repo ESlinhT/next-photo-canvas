@@ -1,9 +1,14 @@
 'use client'
 
 import {createContext, useContext, useState} from "react";
-import blackFrame from "@/app/assets/black-frame.png";
-import goldFrame from "@/app/assets/gold-frame.png";
-import silverFrame from "@/app/assets/silver-frame.png";
+
+import creme from "@/app/assets/creme-linen.jpeg";
+import beige from "@/app/assets/beige-linen.jpeg";
+import blue from "@/app/assets/blue-linen.jpeg";
+import black from "@/app/assets/black-linen.jpeg";
+import gray from "@/app/assets/gray-linen.jpg";
+import green from "@/app/assets/green-linen.jpeg";
+import red from "@/app/assets/red-linen.jpg";
 
 const CanvasOptionsContext = createContext();
 
@@ -18,10 +23,36 @@ const CanvasOptionsProvider = ({children}) => {
         height: 7 * dpi,
         width: 5 * dpi,
     });
-    const frames = [
-        blackFrame,
-        goldFrame,
-        silverFrame
+
+    const bookCoverColors = [
+        {
+            name: 'black',
+            src: black.src,
+        },
+        {
+            name: 'red',
+            src: red.src,
+        },
+        {
+            name: 'blue',
+            src: blue.src,
+        },
+        {
+            name: 'green',
+            src: green.src,
+        },
+        {
+            name: 'gray',
+            src: gray.src,
+        },
+        {
+            name: 'beige',
+            src: beige.src,
+        },
+        {
+            name: 'creme',
+            src: creme.src,
+        },
     ];
 
     return (
@@ -31,12 +62,12 @@ const CanvasOptionsProvider = ({children}) => {
                 setPrimaryBorder,
                 secondaryBorder,
                 setSecondaryBorder,
-                frames,
                 dpi,
                 canvasSize,
                 setCanvasSize,
                 selectedPhoto,
-                setSelectedPhoto
+                setSelectedPhoto,
+                bookCoverColors
             }}
         >
             {children}

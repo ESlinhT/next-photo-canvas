@@ -1,16 +1,34 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {initializeCanvas, setupDragAndDrop, toggleBorder} from './CanvasControls';
-import {deleteImage, rotateCanvas, flipImage, enableCrop, applyCrop, addText} from '../utils/ImageUtils';
+import {initializeCanvas, setupDragAndDrop, toggleBookCoverColor, toggleBorder, addText, displayBookCoverText} from './CanvasControls';
+import {
+    deleteImage,
+    rotateCanvas,
+    flipImage,
+    enableCrop,
+    applyCrop,
+} from '../utils/ImageUtils';
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
+import ReusableDialog from "@/app/components/ReusableDialog";
 
 export default function PhotoCanvas({images, path = "photos", disableHalf = false}) {
-    const {primaryBorder, secondaryBorder, canvasSize, selectedPhoto, setSelectedPhoto} = useCanvasOptionsContext();
+    const {
+        primaryBorder,
+        secondaryBorder,
+        canvasSize,
+        selectedPhoto,
+        setSelectedPhoto,
+        bookCoverColors
+    } = useCanvasOptionsContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [canvas, setCanvas] = useState(null);
     const [isCropping, setIsCropping] = useState(false);
     const [croppedObject, setCroppedObject] = useState(null);
     const [guidelines, setGuidelines] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [openBookCoverText, setOpenBookCoverText] = useState(false);
+    const [selectedBookCoverColor, setSelectedBookCoverColor] = useState({})
+    const [bookCoverText, setBookCoverText] = useState('');
 
     const [croppedDimensions, setCroppedDimensions] = useState({
         height: 0,
@@ -47,6 +65,23 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
             toggleBorder(primaryBorder, secondaryBorder, canvas);
         }
     }, [primaryBorder, secondaryBorder]);
+
+    useEffect(() => {
+        toggleBookCoverColor(canvas, selectedBookCoverColor);
+    }, [selectedBookCoverColor]);
+
+    const handleBookCoverBackgroundColorSelect = (color) => {
+        if (color === selectedBookCoverColor) {
+            setSelectedBookCoverColor({});
+        } else {
+            setSelectedBookCoverColor(color)
+        }
+    }
+
+    const handleBookCoverTextConfirm = () => {
+        displayBookCoverText(canvas, bookCoverText, selectedBookCoverColor.name);
+        setOpenBookCoverText(false)
+    }
 
     return (
         <div className="relative">
@@ -105,15 +140,21 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                 }
                 {path === 'photobookcover' && <>
                     <div className="flex my-5 mb-10">
-                        <button onClick={() => addText(canvas)}
+                        <button onClick={() => setOpenBookCoverText(true)}
                                 className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20">
-                            Add Text
+                            Cover Text
+                        </button>
+                        <button onClick={() => setOpen(true)}
+                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 ml-2">
+                            Cover Color
                         </button>
                     </div>
                 </>}
 
                 <div className="relative bg-white pb-5">
-                    {path === 'photobooks' && <div className={`${canvasSize.height === canvasSize.width ? 'h-[97%]' : 'h-[97.5%]'} w-[2px] bg-gray-600 opacity-30 z-50 absolute right-[50%]`} />}
+                    {path === 'photobooks' &&
+                        <div
+                            className={`${canvasSize.height === canvasSize.width ? 'h-[97%]' : 'h-[97.5%]'} w-[2px] bg-gray-600 opacity-30 z-50 absolute right-[50%]`}/>}
                     <canvas ref={canvasRef}></canvas>
                 </div>
                 {selectedPhoto &&
@@ -122,6 +163,39 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                     </p>}
 
             </div>
+            <ReusableDialog
+                open={open}
+                setOpen={setOpen}
+                title="Cover Color"
+                handleConfirm={() => setOpen(!open)}
+                handleCancel={() => setOpen(!open)}
+            >
+                <div className="grid grid-cols-3">
+                    {bookCoverColors.map((bookCoverColor, index) => (
+                        <div key={index}
+                             className={`flex flex-col items-center justify-center px-1 py-2 rounded-md ${bookCoverColor.src === selectedBookCoverColor ? 'border-2 border-indigo-200' : ''}`}>
+                            <button
+                                onClick={() => handleBookCoverBackgroundColorSelect(bookCoverColor)}
+                                className="h-[100px] w-[150px] rounded-md shadow-2xl book-cover-button"
+                                style={{backgroundImage: `url(${bookCoverColor.src})`}}
+                            />
+                            <span className="text-xs text-gray-600 pt-1">{bookCoverColor.name}</span>
+                        </div>
+                    ))}
+                </div>
+            </ReusableDialog>
+            <ReusableDialog
+                open={openBookCoverText}
+                setOpen={setOpenBookCoverText}
+                title="Cover Text"
+                handleConfirm={handleBookCoverTextConfirm}
+                handleCancel={() => setOpenBookCoverText(!openBookCoverText)}
+            >
+                <textarea
+                    value={bookCoverText}
+                    onChange={(e) => setBookCoverText(e.target.value)}
+                    className="w-full overflow-auto rounded-md p-1 resize-none whitespace-nowrap dialog-text-area text-center h-[126px]"></textarea>
+            </ReusableDialog>
         </div>
     );
 }
