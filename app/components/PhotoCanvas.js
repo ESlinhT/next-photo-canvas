@@ -38,14 +38,14 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
     });
 
     useEffect(() => {
-        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf);
+        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
 
         return () => {
             cleanupDragAndDrop();
             canvas.dispose();
         };
-    }, [images, canvasSize, selectedPhoto, path]);
+    }, [images, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder]);
 
     useEffect(() => {
         if (croppedObject) {
@@ -59,12 +59,6 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
     useEffect(() => {
         deleteImage(canvas, selectedImage, setSelectedImage, selectedPhoto, setSelectedPhoto)
     }, [canvas, selectedImage]);
-
-    useEffect(() => {
-        if (path !== 'photobookcover') {
-            toggleBorder(primaryBorder, secondaryBorder, canvas);
-        }
-    }, [primaryBorder, secondaryBorder]);
 
     useEffect(() => {
         toggleBookCoverColor(canvas, selectedBookCoverColor);

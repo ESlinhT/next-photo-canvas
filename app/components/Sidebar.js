@@ -53,10 +53,14 @@ export default function Sidebar({path}) {
             id: 'size',
             name: 'Choose a Size',
             options: [
+                // {value: {height: 4 * dpi, width: 6 * dpi}, label: '4x6'},
                 {value: {height: 6 * dpi, width: 4 * dpi}, label: '6x4'},
+                // {value: {height: 5 * dpi, width: 7 * dpi}, label: '5x7'},
                 {value: {height: 7 * dpi, width: 5 * dpi}, label: '7x5'},
+                // {value: {height: 10 * dpi, width: 12 * dpi}, label: '10x12'},
                 {value: {height: 12 * dpi, width: 10 * dpi}, label: '12x10'},
                 {value: {height: 5 * dpi, width: 5 * dpi}, label: '5x5'},
+                // {value: {height: 7 * dpi, width: 7 * dpi}, label: '7x7'},
                 {value: {height: 8 * dpi, width: 8 * dpi}, label: '8x8'},
                 {value: {height: 10 * dpi, width: 10 * dpi}, label: '10x10'},
             ],
@@ -101,7 +105,7 @@ export default function Sidebar({path}) {
                         <li>
                             {filters.map((section, index) => (
                                 <Disclosure key={section.id} as="div"
-                                            className={`${index === 0 ? '' : 'border-t border-gray-200'} relative px-4 py-6 ${path === 'photobooks' && section.id === 'border' ? 'hidden' : ''}`}>
+                                            className={`${index === 0 ? '' : 'border-t border-gray-200'} relative py-6 ${path === 'photobooks' && section.id === 'border' ? 'hidden' : ''}`}>
                                     <h3 className="-mx-2 -my-3 flow-root">
                                         <DisclosureButton
                                             className="group flex w-full items-center justify-between bg-transparent px-2 py-3 text-white hover:text-gray-500">
@@ -115,17 +119,17 @@ export default function Sidebar({path}) {
                                         </DisclosureButton>
                                     </h3>
                                     <DisclosurePanel className="pt-6">
-                                        <div className="flex flex-col items-center space-y-4">
+                                        <div className={`${section.id === 'border' ? 'flex flex-col' : 'grid grid-cols-2 gap-y-2'}`}>
                                             {section.options.map((option, optionIdx) => (
                                                 section.id === 'border'
                                                     ?
-                                                    <div key={optionIdx} className={`flex flex-col`}>
+                                                    <div key={optionIdx} className={`flex flex-col justify-center items-center`}>
                                                         <button
-                                                            className={`text-white border border-gray-200 px-4 py-1 hover:bg-gray-500 uppercase ${primaryBorder && !secondaryBorder ? 'bg-gray-500' : ''}`}
+                                                            className={`w-[120px] text-white border border-gray-200 px-4 py-1 hover:bg-gray-500 uppercase ${primaryBorder && !secondaryBorder ? 'bg-gray-500' : ''}`}
                                                             onClick={() => handleChooseBorderColor(false)}>Solid
                                                         </button>
                                                         <button
-                                                            className={`text-white border border-gray-200 px-4 py-1 hover:bg-gray-500 uppercase ${secondaryBorder ? 'bg-gray-500' : ''}`}
+                                                            className={`w-[120px] text-white border border-gray-200 px-4 py-1 hover:bg-gray-500 uppercase ${secondaryBorder ? 'bg-gray-500' : ''}`}
                                                             onClick={() => handleChooseBorderColor(true)}>Gradient
                                                         </button>
                                                         <button
@@ -135,11 +139,11 @@ export default function Sidebar({path}) {
                                                     </div>
                                                     :
                                                     <div key={option.label}
-                                                         className={`flex items-center w-full justify-center`}>
+                                                         className={`flex justify-center`}>
                                                         <button
                                                             onClick={() => setCanvasSize(option.value)}
                                                             id={`filter-mobile-${section.id}-${optionIdx}`}
-                                                            className={`border py-1 px-4 border-gray-300 text-white focus:ring-indigo-500 ${JSON.stringify(canvasSize) === JSON.stringify(option.value) ? 'bg-gray-500' : ''}`}
+                                                            className={`w-[60px] border border-gray-300 text-white focus:ring-indigo-500 ${JSON.stringify(canvasSize) === JSON.stringify(option.value) ? 'bg-gray-500' : ''}`}
                                                         >{option.label}</button>
                                                     </div>
                                             ))}

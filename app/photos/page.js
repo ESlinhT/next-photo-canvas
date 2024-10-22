@@ -44,7 +44,7 @@ export default function Images() {
                                             aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>
                                     </div>
                                     <PhotoCanvas path="photos"/>
-                                    <div className={`absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-1 -bottom-12' : 'left-3 -bottom-3'} left-3 -bottom-3 flex justify-center items-center`}>
+                                    <div className={`absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-1 -bottom-[45px]' : 'left-3 -bottom-3'} left-3 -bottom-3 flex justify-center items-center`}>
                                         <p className="text-gray-500 text-sm">{canvasSize.width / dpi} in </p>
                                         <ArrowLongRightIcon
                                             aria-hidden="true" className="h-[30px] w-8 text-gray-400"/>

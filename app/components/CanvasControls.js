@@ -1,7 +1,7 @@
 import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
 
-export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf) => {
+export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder) => {
     let canvasWidth;
     let canvasHeight;
     switch (path) {
@@ -82,6 +82,11 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
     canvas.on('object:modified', (event) => {
         clearGuideLines(canvas, event.target, guidelines, setGuidelines)
     })
+    console.log(path, primaryBorder)
+
+    if (path !== 'photobookcover' && primaryBorder) {
+        toggleBorder(primaryBorder, secondaryBorder, canvas);
+    }
 
     if (path === 'photos') {
         // Source: https://github.com/fabricjs/fabric.js/discussions/7052
@@ -303,6 +308,7 @@ export const setupDragAndDrop = (canvasRef, canvas, disableHalf) => {
 
 export const toggleBorder = (primaryBorder, secondaryBorder, canvas) => {
     const border = document.querySelector('.lower-canvas');
+    console.log(primaryBorder, secondaryBorder)
 
     if (primaryBorder) {
         border.style.border = `2em solid ${primaryBorder}`;
