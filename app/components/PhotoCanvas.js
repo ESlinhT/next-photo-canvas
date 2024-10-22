@@ -99,27 +99,38 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                 {path === 'photobooks' && <>
                     <div className="flex my-5 mb-10">
                         <button onClick={() => addText(canvas)}
-                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20">
+                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 w-[150px]">
                             Add Text
                         </button>
                         <button onClick={() => flipImage('horizontal', canvas)} disabled={!selectedImage}
-                                className="px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20">
-                            Flip Horizontal
+                                className="flex justify-center px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20 w-[150px]">
+                            <p className="mr-2">Flip</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
+                            </svg>
                         </button>
                         <button onClick={() => flipImage('vertical', canvas)} disabled={!selectedImage}
-                                className="px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20">
-                            Flip Vertical
+                                className="flex justify-center px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20 w-[150px]">
+                            <p className="mr-2">Flip</p>
+
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="size-6 rotate-90">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
+                            </svg>
                         </button>
                         <button
                             onClick={() => enableCrop(selectedImage, isCropping, setIsCropping, canvas, croppedObject, setCroppedObject)}
                             disabled={!selectedImage}
-                            className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20">
+                            className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20 w-[150px]">
                             Crop Image
                         </button>
                         <button
                             onClick={() => applyCrop(croppedObject, selectedImage, croppedDimensions, canvas, setCroppedObject, setIsCropping)}
                             disabled={!selectedImage}
-                            className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20">
+                            className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20 w-[150px]">
                             Apply Crop
                         </button>
                     </div>
@@ -128,21 +139,32 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                 {path === 'photos' && <>
                     <div className="flex my-5 mb-10">
                         <button onClick={() => addText(canvas)}
-                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20">
+                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 w-[100px]">
                             Add Text
                         </button>
                         <button onClick={() => flipImage('horizontal', canvas)} disabled={!selectedPhoto}
-                                className="px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20">
-                            Flip Horizontal
+                                className="flex justify-center px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20 w-[100px]">
+                            <p className="mr-2">Flip</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
+                            </svg>
                         </button>
                         <button onClick={() => flipImage('vertical', canvas)} disabled={!selectedPhoto}
-                                className="px-4 py-2 bg-blue-500 text-white mx-2 disabled:opacity-20">
-                            Flip Vertical
+                                className="flex justify-center px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20 w-[100px]">
+                            <p className="mr-2">Flip</p>
+
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="size-6 rotate-90">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
+                            </svg>
                         </button>
                         <button onClick={() => {
                             rotateCanvas(canvas);
                         }} disabled={!selectedPhoto}
-                                className="px-4 py-2 bg-blue-900 text-white disabled:opacity-20">
+                                className="px-4 py-2 bg-blue-900 ml-2 text-white disabled:opacity-20 w-[100px]">
                             Rotate
                         </button>
                     </div>
