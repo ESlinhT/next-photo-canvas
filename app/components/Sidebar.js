@@ -4,10 +4,6 @@ import React, {useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import {
-    Dialog,
-    DialogBackdrop,
-    DialogPanel,
-    DialogTitle,
     Disclosure,
     DisclosureButton,
     DisclosurePanel

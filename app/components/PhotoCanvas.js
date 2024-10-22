@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {initializeCanvas, setupDragAndDrop, toggleBookCoverColor, toggleBorder, addText, displayBookCoverText} from './CanvasControls';
+import {initializeCanvas, setupDragAndDrop, toggleBookCoverColor, addText, displayBookCoverText} from './CanvasControls';
 import {
     deleteImage,
     rotateCanvas,
@@ -9,6 +9,7 @@ import {
 } from '../utils/ImageUtils';
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import ReusableDialog from "@/app/components/ReusableDialog";
+import {useGlobalContext} from "@/app/context/GlobalProvider";
 
 export default function PhotoCanvas({images, path = "photos", disableHalf = false}) {
     const {
@@ -19,6 +20,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
         setSelectedPhoto,
         bookCoverColors
     } = useCanvasOptionsContext();
+    const {saveProject} = useGlobalContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [canvas, setCanvas] = useState(null);
@@ -40,29 +42,43 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
     useEffect(() => {
         const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
+        toggleBookCoverColor(canvas, selectedBookCoverColor);
 
-        return () => {
-            cleanupDragAndDrop();
-            canvas.dispose();
-        };
-    }, [images, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder]);
-
-    useEffect(() => {
         if (croppedObject) {
             croppedObject.on('modified', () => {
                 const {top, left, width, height} = croppedObject.getBoundingRect();
                 setCroppedDimensions({top, left, width, height});
             });
         }
-    }, [croppedObject]);
+
+        return () => {
+            cleanupDragAndDrop();
+            canvas.dispose();
+        };
+    }, [images, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, selectedBookCoverColor, croppedObject, guidelines, canvasSize, disableHalf]);
+
+    // useEffect(() => {
+    //     if (croppedObject) {
+    //         croppedObject.on('modified', () => {
+    //             const {top, left, width, height} = croppedObject.getBoundingRect();
+    //             setCroppedDimensions({top, left, width, height});
+    //         });
+    //     }
+    // }, [croppedObject]);
 
     useEffect(() => {
         deleteImage(canvas, selectedImage, setSelectedImage, selectedPhoto, setSelectedPhoto)
     }, [canvas, selectedImage]);
 
+    // useEffect(() => {
+    //     toggleBookCoverColor(canvas, selectedBookCoverColor);
+    // }, [selectedBookCoverColor]);
+
     useEffect(() => {
-        toggleBookCoverColor(canvas, selectedBookCoverColor);
-    }, [selectedBookCoverColor]);
+        if (saveProject) {
+            console.log(canvas)
+        }
+    }, [saveProject]);
 
     const handleBookCoverBackgroundColorSelect = (color) => {
         if (color === selectedBookCoverColor) {
@@ -148,7 +164,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                 <div className="relative bg-white pb-5">
                     {path === 'photobooks' &&
                         <div
-                            className={`${canvasSize.height === canvasSize.width ? 'h-[97%]' : 'h-[97.5%]'} w-[2px] bg-gray-600 opacity-30 z-50 absolute right-[50%]`}/>}
+                            className={`${canvasSize.height === canvasSize.width ? 'h-[97%]' : 'h-[97.5%]'} w-[2px] bg-gray-600 opacity-30 z-30 absolute right-[50%]`}/>}
                     <canvas ref={canvasRef}></canvas>
                 </div>
                 {selectedPhoto &&

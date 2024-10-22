@@ -82,7 +82,6 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
     canvas.on('object:modified', (event) => {
         clearGuideLines(canvas, event.target, guidelines, setGuidelines)
     })
-    console.log(path, primaryBorder)
 
     if (path !== 'photobookcover' && primaryBorder) {
         toggleBorder(primaryBorder, secondaryBorder, canvas);
@@ -308,7 +307,6 @@ export const setupDragAndDrop = (canvasRef, canvas, disableHalf) => {
 
 export const toggleBorder = (primaryBorder, secondaryBorder, canvas) => {
     const border = document.querySelector('.lower-canvas');
-    console.log(primaryBorder, secondaryBorder)
 
     if (primaryBorder) {
         border.style.border = `2em solid ${primaryBorder}`;
@@ -331,8 +329,8 @@ export const toggleBorder = (primaryBorder, secondaryBorder, canvas) => {
 export const toggleBookCoverColor = (canvas, color) => {
     toggleLineColors(canvas, color.name);
     fabric.Image.fromURL(color.src).then((img) => {
-        img.scaleToWidth(canvas?.width);
-        img.scaleToHeight(canvas?.height);
+        img.scaleToWidth(1200);
+        img.scaleToHeight(1200);
         canvas?.set('backgroundImage', img);
         canvas?.renderAll()
     });
