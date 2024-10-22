@@ -6,7 +6,7 @@ import creme from "@/app/assets/creme-linen.jpeg";
 import beige from "@/app/assets/beige-linen.jpeg";
 import blue from "@/app/assets/blue-linen.jpeg";
 import black from "@/app/assets/black-linen.jpeg";
-import gray from "@/app/assets/gray-linen.jpg";
+import gray from "@/app/assets/gray-linen.jpeg";
 import green from "@/app/assets/green-linen.jpeg";
 import red from "@/app/assets/red-linen.jpg";
 

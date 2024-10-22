@@ -23,13 +23,13 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
 
     if (path === 'photobookcover') {
         const line1 = new fabric.Line([canvas.width / 2 - 15, 0, canvas.width / 2 - 15, canvas.height], {
-            strokeDashArray: [5, 5],
+            strokeDashArray: [3, 3],
             stroke: 'black',
             selectable: false,
         });
 
         const line2 = new fabric.Line([canvas.width / 2 + 15, 0, canvas.width / 2 + 15, canvas.height], {
-            strokeDashArray: [5, 5],
+            strokeDashArray: [3, 3],
             stroke: 'black',
             selectable: false
         });
@@ -47,15 +47,15 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
         });
 
         const boldText = new fabric.Text('Inside Cover', {
-            left: canvas.getWidth() / 5.1, // Center on left half
-            top: canvas.getHeight() / 2.5, // Center vertically
+            left: canvas.getWidth() / 5.1,
+            top: canvas.getHeight() / 2.5,
             fontSize: 20,
             fontWeight: 'bold',
             selectable: false
         });
         const text = new fabric.Text('Note: This must remain empty', {
-            left: canvas.getWidth() / 6, // Center on left half
-            top: canvas.getHeight() / 2.25, // Center vertically
+            left: canvas.getWidth() / 6,
+            top: canvas.getHeight() / 2.25,
             fontSize: 15,
             selectable: false
         });
@@ -323,6 +323,7 @@ export const toggleBorder = (primaryBorder, secondaryBorder, canvas) => {
 }
 
 export const toggleBookCoverColor = (canvas, color) => {
+    toggleLineColors(canvas, color.name);
     fabric.Image.fromURL(color.src).then((img) => {
         img.scaleToWidth(canvas?.width);
         img.scaleToHeight(canvas?.height);
@@ -344,7 +345,7 @@ export const addText = (canvas) => {
     canvas?.renderAll();
 };
 
-export const displayBookCoverText = (canvas, text, bookCoverColor) => {
+export const displayBookCoverText = (canvas, text) => {
     removeAllTextObjects(canvas);
 
     const mainText = new fabric.Text(text, {
@@ -377,4 +378,23 @@ const removeAllTextObjects = (canvas) => {
     textObjects.forEach(textObj => canvas.remove(textObj));
 
     canvas.renderAll();
+};
+
+const toggleLineColors = (canvas, bookCoverColor) => {
+    const lineObjs = canvas?.getObjects().filter(obj =>
+        obj.type === 'line'
+    );
+
+    lineObjs?.forEach(lineOjb => {
+        switch (bookCoverColor) {
+            case 'black':
+            case 'green':
+                lineOjb.set('stroke', 'gray');
+                break;
+            default:
+                lineOjb.set('stroke', 'black');
+        }
+    });
+
+    canvas?.renderAll();
 };

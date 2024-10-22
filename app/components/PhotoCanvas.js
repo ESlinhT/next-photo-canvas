@@ -79,7 +79,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
     }
 
     const handleBookCoverTextConfirm = () => {
-        displayBookCoverText(canvas, bookCoverText, selectedBookCoverColor.name);
+        displayBookCoverText(canvas, bookCoverText);
         setOpenBookCoverText(false)
     }
 
@@ -141,12 +141,12 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                 {path === 'photobookcover' && <>
                     <div className="flex my-5 mb-10">
                         <button onClick={() => setOpenBookCoverText(true)}
-                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20">
-                            Cover Text
+                                className="w-[150px] px-4 py-2 bg-blue-700 text-white hover:bg-blue-500">
+                            Text
                         </button>
                         <button onClick={() => setOpen(true)}
-                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 ml-2">
-                            Cover Color
+                                className="w-[150px] px-4 py-2 bg-indigo-500 text-white hover:bg-indigo-300 ml-2">
+                            Color
                         </button>
                     </div>
                 </>}
