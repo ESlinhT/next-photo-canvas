@@ -196,7 +196,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                 <div className="grid grid-cols-3">
                     {bookCoverColors.map((bookCoverColor, index) => (
                         <div key={index}
-                             className={`flex flex-col items-center justify-center px-1 py-2 rounded-md ${bookCoverColor.src === selectedBookCoverColor ? 'border-2 border-indigo-200' : ''}`}>
+                             className={`flex flex-col items-center justify-center px-1 py-2 rounded-md ${bookCoverColor.src === selectedBookCoverColor.src ? 'border-2 border-indigo-200' : ''}`}>
                             <button
                                 onClick={() => handleBookCoverBackgroundColorSelect(bookCoverColor)}
                                 className="h-[100px] w-[150px] rounded-md shadow-2xl book-cover-button"
