@@ -55,7 +55,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
             cleanupDragAndDrop();
             canvas.dispose();
         };
-    }, [images, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorderg, croppedObject, guidelines, canvasSize, disableHalf]);
+    }, [images, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf]);
 
     useEffect(() => {
         deleteImage(canvas, selectedImage, setSelectedImage, selectedPhoto, setSelectedPhoto)
