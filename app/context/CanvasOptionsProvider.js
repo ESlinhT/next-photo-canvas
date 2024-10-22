@@ -1,9 +1,14 @@
 'use client'
 
 import {createContext, useContext, useState} from "react";
-import blackFrame from "@/app/assets/black-frame.png";
-import goldFrame from "@/app/assets/gold-frame.png";
-import silverFrame from "@/app/assets/silver-frame.png";
+
+import creme from "@/app/assets/creme-linen.jpeg";
+import beige from "@/app/assets/beige-linen.jpeg";
+import blue from "@/app/assets/blue-linen.jpeg";
+import black from "@/app/assets/black-linen.jpeg";
+import gray from "@/app/assets/gray-linen.jpeg";
+import green from "@/app/assets/green-linen.jpeg";
+import red from "@/app/assets/red-linen.jpg";
 
 const CanvasOptionsContext = createContext();
 
@@ -11,26 +16,58 @@ export const useCanvasOptionsContext = () => useContext(CanvasOptionsContext);
 
 const CanvasOptionsProvider = ({children}) => {
     const dpi = 96;
-    const [selectedFrame, setSelectedFrame] = useState(null);
+    const [primaryBorder, setPrimaryBorder] = useState(false);
+    const [secondaryBorder, setSecondaryBorder] = useState(false);
+    const [selectedPhoto, setSelectedPhoto] = useState(false);
     const [canvasSize, setCanvasSize] = useState({
         height: 7 * dpi,
         width: 5 * dpi,
     });
-    const frames = [
-        blackFrame,
-        goldFrame,
-        silverFrame
+
+    const bookCoverColors = [
+        {
+            name: 'black',
+            src: black.src,
+        },
+        {
+            name: 'red',
+            src: red.src,
+        },
+        {
+            name: 'blue',
+            src: blue.src,
+        },
+        {
+            name: 'green',
+            src: green.src,
+        },
+        {
+            name: 'gray',
+            src: gray.src,
+        },
+        {
+            name: 'beige',
+            src: beige.src,
+        },
+        {
+            name: 'creme',
+            src: creme.src,
+        },
     ];
 
     return (
         <CanvasOptionsContext.Provider
             value={{
-                selectedFrame,
-                setSelectedFrame,
-                frames,
+                primaryBorder,
+                setPrimaryBorder,
+                secondaryBorder,
+                setSecondaryBorder,
                 dpi,
                 canvasSize,
-                setCanvasSize
+                setCanvasSize,
+                selectedPhoto,
+                setSelectedPhoto,
+                bookCoverColors
             }}
         >
             {children}

@@ -12,6 +12,8 @@ export const useGlobalContext = () => useContext(GlobalContext);
 const GlobalProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [itemsToPurchase, setItemsToPurchase] = useState([]);
+    const [saveProject, setSaveProject] = useState(false);
 
     async function init() {
         try {
@@ -34,7 +36,11 @@ const GlobalProvider = ({children}) => {
             value={{
                 user,
                 loading,
-                init
+                init,
+                itemsToPurchase,
+                setItemsToPurchase,
+                saveProject,
+                setSaveProject
             }}
         >
             {children}

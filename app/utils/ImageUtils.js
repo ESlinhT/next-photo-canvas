@@ -1,18 +1,32 @@
 import * as fabric from "fabric";
 
-export const flipImage = (selectedImage, flipType, canvas) => {
-    if (selectedImage) {
-        switch (flipType) {
-            case 'horizontal':
-                selectedImage.set('flipX', !selectedImage.flipX); // Toggle horizontal flip;
-                break;
-            case 'vertical':
-                selectedImage.set('flipY', !selectedImage.flipY); // Toggle vertical flip
-                break;
-        }
-        canvas.renderAll();
+export const flipImage = (flipType, canvas) => {
+    const img = canvas?.getActiveObject();
+
+    switch (flipType) {
+        case 'horizontal':
+            img?.set('flipX', !img?.flipX);
+            break;
+        case 'vertical':
+            img?.set('flipY', !img?.flipY);
+            break;
     }
+
+    canvas?.renderAll();
 };
+
+export const rotateCanvas = (canvas) => {
+    const activeObject = canvas?.getActiveObject();
+    const originalHeight = canvas.height;
+    const originalWidth = canvas.width;
+    canvas.setHeight(originalWidth);
+    canvas.setWidth(originalHeight);
+    if (activeObject) {
+        activeObject.set('scaleX', canvas.getWidth() / activeObject.width);
+        activeObject.set('scaleY', canvas.getHeight() / activeObject.height);
+    }
+    canvas.renderAll()
+}
 
 export const enableCrop = (selectedImage, isCropping, setIsCropping, canvas, croppedObject, setCroppedObject) => {
     if (selectedImage && !isCropping) {
@@ -39,7 +53,7 @@ export const enableCrop = (selectedImage, isCropping, setIsCropping, canvas, cro
 
 export const applyCrop = (croppedObject, selectedImage, croppedDimensions, canvas, setCroppedObject, setIsCropping) => {
     if (croppedObject && selectedImage) {
-        croppedObject.set({ fill: null });
+        croppedObject.set({fill: null});
         const croppedImageDataURL = canvas.toDataURL({
             left: croppedDimensions.left,
             top: croppedDimensions.top,
@@ -59,13 +73,23 @@ export const applyCrop = (croppedObject, selectedImage, croppedDimensions, canva
     }
 };
 
-export const deleteImage = (canvas, selectedImage, setSelectedImage) => {
+export const deleteImage = (canvas, selectedObject, setSelectedImage, selectedPhoto, setSelectedPhoto) => {
+    let ableToDelete = true;
+
+    selectedObject?.on('mousedblclick', () => {
+        ableToDelete = false;
+    });
     const handleKeyDown = (event) => {
-        if ((event.key === 'Delete' || event.key === 'Backspace' || event.key === 'd') && selectedImage) {
-            if (selectedImage) {
-                canvas.remove(selectedImage);
+        if ((event.key === 'Delete' || event.key === 'Backspace' || event.key === 'd') && (selectedObject?.type !== 'textbox' || selectedObject?.objectType === 'textbox' && ableToDelete)) {
+            if (selectedObject) {
+                canvas.remove(selectedObject);
                 canvas.requestRenderAll();
                 setSelectedImage(null);
+            }
+            if (selectedPhoto) {
+                canvas.remove(selectedPhoto);
+                canvas.requestRenderAll();
+                setSelectedPhoto(null);
             }
         }
     };

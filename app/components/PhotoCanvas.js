@@ -1,16 +1,36 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {initializeCanvas, setupDragAndDrop, toggleFrame} from './CanvasControls';
-import {flipImage, enableCrop, applyCrop, deleteImage} from '../utils/ImageUtils';
+import {initializeCanvas, setupDragAndDrop, toggleBookCoverColor, addText, displayBookCoverText} from './CanvasControls';
+import {
+    deleteImage,
+    rotateCanvas,
+    flipImage,
+    enableCrop,
+    applyCrop,
+} from '../utils/ImageUtils';
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
+import ReusableDialog from "@/app/components/ReusableDialog";
+import {useGlobalContext} from "@/app/context/GlobalProvider";
 
-export default function PhotoCanvas({images}) {
-    const {selectedFrame, canvasSize} = useCanvasOptionsContext();
+export default function PhotoCanvas({images, path = "photos", disableHalf = false}) {
+    const {
+        primaryBorder,
+        secondaryBorder,
+        canvasSize,
+        selectedPhoto,
+        setSelectedPhoto,
+        bookCoverColors
+    } = useCanvasOptionsContext();
+    const {saveProject} = useGlobalContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [canvas, setCanvas] = useState(null);
     const [isCropping, setIsCropping] = useState(false);
     const [croppedObject, setCroppedObject] = useState(null);
     const [guidelines, setGuidelines] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [openBookCoverText, setOpenBookCoverText] = useState(false);
+    const [selectedBookCoverColor, setSelectedBookCoverColor] = useState({})
+    const [bookCoverText, setBookCoverText] = useState('');
 
     const [croppedDimensions, setCroppedDimensions] = useState({
         height: 0,
@@ -20,58 +40,194 @@ export default function PhotoCanvas({images}) {
     });
 
     useEffect(() => {
-        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize);
-        const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas);
+        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder);
+        const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
+        toggleBookCoverColor(canvas, selectedBookCoverColor);
 
-        return () => {
-            cleanupDragAndDrop();
-            canvas.dispose();
-        };
-    }, [images, canvasSize]);
-
-    useEffect(() => {
         if (croppedObject) {
             croppedObject.on('modified', () => {
                 const {top, left, width, height} = croppedObject.getBoundingRect();
                 setCroppedDimensions({top, left, width, height});
             });
         }
-    }, [croppedObject]);
+
+        return () => {
+            cleanupDragAndDrop();
+            canvas.dispose();
+        };
+    }, [images, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, selectedBookCoverColor, croppedObject, guidelines, canvasSize, disableHalf]);
+
+    // useEffect(() => {
+    //     if (croppedObject) {
+    //         croppedObject.on('modified', () => {
+    //             const {top, left, width, height} = croppedObject.getBoundingRect();
+    //             setCroppedDimensions({top, left, width, height});
+    //         });
+    //     }
+    // }, [croppedObject]);
 
     useEffect(() => {
-        deleteImage(canvas, selectedImage, setSelectedImage)
+        deleteImage(canvas, selectedImage, setSelectedImage, selectedPhoto, setSelectedPhoto)
     }, [canvas, selectedImage]);
 
+    // useEffect(() => {
+    //     toggleBookCoverColor(canvas, selectedBookCoverColor);
+    // }, [selectedBookCoverColor]);
+
     useEffect(() => {
-        toggleFrame(selectedFrame, canvas);
-    }, [canvas, selectedFrame]);
+        if (saveProject) {
+            console.log(canvas)
+        }
+    }, [saveProject]);
+
+    const handleBookCoverBackgroundColorSelect = (color) => {
+        if (color === selectedBookCoverColor) {
+            setSelectedBookCoverColor({});
+        } else {
+            setSelectedBookCoverColor(color)
+        }
+    }
+
+    const handleBookCoverTextConfirm = () => {
+        displayBookCoverText(canvas, bookCoverText);
+        setOpenBookCoverText(false)
+    }
 
     return (
-        <div className="flex flex-col items-center h-[100vh]">
-            <div className="flex mb-5">
-                <button onClick={() => flipImage(selectedImage, 'horizontal', canvas)} disabled={!selectedImage}
-                        className="px-4 py-2 bg-blue-900 text-white disabled:opacity-20">
-                    Flip Horizontal
-                </button>
-                <button onClick={() => flipImage(selectedImage, 'vertical', canvas)} disabled={!selectedImage}
-                        className="px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20">
-                    Flip Vertical
-                </button>
-                <button
-                    onClick={() => enableCrop(selectedImage, isCropping, setIsCropping, canvas, croppedObject, setCroppedObject)}
-                    disabled={!selectedImage} className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20">
-                    Crop Image
-                </button>
-                <button
-                    onClick={() => applyCrop(croppedObject, selectedImage, croppedDimensions, canvas, setCroppedObject, setIsCropping)}
-                    disabled={!selectedImage} className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20">
-                    Apply Crop
-                </button>
-            </div>
-            <div className="relative bg-white pb-5">
-                <canvas ref={canvasRef} className="border-2 border-gray-200"></canvas>
-            </div>
-        </div>
+        <div className="relative">
+            <div className="flex flex-col items-center">
+                {path === 'photobooks' && <>
+                    <div className="flex my-5 mb-10">
+                        <button onClick={() => addText(canvas)}
+                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 w-[150px]">
+                            Add Text
+                        </button>
+                        <button onClick={() => flipImage('horizontal', canvas)} disabled={!selectedImage}
+                                className="flex justify-center px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20 w-[150px]">
+                            <p className="mr-2">Flip</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
+                            </svg>
+                        </button>
+                        <button onClick={() => flipImage('vertical', canvas)} disabled={!selectedImage}
+                                className="flex justify-center px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20 w-[150px]">
+                            <p className="mr-2">Flip</p>
 
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="size-6 rotate-90">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
+                            </svg>
+                        </button>
+                        <button
+                            onClick={() => enableCrop(selectedImage, isCropping, setIsCropping, canvas, croppedObject, setCroppedObject)}
+                            disabled={!selectedImage}
+                            className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20 w-[150px]">
+                            Crop Image
+                        </button>
+                        <button
+                            onClick={() => applyCrop(croppedObject, selectedImage, croppedDimensions, canvas, setCroppedObject, setIsCropping)}
+                            disabled={!selectedImage}
+                            className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20 w-[150px]">
+                            Apply Crop
+                        </button>
+                    </div>
+                </>
+                }
+                {path === 'photos' && <>
+                    <div className="flex my-5 mb-10">
+                        <button onClick={() => addText(canvas)}
+                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 w-[100px]">
+                            Add Text
+                        </button>
+                        <button onClick={() => flipImage('horizontal', canvas)} disabled={!selectedPhoto}
+                                className="flex justify-center px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20 w-[100px]">
+                            <p className="mr-2">Flip</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
+                            </svg>
+                        </button>
+                        <button onClick={() => flipImage('vertical', canvas)} disabled={!selectedPhoto}
+                                className="flex justify-center px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20 w-[100px]">
+                            <p className="mr-2">Flip</p>
+
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                                 stroke="currentColor" className="size-6 rotate-90">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
+                            </svg>
+                        </button>
+                        <button onClick={() => {
+                            rotateCanvas(canvas);
+                        }} disabled={!selectedPhoto}
+                                className="px-4 py-2 bg-blue-900 ml-2 text-white disabled:opacity-20 w-[100px]">
+                            Rotate
+                        </button>
+                    </div>
+                </>
+                }
+                {path === 'photobookcover' && <>
+                    <div className="flex my-5 mb-10">
+                        <button onClick={() => setOpenBookCoverText(true)}
+                                className="w-[150px] px-4 py-2 bg-blue-700 text-white hover:bg-blue-500">
+                            Text
+                        </button>
+                        <button onClick={() => setOpen(true)}
+                                className="w-[150px] px-4 py-2 bg-indigo-500 text-white hover:bg-indigo-300 ml-2">
+                            Color
+                        </button>
+                    </div>
+                </>}
+
+                <div className="relative bg-white pb-5">
+                    {path === 'photobooks' &&
+                        <div
+                            className={`${canvasSize.height === canvasSize.width ? 'h-[97%]' : 'h-[97.5%]'} w-[2px] bg-gray-600 opacity-30 z-30 absolute right-[50%]`}/>}
+                    <canvas ref={canvasRef}></canvas>
+                </div>
+                {selectedPhoto &&
+                    <p className={`text-xl text-center ${JSON.stringify(primaryBorder).includes('#') ? 'pt-6' : 'pt-1'}`}>
+                        (Scroll on image to zoom)
+                    </p>}
+
+            </div>
+            <ReusableDialog
+                open={open}
+                setOpen={setOpen}
+                title="Cover Color"
+                handleConfirm={() => setOpen(!open)}
+                handleCancel={() => setOpen(!open)}
+            >
+                <div className="grid grid-cols-3">
+                    {bookCoverColors.map((bookCoverColor, index) => (
+                        <div key={index}
+                             className={`flex flex-col items-center justify-center px-1 py-2 rounded-md ${bookCoverColor.src === selectedBookCoverColor ? 'border-2 border-indigo-200' : ''}`}>
+                            <button
+                                onClick={() => handleBookCoverBackgroundColorSelect(bookCoverColor)}
+                                className="h-[100px] w-[150px] rounded-md shadow-2xl book-cover-button"
+                                style={{backgroundImage: `url(${bookCoverColor.src})`}}
+                            />
+                            <span className="text-xs text-gray-600 pt-1">{bookCoverColor.name}</span>
+                        </div>
+                    ))}
+                </div>
+            </ReusableDialog>
+            <ReusableDialog
+                open={openBookCoverText}
+                setOpen={setOpenBookCoverText}
+                title="Cover Text"
+                handleConfirm={handleBookCoverTextConfirm}
+                handleCancel={() => setOpenBookCoverText(!openBookCoverText)}
+            >
+                <textarea
+                    value={bookCoverText}
+                    onChange={(e) => setBookCoverText(e.target.value)}
+                    className="w-full overflow-auto rounded-md p-1 resize-none whitespace-nowrap dialog-text-area text-center h-[126px]"></textarea>
+            </ReusableDialog>
+        </div>
     );
 }
