@@ -3,65 +3,47 @@ import {Line} from 'fabric';
 const snappingDistance = 10;
 
 export const handleObjectMoving = (canvas, obj, guidelines, setGuidelines) => {
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
+    const canvasWidth = canvas.getWidth();
+    const canvasHeight = canvas.getHeight();
 
     const left = obj.left;
     const top = obj.top;
-    // const right = left + obj.width * obj.scaleX;
-    // const bottom = top + obj.height * obj.scaleY;
 
     const centerX = left + (obj.width * obj.scaleX) / 2;
     const centerY = top + (obj.height * obj.scaleY) / 2;
 
-    let newGuidelines = [];
     clearGuideLines(canvas);
 
-    let snapped = false;
     if (Math.abs(left) < snappingDistance) {
         obj.set({left: 0});
         if (!guidelineExists(canvas, 'vertical-left')) {
             const line = createVerticalGuideline(canvas, 0, 'vertical-left');
-            newGuidelines.push(line);
             canvas.add(line);
         }
-        snapped = true;
     }
 
     if (Math.abs(top) < snappingDistance) {
         obj.set({top: 0});
         if (!guidelineExists(canvas, 'horizontal-left')) {
             const line = createHorizontalGuideline(canvas, 0, 'horizontal-top');
-            newGuidelines.push(line);
             canvas.add(line);
         }
-        snapped = true;
     }
 
     if (Math.abs(centerX - canvasWidth / 2) < snappingDistance) {
         obj.set({left: canvasWidth / 2 - (obj.width * obj.scaleX) / 2});
         if (!guidelineExists(canvas, 'vertical-center')) {
             const line = createVerticalGuideline(canvas, canvasWidth / 2, 'vertical-center');
-            newGuidelines.push(line);
             canvas.add(line);
         }
-        snapped = true;
     }
 
     if (Math.abs(centerY - canvasHeight / 2) < snappingDistance) {
         obj.set({top: canvasHeight / 2 - (obj.height * obj.scaleY) / 2});
         if (!guidelineExists(canvas, 'horizontal-center')) {
             const line = createHorizontalGuideline(canvas, canvasHeight / 2, 'horizontal-center');
-            newGuidelines.push(line);
             canvas.add(line);
         }
-        snapped = true;
-    }
-
-    if (!snapped) {
-        clearGuideLines(canvas);
-    } else {
-        setGuidelines(newGuidelines)
     }
 
     canvas.renderAll();
