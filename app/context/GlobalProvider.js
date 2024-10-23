@@ -31,6 +31,7 @@ const GlobalProvider = ({children}) => {
         init();
     }, []);
 
+    console.log(itemsToPurchase)
     return (
         <GlobalContext.Provider
             value={{

@@ -13,9 +13,8 @@ export default function Home() {
                         Design custom images
                     </h1>
                     <p className="mt-6 text-lg leading-8 text-gray-300">
-                        Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat
-                        commodo. Elit sunt amet
-                        fugiat veniam occaecat fugiat aliqua.
+                        This is a project that attempts to clone the functionality of creating photos and photobooks on
+                        sites such as MPix, using React Canvas.
                     </p>
                     <div className="mt-10 flex items-center gap-x-6">
                         <Link

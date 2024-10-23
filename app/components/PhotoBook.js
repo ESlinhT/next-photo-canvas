@@ -22,7 +22,7 @@ export default function PhotoBook() {
                     <p className="text-gray-500 text-sm">{canvasSize.height / dpi} in </p> <ArrowLongDownIcon aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>
                 </div>
                 <div className="border-2 border-gray-300 my-1 px-2 relative">
-                    <PhotoCanvas path="photobookcover"/>
+                    <PhotoCanvas path="photobookcover" canvasId={`canvasBookCover`}/>
                 </div>
                 <div className="absolute left-1 -bottom-6 flex justify-center items-center">
                     <p className="text-gray-500 text-sm">{canvasSize.width / dpi} in </p> <ArrowLongRightIcon aria-hidden="true" className="h-[30px] w-8 text-gray-400"/>
@@ -38,7 +38,7 @@ export default function PhotoBook() {
                             aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>
                         </div>
                         <h3>Pages {index + (index + 1)} and {index + (index + 2)}</h3>
-                        <PhotoCanvas images={images} path="photobooks" disableHalf={index === 0}/>
+                        <PhotoCanvas images={images} path="photobooks" disableHalf={index === 0} canvasId={`canvas-${index}`}/>
                         <button onClick={() => deletePage(index)}
                                 className="absolute right-0 top-0 p-2 hover:text-red-600">Delete
                         </button>

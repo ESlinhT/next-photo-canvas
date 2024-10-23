@@ -1,17 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {initializeCanvas, setupDragAndDrop, toggleBookCoverColor, addText, displayBookCoverText} from './CanvasControls';
 import {
-    deleteImage,
-    rotateCanvas,
-    flipImage,
-    enableCrop,
-    applyCrop,
-} from '../utils/ImageUtils';
+    addText,
+    displayBookCoverText,
+    initializeCanvas,
+    setupDragAndDrop,
+    toggleBookCoverColor
+} from './CanvasControls';
+import {applyCrop, deleteImage, enableCrop, flipImage, rotateCanvas,} from '../utils/ImageUtils';
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import ReusableDialog from "@/app/components/ReusableDialog";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
 
-export default function PhotoCanvas({images, path = "photos", disableHalf = false}) {
+export default function PhotoCanvas({images, path = "photos", disableHalf = false, canvasId}) {
     const {
         primaryBorder,
         secondaryBorder,
@@ -20,7 +20,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
         setSelectedPhoto,
         bookCoverColors
     } = useCanvasOptionsContext();
-    const {saveProject} = useGlobalContext();
+    const {saveProject, setSaveProject, itemsToPurchase, setItemsToPurchase} = useGlobalContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [canvas, setCanvas] = useState(null);
@@ -29,8 +29,10 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
     const [guidelines, setGuidelines] = useState([]);
     const [open, setOpen] = useState(false);
     const [openBookCoverText, setOpenBookCoverText] = useState(false);
+    const [confirmSave, setConfirmSave] = useState(false);
     const [selectedBookCoverColor, setSelectedBookCoverColor] = useState({})
     const [bookCoverText, setBookCoverText] = useState('');
+    const [bookNameForSaving, setBookNameForSaving] = useState('');
 
     const [croppedDimensions, setCroppedDimensions] = useState({
         height: 0,
@@ -42,7 +44,6 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
     useEffect(() => {
         const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
-
 
         if (croppedObject) {
             croppedObject.on('modified', () => {
@@ -59,6 +60,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
 
     useEffect(() => {
         deleteImage(canvas, selectedImage, setSelectedImage, selectedPhoto, setSelectedPhoto)
+        saveCanvasAsJSON();
     }, [canvas, selectedImage]);
 
     useEffect(() => {
@@ -66,10 +68,19 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
     }, [canvas, selectedBookCoverColor]);
 
     useEffect(() => {
-        if (saveProject) {
-            console.log(canvas)
+        if (confirmSave) {
+            const book = {
+                name: bookNameForSaving,
+                content: {...localStorage}
+            }
+
+            setItemsToPurchase((prevItems) => [...prevItems, book])
+
+            localStorage.clear();
+            setConfirmSave(false)
+            setSaveProject(!saveProject)
         }
-    }, [saveProject]);
+    }, [confirmSave, canvasId]);
 
     const handleBookCoverBackgroundColorSelect = (color) => {
         if (color === selectedBookCoverColor) {
@@ -77,12 +88,20 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
         } else {
             setSelectedBookCoverColor(color)
         }
+        saveCanvasAsJSON();
     }
 
     const handleBookCoverTextConfirm = () => {
         displayBookCoverText(canvas, bookCoverText);
         setOpenBookCoverText(false)
+        saveCanvasAsJSON();
     }
+
+    const saveCanvasAsJSON = () => {
+        const canvasJSON = canvas?.toJSON();
+        localStorage.setItem(canvasId, JSON.stringify(canvasJSON));
+        console.log(localStorage)
+    };
 
     return (
         <div className="relative">
@@ -177,8 +196,8 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                 <div className="relative bg-white pb-5">
                     {path === 'photobooks' &&
                         <div
-                            className={`${canvasSize.height === canvasSize.width ? 'h-[97%]' : 'h-[97.5%]'} w-[2px] bg-gray-600 opacity-30 z-30 absolute right-[50%]`}/>}
-                    <canvas ref={canvasRef}></canvas>
+                            className={`${canvasSize.height === canvasSize.width ? 'h-[97%]' : 'h-[97.5%]'} w-[2px] bg-gray-600 opacity-30 z-20 absolute right-[50%]`}/>}
+                    <canvas id={canvasId} ref={canvasRef}></canvas>
                 </div>
                 {selectedPhoto &&
                     <p className={`text-xl text-center ${JSON.stringify(primaryBorder).includes('#') ? 'pt-6' : 'pt-1'}`}>
@@ -218,6 +237,15 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                     value={bookCoverText}
                     onChange={(e) => setBookCoverText(e.target.value)}
                     className="w-full overflow-auto rounded-md p-1 resize-none whitespace-nowrap dialog-text-area text-center h-[126px]"></textarea>
+            </ReusableDialog>
+            <ReusableDialog
+                open={saveProject}
+                setOpen={setSaveProject}
+                title="Enter a Project Name to Save"
+                handleConfirm={() => setConfirmSave(true)}
+                handleCancel={() => setSaveProject(!saveProject)}
+            >
+                <input type="text" onChange={(e) => setBookNameForSaving(e.target.value)} className="px-2 w-[50%] text-center border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
             </ReusableDialog>
         </div>
     );
