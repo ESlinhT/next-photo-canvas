@@ -20,7 +20,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
         setSelectedPhoto,
         bookCoverColors
     } = useCanvasOptionsContext();
-    const {saveProject, setSaveProject, itemsToPurchase, setItemsToPurchase} = useGlobalContext();
+    const {saveProject, setSaveProject} = useGlobalContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [canvas, setCanvas] = useState(null);
@@ -67,20 +67,39 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
         toggleBookCoverColor(canvas, selectedBookCoverColor);
     }, [canvas, selectedBookCoverColor]);
 
-    useEffect(() => {
+    const handleConfirmSave = (confirmSave) => {
         if (confirmSave) {
             const book = {
                 name: bookNameForSaving,
-                content: {...localStorage}
+                content: getCanvasItemsFromLocalStorage()
             }
+            const cart = localStorage.getItem('cart')
+                ? JSON.parse(localStorage.getItem('cart'))
+                : [];
 
-            setItemsToPurchase((prevItems) => [...prevItems, book])
+            cart.push(book);
 
-            localStorage.clear();
+            localStorage.setItem('cart', JSON.stringify(cart));
+
             setConfirmSave(false)
             setSaveProject(!saveProject)
         }
-    }, [confirmSave, canvasId]);
+    }
+
+    const getCanvasItemsFromLocalStorage = () => {
+        const canvasItems = [];
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+
+            if (key.includes('canvas')) {
+                const item = localStorage.getItem(key);
+                canvasItems.push({ key, item });
+            }
+        }
+
+        return canvasItems;
+    }
 
     const handleBookCoverBackgroundColorSelect = (color) => {
         if (color === selectedBookCoverColor) {
@@ -100,7 +119,6 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
     const saveCanvasAsJSON = () => {
         const canvasJSON = canvas?.toJSON();
         localStorage.setItem(canvasId, JSON.stringify(canvasJSON));
-        console.log(localStorage)
     };
 
     return (
@@ -242,7 +260,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                 open={saveProject}
                 setOpen={setSaveProject}
                 title="Enter a Project Name to Save"
-                handleConfirm={() => setConfirmSave(true)}
+                handleConfirm={() => handleConfirmSave(true)}
                 handleCancel={() => setSaveProject(!saveProject)}
             >
                 <input type="text" onChange={(e) => setBookNameForSaving(e.target.value)} className="px-2 w-[50%] text-center border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
