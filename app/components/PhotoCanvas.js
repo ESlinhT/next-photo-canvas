@@ -70,7 +70,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
 
     const handleConfirmSave = async (confirmSave) => {
         if (confirmSave && user) {
-            await createSavedProject(projectName, JSON.stringify(getCanvasItemsFromLocalStorage()), path);
+            await createSavedProject(projectName, JSON.stringify(getCanvasItemsFromLocalStorage()), path === 'photos' ? 'photo' : 'photobook');
 
             setConfirmSave(false)
             setSaveProject(!saveProject)

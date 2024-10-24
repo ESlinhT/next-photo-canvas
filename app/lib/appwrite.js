@@ -83,7 +83,7 @@ export const signOut = async () => {
     }
 }
 
-export const createSavedProject = async (name, content, path) => {
+export const createSavedProject = async (name, content, type) => {
     try {
         const currentUser = await getCurrentUser();
         return await databases.createDocument(
@@ -94,7 +94,7 @@ export const createSavedProject = async (name, content, path) => {
                 name,
                 content,
                 userId: currentUser.$id,
-                type: path === 'photos' ? 'photo' : 'photobook'
+                type
             }
         );
     } catch (e) {

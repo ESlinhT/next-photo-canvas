@@ -2,15 +2,18 @@
 
 import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
 import {EllipsisHorizontalIcon} from "@heroicons/react/20/solid";
-import {deleteSavedProject, signOut} from "@/app/lib/appwrite";
+import {createSavedProject, deleteSavedProject, signOut} from "@/app/lib/appwrite";
 
-const itemOptions = [{name: 'Edit'}, {name: 'Delete'},];
+const itemOptions = [{name: 'Duplicate'}, {name: 'Delete'},];
 
 export default function ProjectItemMenu({item, getProjects}) {
 
     const handleItemClick = async (name) => {
-        if (name === 'Edit') {
-            console.log('edit', item) // WIP
+        if (name === 'Duplicate') {
+            await createSavedProject(`${item.name} - duplicate`, JSON.stringify(item.content), item.type)
+                .then(() => {
+                    getProjects();
+                })
         } else {
             await deleteSavedProject(item.$id)
                 .then(() => {
