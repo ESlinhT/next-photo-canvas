@@ -117,4 +117,17 @@ export const getSavedProjects = async () => {
     }
 }
 
+export const deleteSavedProject = async (projectId) => {
+    try {
+        return await databases.deleteDocument(
+            config.databaseId,
+            config.savedProjectsCollectionId,
+            projectId
+        );
+    } catch (e) {
+        console.error(e)
+        throw new Error(e)
+    }
+}
+
 export { ID};

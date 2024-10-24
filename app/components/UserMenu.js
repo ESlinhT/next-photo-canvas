@@ -4,13 +4,14 @@ import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
 import {ChevronDownIcon} from "@heroicons/react/20/solid";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
 import {signOut} from "@/app/lib/appwrite";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 
 const userNavigation = [{name: 'My Projects', href: '/my-projects'}, {name: 'Sign out', href: '#'},];
 
 export default function UserMenu() {
     const {user} = useGlobalContext();
     const router = useRouter();
+    const pathName = usePathname();
 
     const handleItemClick = (item) => {
         if (item.name === 'Sign out') {
@@ -19,6 +20,10 @@ export default function UserMenu() {
             router.push(item.href);
         }
     };
+
+    if (!user) {
+        return null;
+    }
 
     return (
         <Menu as="div" className="relative">
@@ -44,7 +49,7 @@ export default function UserMenu() {
                     <MenuItem key={item.name}>
                         <button
                             onClick={() => handleItemClick(item)}
-                            className="block px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50"
+                            className={`w-full text-start block pl-2 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50 ${item.href === pathName ? 'bg-gray-100' : ''}`}
                         >
                             {item.name}
                         </button>
