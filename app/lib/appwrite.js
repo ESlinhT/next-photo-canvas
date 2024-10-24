@@ -5,6 +5,7 @@ export const config = {
     projectId: '66fecc5e00101aca76c9',
     databaseId: '66feccb20002ce74721a',
     userCollectionId: '66feccca001d10dcb174',
+    savedProjectsCollectionId: '671a4ab70036414567c7'
 }
 
 const client = new Client();
@@ -76,6 +77,40 @@ export const getCurrentUser = async () => {
 export const signOut = async () => {
     try {
         return await account.deleteSession('current')
+    } catch (e) {
+        console.error(e)
+        throw new Error(e)
+    }
+}
+
+export const createSavedProject = async (name, content, path) => {
+    try {
+        const currentUser = await getCurrentUser();
+        return await databases.createDocument(
+            config.databaseId,
+            config.savedProjectsCollectionId,
+            ID.unique(),
+            {
+                name,
+                content,
+                userId: currentUser.$id,
+                type: path === 'photos' ? 'photo' : 'photobook'
+            }
+        );
+    } catch (e) {
+        console.error(e);
+        throw new Error(e);
+    }
+}
+
+export const getSavedProjects = async () => {
+    try {
+        const currentUser = await getCurrentUser();
+        return await databases.listDocuments(
+            config.databaseId,
+            config.savedProjectsCollectionId,
+            [Query.equal('userId', currentUser.$id)]
+        );
     } catch (e) {
         console.error(e)
         throw new Error(e)

@@ -34,6 +34,7 @@ const GlobalProvider = ({children}) => {
             value={{
                 user,
                 loading,
+                setLoading,
                 init,
                 saveProject,
                 setSaveProject

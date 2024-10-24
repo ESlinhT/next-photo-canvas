@@ -6,7 +6,7 @@ import {useGlobalContext} from "@/app/context/GlobalProvider";
 import {signOut} from "@/app/lib/appwrite";
 import {useRouter} from "next/navigation";
 
-const userNavigation = [{name: 'Your profile', href: '#'}, {name: 'Sign out', href: '#'},];
+const userNavigation = [{name: 'My Projects', href: '/my-projects'}, {name: 'Sign out', href: '#'},];
 
 export default function UserMenu() {
     const {user} = useGlobalContext();

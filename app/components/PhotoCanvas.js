@@ -10,6 +10,7 @@ import {applyCrop, deleteImage, enableCrop, flipImage, rotateCanvas,} from '../u
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import ReusableDialog from "@/app/components/ReusableDialog";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
+import {createSavedProject, getSavedProjects} from "@/app/lib/appwrite";
 
 export default function PhotoCanvas({images, path = "photos", disableHalf = false, canvasId}) {
     const {
@@ -20,7 +21,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
         setSelectedPhoto,
         bookCoverColors
     } = useCanvasOptionsContext();
-    const {saveProject, setSaveProject} = useGlobalContext();
+    const {saveProject, setSaveProject, user} = useGlobalContext();
     const canvasRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [canvas, setCanvas] = useState(null);
@@ -32,7 +33,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
     const [confirmSave, setConfirmSave] = useState(false);
     const [selectedBookCoverColor, setSelectedBookCoverColor] = useState({})
     const [bookCoverText, setBookCoverText] = useState('');
-    const [bookNameForSaving, setBookNameForSaving] = useState('');
+    const [projectName, setProjectName] = useState('');
 
     const [croppedDimensions, setCroppedDimensions] = useState({
         height: 0,
@@ -67,23 +68,27 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
         toggleBookCoverColor(canvas, selectedBookCoverColor);
     }, [canvas, selectedBookCoverColor]);
 
-    const handleConfirmSave = (confirmSave) => {
-        if (confirmSave) {
-            const book = {
-                name: bookNameForSaving,
-                content: getCanvasItemsFromLocalStorage()
-            }
-            const cart = localStorage.getItem('cart')
-                ? JSON.parse(localStorage.getItem('cart'))
-                : [];
-
-            cart.push(book);
-
-            localStorage.setItem('cart', JSON.stringify(cart));
+    const handleConfirmSave = async (confirmSave) => {
+        if (confirmSave && user) {
+            await createSavedProject(projectName, JSON.stringify(getCanvasItemsFromLocalStorage()), path);
 
             setConfirmSave(false)
             setSaveProject(!saveProject)
         }
+    }
+
+    const handleAddToCart = () => {
+        // const book = {
+        //     name: projectName,
+        //     content: getCanvasItemsFromLocalStorage()
+        // }
+        // const cart = localStorage.getItem('cart')
+        //     ? JSON.parse(localStorage.getItem('cart'))
+        //     : [];
+        //
+        // cart.push(book);
+
+        // localStorage.setItem('cart', JSON.stringify(cart));
     }
 
     const getCanvasItemsFromLocalStorage = () => {
@@ -263,7 +268,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                 handleConfirm={() => handleConfirmSave(true)}
                 handleCancel={() => setSaveProject(!saveProject)}
             >
-                <input type="text" onChange={(e) => setBookNameForSaving(e.target.value)} className="px-2 w-[50%] text-center border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                <input type="text" onChange={(e) => setProjectName(e.target.value)} className="px-2 w-[50%] text-center border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
             </ReusableDialog>
         </div>
     );
