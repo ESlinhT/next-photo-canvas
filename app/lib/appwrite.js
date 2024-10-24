@@ -2,10 +2,10 @@ import {Account, Avatars, Client, Databases, ID, Query} from 'appwrite';
 
 export const config = {
     endpoint: 'https://cloud.appwrite.io/v1',
-    projectId: '66fecc5e00101aca76c9',
-    databaseId: '66feccb20002ce74721a',
-    userCollectionId: '66feccca001d10dcb174',
-    savedProjectsCollectionId: '671a4ab70036414567c7'
+    projectId: process.env.NEXT_PUBLIC_PROJECTID,
+    databaseId: process.env.NEXT_PUBLIC_DATABASEID,
+    userCollectionId: process.env.NEXT_PUBLIC_USERCOLLECTIONID,
+    savedProjectsCollectionId: process.env.NEXT_PUBLIC_SAVEDPROJECTCOLLECTIONSID
 }
 
 const client = new Client();
