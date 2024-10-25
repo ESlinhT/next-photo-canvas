@@ -1,9 +1,9 @@
 import Link from "next/link";
-import BlueBackground from "@/app/components/BlueBackground";
+import BlueBackgroundLayout from "@/app/layouts/BlueBackgroundLayout";
 
 export default function AuthCheck() {
     return (
-        <BlueBackground>
+        <BlueBackgroundLayout>
             <div className="h-[100vh] flex flex-col justify-center items-center">
                 <h2 className="text-3xl font-bold text-gray-200">Please login to use this feature</h2>
                 <div className="mt-10">
@@ -13,6 +13,6 @@ export default function AuthCheck() {
                     </Link>
                 </div>
             </div>
-        </BlueBackground>
+        </BlueBackgroundLayout>
     );
 }

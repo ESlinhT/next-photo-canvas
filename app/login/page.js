@@ -5,7 +5,7 @@ import Link from "next/link";
 import {signIn} from "@/app/lib/appwrite";
 import {useRouter} from "next/navigation";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
-import BlueBackground from "@/app/components/BlueBackground";
+import BlueBackgroundLayout from "@/app/layouts/BlueBackgroundLayout";
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -26,7 +26,7 @@ const Login = () => {
     };
 
     return (
-        <BlueBackground>
+        <BlueBackgroundLayout>
             <div className="flex h-[100vh] flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2 className="mt-10 text-center text-3xl font-bold leading-9 tracking-tight text-gray-200">Next
@@ -96,7 +96,7 @@ const Login = () => {
                     </p>
                 </div>
             </div>
-        </BlueBackground>
+        </BlueBackgroundLayout>
     );
 };
 

@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 import {createUser} from '../lib/appwrite';
 import {useRouter} from "next/navigation";
 import Link from "next/link";
-import BlueBackground from "@/app/components/BlueBackground";
+import BlueBackgroundLayout from "@/app/layouts/BlueBackgroundLayout";
 
 const Signup = () => {
     const [email, setEmail] = useState('');
@@ -22,7 +22,7 @@ const Signup = () => {
     }
 
     return (
-        <BlueBackground>
+        <BlueBackgroundLayout>
             <div className="flex h-[100vh] flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2 className="mt-10 text-center text-3xl font-bold leading-9 tracking-tight text-gray-200">Next
@@ -114,7 +114,7 @@ const Signup = () => {
                     </p>
                 </div>
             </div>
-        </BlueBackground>
+        </BlueBackgroundLayout>
     );
 };
 

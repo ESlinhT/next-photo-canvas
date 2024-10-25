@@ -14,6 +14,7 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
             canvasWidth = 1200;
             canvasHeight = canvasSize?.width === canvasSize?.height ? 600 : 800;
     }
+
     const canvas = new fabric.Canvas(canvasRef.current, {
         width: canvasWidth,
         height: canvasHeight,

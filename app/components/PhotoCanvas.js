@@ -11,8 +11,9 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import ReusableDialog from "@/app/components/ReusableDialog";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
 import {createSavedProject, getSavedProjects} from "@/app/lib/appwrite";
+import * as fabric from "fabric";
 
-export default function PhotoCanvas({images, path = "photos", disableHalf = false, canvasId}) {
+export default function PhotoCanvas({item, path = "photos", disableHalf = false, canvasId}) {
     const {
         primaryBorder,
         secondaryBorder,
@@ -53,11 +54,17 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
             });
         }
 
+        if (item) {
+            canvas.loadFromJSON(item).then(() => {
+                canvas.renderAll();
+            })
+        }
+
         return () => {
             cleanupDragAndDrop();
             canvas.dispose();
         };
-    }, [images, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf]);
+    }, [item, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf]);
 
     useEffect(() => {
         deleteImage(canvas, selectedImage, setSelectedImage, selectedPhoto, setSelectedPhoto)
@@ -97,7 +104,11 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
 
-            if (key.includes('canvas')) {
+            if (key.includes('canvas') && path !== 'photos') {
+                const item = localStorage.getItem(key);
+                canvasItems.push({ key, item });
+            }
+            if (path === 'photos' && key === 'photo') {
                 const item = localStorage.getItem(key);
                 canvasItems.push({ key, item });
             }
