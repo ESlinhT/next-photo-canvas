@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function BlueBackground({children}) {
+export default function BlueBackgroundLayout({children}) {
     return (
         <div className="bg-gray-900">
             <main>

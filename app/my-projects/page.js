@@ -78,7 +78,7 @@ export default function MyProjects() {
                                         <div className="-mt-px flex divide-x divide-gray-200">
                                             <div className="flex w-0 flex-1">
                                                 <a
-                                                    href={``}
+                                                    href={`/my-projects/${item.$id}`}
                                                     className="relative hover:bg-gray-100 -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
                                                 >
                                                     Open
@@ -86,12 +86,6 @@ export default function MyProjects() {
                                             </div>
                                             <div className="-ml-px flex w-0 flex-1">
                                                 <ProjectItemMenu item={item} getProjects={getProjects} />
-                                                {/*<a*/}
-                                                {/*    href={``}*/}
-                                                {/*    className="relative hover:bg-gray-100 inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"*/}
-                                                {/*>*/}
-                                                {/*    Edit*/}
-                                                {/*</a>*/}
                                             </div>
                                         </div>
                                     </div>

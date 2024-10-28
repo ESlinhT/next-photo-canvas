@@ -73,29 +73,9 @@ export const applyCrop = (croppedObject, selectedImage, croppedDimensions, canva
     }
 };
 
-export const deleteImage = (canvas, selectedObject, setSelectedImage, selectedPhoto, setSelectedPhoto) => {
-    let ableToDelete = true;
-
-    selectedObject?.on('mousedblclick', () => {
-        ableToDelete = false;
-    });
-    const handleKeyDown = (event) => {
-        if ((event.key === 'Delete' || event.key === 'Backspace' || event.key === 'd') && (selectedObject?.type !== 'textbox' || selectedObject?.objectType === 'textbox' && ableToDelete)) {
-            if (selectedObject) {
-                canvas.remove(selectedObject);
-                canvas.requestRenderAll();
-                setSelectedImage(null);
-            }
-            if (selectedPhoto) {
-                canvas.remove(selectedPhoto);
-                canvas.requestRenderAll();
-                setSelectedPhoto(null);
-            }
-        }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-    };
+export const deleteImage = (canvas, selectedObject, setSelectedObject) => {
+    canvas.remove(selectedObject);
+    canvas.requestRenderAll();
+    setSelectedObject(null);
+    canvas.renderAll()
 }

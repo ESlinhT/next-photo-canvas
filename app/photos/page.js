@@ -54,7 +54,7 @@ export default function Photos() {
                                         <ArrowLongDownIcon
                                             aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>
                                     </div>
-                                    <PhotoCanvas path="photos"/>
+                                    <PhotoCanvas canvasId={`photo`} path="photos"/>
                                     <div
                                         className={`absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-1 -bottom-[45px]' : 'left-3 -bottom-3'} left-3 -bottom-3 flex justify-center items-center`}>
                                         <p className="text-gray-500 text-sm">{canvasSize.width / dpi} in </p>

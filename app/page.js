@@ -1,11 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import randomBg from '@/app/assets/random-bg.jpg';
-import BlueBackground from "@/app/components/BlueBackground";
+import BlueBackgroundLayout from "@/app/layouts/BlueBackgroundLayout";
 
 export default function Home() {
     return (
-        <BlueBackground>
+        <BlueBackgroundLayout>
             <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-40 lg:flex lg:flex-row lg:px-8 lg:pt-40 h-[100vh] sm:flex sm:flex-col justify-center items-center">
                 <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-8">
                     <h1 className="uppercase text-4xl font-bold tracking-tight text-indigo-500">Next Photo Canvas</h1>
@@ -39,6 +39,6 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-        </BlueBackground>
+        </BlueBackgroundLayout>
     );
 }

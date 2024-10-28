@@ -11,15 +11,17 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import ReusableDialog from "@/app/components/ReusableDialog";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
 import {createSavedProject, getSavedProjects} from "@/app/lib/appwrite";
+import * as fabric from "fabric";
 
-export default function PhotoCanvas({images, path = "photos", disableHalf = false, canvasId}) {
+export default function PhotoCanvas({item = null, path = "photos", disableHalf = false, canvasId}) {
     const {
         primaryBorder,
         secondaryBorder,
         canvasSize,
         selectedPhoto,
         setSelectedPhoto,
-        bookCoverColors
+        bookCoverColors,
+        selectedPhotoUrl
     } = useCanvasOptionsContext();
     const {saveProject, setSaveProject, user} = useGlobalContext();
     const canvasRef = useRef(null);
@@ -43,7 +45,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
     });
 
     useEffect(() => {
-        const canvas = initializeCanvas(canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder);
+        const canvas = initializeCanvas(item, canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, setSelectedPhoto, path, disableHalf, primaryBorder, secondaryBorder);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
 
         if (croppedObject) {
@@ -57,12 +59,7 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
             cleanupDragAndDrop();
             canvas.dispose();
         };
-    }, [images, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf]);
-
-    useEffect(() => {
-        deleteImage(canvas, selectedImage, setSelectedImage, selectedPhoto, setSelectedPhoto)
-        saveCanvasAsJSON();
-    }, [canvas, selectedImage]);
+    }, [item, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf]);
 
     useEffect(() => {
         toggleBookCoverColor(canvas, selectedBookCoverColor);
@@ -70,11 +67,16 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
 
     const handleConfirmSave = async (confirmSave) => {
         if (confirmSave && user) {
+            saveCanvasAsJSON();
             await createSavedProject(projectName, JSON.stringify(getCanvasItemsFromLocalStorage()), path === 'photos' ? 'photo' : 'photobook');
 
             setConfirmSave(false)
             setSaveProject(!saveProject)
         }
+    }
+
+    const handleRemoveObject = (selectedObject, setSelectedObject) => {
+        deleteImage(canvas, selectedObject, setSelectedObject)
     }
 
     const handleAddToCart = () => {
@@ -97,7 +99,11 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
 
-            if (key.includes('canvas')) {
+            if (key.includes('canvas') && path !== 'photos') {
+                const item = localStorage.getItem(key);
+                canvasItems.push({ key, item });
+            }
+            if (path === 'photos' && key === 'photo') {
                 const item = localStorage.getItem(key);
                 canvasItems.push({ key, item });
             }
@@ -123,6 +129,9 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
 
     const saveCanvasAsJSON = () => {
         const canvasJSON = canvas?.toJSON();
+        if (path === 'photos' && selectedPhotoUrl) {
+            canvasJSON.photoUrl = selectedPhotoUrl;
+        }
         localStorage.setItem(canvasId, JSON.stringify(canvasJSON));
     };
 
@@ -166,6 +175,10 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                             className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20 w-[150px]">
                             Apply Crop
                         </button>
+                        <button onClick={() => handleRemoveObject(selectedImage, setSelectedImage)}
+                                className={`px-4 py-2 bg-red-500 text-white disabled:opacity-20 w-[100px] ml-2 ${selectedImage ? 'block' : 'hidden'}`}>
+                            Remove
+                        </button>
                     </div>
                 </>
                 }
@@ -199,6 +212,10 @@ export default function PhotoCanvas({images, path = "photos", disableHalf = fals
                         }} disabled={!selectedPhoto}
                                 className="px-4 py-2 bg-blue-900 ml-2 text-white disabled:opacity-20 w-[100px]">
                             Rotate
+                        </button>
+                        <button onClick={() => handleRemoveObject(selectedPhoto, setSelectedPhoto)}
+                                className={`px-4 py-2 bg-red-500 text-white disabled:opacity-20 w-[100px] ml-2 ${selectedPhoto ? 'block' : 'hidden'}`}>
+                            Remove
                         </button>
                     </div>
                 </>
