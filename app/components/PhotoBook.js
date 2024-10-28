@@ -6,7 +6,7 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 export default function PhotoBook({content = []}) {
     const {canvasSize, dpi} = useCanvasOptionsContext();
     const [pages, setPages] = useState([[], []]);
-    const [parsedItem, setParsedItem] = useState({});
+    const [parsedItem, setParsedItem] = useState(null);
 
     useEffect(() => {
         if (content.length) {
@@ -56,7 +56,7 @@ export default function PhotoBook({content = []}) {
                             aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>
                         </div>
                         <h3>Pages {index + (index + 1)} and {index + (index + 2)}</h3>
-                        <PhotoCanvas item={content.item ?? ''}  path="photobooks" disableHalf={index === 0} canvasId={`canvas-${index}`}/>
+                        <PhotoCanvas item={content.item ?? null}  path="photobooks" disableHalf={index === 0} canvasId={`canvas-${index}`}/>
                         <button onClick={() => deletePage(index)}
                                 className="absolute right-0 top-0 p-2 hover:text-red-600">Delete
                         </button>

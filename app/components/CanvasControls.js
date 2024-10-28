@@ -1,7 +1,7 @@
 import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
 
-export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder) => {
+export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, setSelectedPhoto, path, disableHalf, primaryBorder, secondaryBorder) => {
     let canvasWidth;
     let canvasHeight;
     switch (path) {
@@ -22,6 +22,12 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
         selection: true,
     });
 
+    if (path !== 'photos' && item) {
+        canvas.loadFromJSON(item).then(() => {
+            canvas.renderAll()
+        });
+    }
+
     if (path === 'photobookcover') {
         const line1 = new fabric.Line([canvas.width / 2 - 15, 0, canvas.width / 2 - 15, canvas.height], {
             strokeDashArray: [3, 3],
@@ -34,6 +40,7 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
             stroke: 'black',
             selectable: false
         });
+
 
         canvas.add(line1, line2);
     }
@@ -99,25 +106,29 @@ export const initializeCanvas = (canvasRef, setCanvas, setSelectedImage, guideli
         let lastPosY;
         let img;
 
-        fabric.Image.fromURL(selectedPhoto).then((_img) => {
-            img = _img;
-            img.set({
-                left: 0,
-                top: 0,
-                scaleX: canvas?.width / img.width,
-                scaleY: canvas?.height / img.height,
-                selectable: true,
-                hasControls: false,
-            });
-            canvas.add(img);
-            canvas?.setActiveObject(img);
+        if (selectedPhoto || item) {
+            const url = item
+                ? item.photoUrl
+                : URL.createObjectURL(selectedPhoto);
+            fabric.Image.fromURL(url).then((_img) => {
+                img = _img;
+                img.set({
+                    left: 0,
+                    top: 0,
+                    scaleX: canvas?.width / img.width,
+                    scaleY: canvas?.height / img.height,
+                    selectable: true,
+                    hasControls: false,
+                });
+                canvas.add(img);
+                canvas?.setActiveObject(img);
 
-            // initialize zoom
-            canvas.setZoom(1);
+                // initialize zoom
+                canvas.setZoom(1);
 
-            canvas.requestRenderAll();
-        })
-
+                canvas.requestRenderAll();
+            })
+        }
 
         function onMouseWheel(opt) {
             const {e} = opt;

@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import {
@@ -24,25 +24,32 @@ export default function Sidebar({path}) {
         dpi,
         canvasSize,
         setCanvasSize,
-        setSelectedPhoto
+        selectedPhoto,
+        setSelectedPhoto,
+        setSelectedPhotoUrl
     } = useCanvasOptionsContext();
     const [color, setColor] = useColor("#fff");
     const [secondColor, setSecondColor] = useColor("#fff");
     const [open, setOpen] = useState(false);
     const [isGradient, setIsGradient] = useState(false);
 
-    const handleDrop = (newImages) => {
-        const imageUrls = newImages.map(file => URL.createObjectURL(file));
-        setImages((prevImages) => [...prevImages, ...imageUrls]);
-        path === 'photos' && setSelectedPhoto(imageUrls[0])
-    }
+    const onDrop = useCallback((acceptedFiles) => {
+        acceptedFiles.forEach((file) => {
+            const reader = new FileReader()
 
-    const {getRootProps, getInputProps} = useDropzone({
-        onDrop: handleDrop,
-        accepted: {
-            accepted: ['image/*']
-        }
-    });
+            reader.onabort = () => console.log('file reading was aborted')
+            reader.onerror = () => console.log('file reading has failed')
+            reader.onload = () => {
+                setSelectedPhotoUrl(reader.result);
+            }
+            reader.readAsDataURL(file)
+        })
+
+        setImages((prevImages) => [...prevImages, ...acceptedFiles]);
+        path === 'photos' && setSelectedPhoto(acceptedFiles[0])
+
+    }, [])
+    const {getRootProps, getInputProps} = useDropzone({onDrop})
 
     const filters = [
         {
@@ -88,6 +95,22 @@ export default function Sidebar({path}) {
         setPrimaryBorder(false);
         setSecondaryBorder(false);
         setOpen(false)
+    }
+
+    const returnImage = (file, index) => {
+        const url = URL.createObjectURL(file);
+
+        return (
+            <img
+                key={index}
+                src={url}
+                alt={`img-${index}`}
+                className="cursor-pointer h-[100px] w-[150px] mb-2 border"
+                onClick={() => setSelectedPhoto(file)}
+                draggable={true}
+                onDragStart={(e) => e.dataTransfer.setData('imageUrl', url)}
+            />
+        )
     }
 
     return (
@@ -157,17 +180,9 @@ export default function Sidebar({path}) {
                                         <p className="text-sm">Upload some images</p>
                                     </div>
                                     <div className="flex flex-col items-center overflow-y-scroll h-[75vh] mt-4">
-                                        {images.length ? images.map((url, index) => (
-                                            <img
-                                                key={index}
-                                                src={url}
-                                                alt={`img-${index}`}
-                                                className="cursor-pointer h-[100px] w-[150px] mb-2 border"
-                                                onClick={() => setSelectedPhoto(url)}
-                                                draggable={true}
-                                                onDragStart={(e) => e.dataTransfer.setData('imageUrl', url)}
-                                            />
-                                        )) : <p className="text-white text-center text-sm">There are no images</p>}
+                                        {images.length
+                                            ? images.map((file, index) => (returnImage(file, index)))
+                                            : <p className="text-white text-center text-sm">There are no images</p>}
                                     </div>
                                 </div>
                             </ul>

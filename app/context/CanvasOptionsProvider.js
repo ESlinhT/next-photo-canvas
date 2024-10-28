@@ -19,6 +19,7 @@ const CanvasOptionsProvider = ({children}) => {
     const [primaryBorder, setPrimaryBorder] = useState(false);
     const [secondaryBorder, setSecondaryBorder] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(false);
+    const [selectedPhotoUrl, setSelectedPhotoUrl] = useState(false);
     const [canvasSize, setCanvasSize] = useState({
         height: 7 * dpi,
         width: 5 * dpi,
@@ -67,7 +68,9 @@ const CanvasOptionsProvider = ({children}) => {
                 setCanvasSize,
                 selectedPhoto,
                 setSelectedPhoto,
-                bookCoverColors
+                bookCoverColors,
+                selectedPhotoUrl,
+                setSelectedPhotoUrl
             }}
         >
             {children}
