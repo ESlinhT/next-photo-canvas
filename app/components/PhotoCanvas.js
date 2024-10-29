@@ -47,7 +47,10 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     });
 
     useEffect(() => {
-        const passedInItem = path !== 'photos' ? item : updatedItem;
+        let passedInItem = path !== 'photos' ? item : updatedItem;
+        if (passedInItem === '[]') {
+            passedInItem = [];
+        }
         const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, setSelectedPhoto, path, disableHalf, primaryBorder, secondaryBorder);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
 
@@ -85,6 +88,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
             }
 
             canvas.renderAll()
+            localStorage.clear();
             setSaveProject(!saveProject)
             setIsSaving(false)
         }
@@ -119,7 +123,11 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 const item = localStorage.getItem(key);
                 canvasItems.push({ key, item });
             }
-            if (path === 'photos' && (key === 'photo' || key === 'canvas-size')) {
+            if (path === 'photos' && key === 'photo') {
+                const item = localStorage.getItem(key);
+                canvasItems.push({ key, item });
+            }
+            if (key === 'canvas-size') {
                 const item = localStorage.getItem(key);
                 canvasItems.push({ key, item });
             }
@@ -144,7 +152,14 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     }
 
     const saveCanvasAsJSON = () => {
-        const canvasJSON = canvas?.toDataURL();
+        let canvasJSON;
+
+        if (path === 'photos') {
+            canvasJSON = canvas?.toDataURL() ?? [];
+        } else {
+            canvasJSON = canvas?.toJSON() ?? [];
+        }
+
         localStorage.setItem(canvasId, JSON.stringify(canvasJSON));
     };
 

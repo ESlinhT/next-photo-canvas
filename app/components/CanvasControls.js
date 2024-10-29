@@ -22,10 +22,11 @@ export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, g
         selection: true,
     });
 
-    if (path !== 'photos' && item) {
-        canvas.loadFromJSON(item).then(() => {
+    if (path !== 'photos' && item !== 'undefined' && item !== null && item !== []) {
+        canvas.loadFromJSON(item).then((canvas) => {
             canvas.renderAll()
         });
+        setCanvas(canvas)
     }
 
     if (path === 'photobookcover') {
@@ -69,6 +70,7 @@ export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, g
         });
 
         canvas.add(boldText, text);
+        canvas.renderAll()
     }
 
     canvas.on('selection:created', (e) => {

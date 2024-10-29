@@ -11,7 +11,7 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
 export default function Page({params}) {
     const {loading, setLoading} = useGlobalContext();
-    const {setSelectedPhoto, setCanvasSize} = useCanvasOptionsContext()
+    const {selectedPhoto, setSelectedPhoto, canvasSize, setCanvasSize} = useCanvasOptionsContext()
     const [project, setProject] = useState({});
     const [item, setItem] = useState({});
     const [size, setSize] = useState({});
@@ -22,10 +22,16 @@ export default function Page({params}) {
             setLoading(true)
             await getSavedProject(projectId).then((res) => {
                 setProject(res);
-                setItem(JSON.parse(JSON.parse(res.content)[0].item));
 
-                if (JSON.parse(res.content)[1]) {
-                    setSize(JSON.parse(JSON.parse(res.content)[1].item))
+                if (res.type === 'photo') {
+                    setItem(JSON.parse(JSON.parse(res.content)[0].item));
+                }
+
+                if (JSON.parse(res.content).find((item) => item.key === 'canvas-size')) {
+                    const resSize = JSON.parse(res.content).find((item) => item.key === 'canvas-size').item;
+                    if (resSize) {
+                        setSize(JSON.parse(resSize))
+                    }
                 }
             });
             await blobUrlToFile(item, 'newFile.jpeg');
@@ -52,8 +58,8 @@ export default function Page({params}) {
 
     useEffect(() => {
         const newCanvasSize = {
-            height: Math.round(size.height),
-            width: Math.round(size.width)
+            height: !isNaN(size.height) ? Math.round(size.height) : canvasSize.height,
+            width: !isNaN(size.width) ? Math.round(size.width) : canvasSize.width
         };
         setCanvasSize(newCanvasSize)
     }, [size, project]);
@@ -67,7 +73,6 @@ export default function Page({params}) {
                 ? <PhotoBook content={JSON.parse(project.content)} projectId={projectId} projectName={project.name}/>
                 : <PhotoCanvas item={item} projectId={projectId} existingProjectName={project.name} canvasId={`photo`}/>
             }
-
         </PhotoBookLayout>
     )
 }

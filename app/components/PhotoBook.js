@@ -11,7 +11,7 @@ export default function PhotoBook({content = [], projectId = null, projectName =
     useEffect(() => {
         if (content.length) {
             const filteredContent = content
-                .filter((item) => item.key !== 'canvasBookCover')
+                .filter((item) => item.key !== 'canvasBookCover' && item.key !== 'canvas-size' && item.item !== 'undefined')
                 .sort((a, b) => {
                     const numA = parseInt(a.key.split('-')[1], 10);
                     const numB = parseInt(b.key.split('-')[1], 10);
@@ -19,7 +19,8 @@ export default function PhotoBook({content = [], projectId = null, projectName =
                     return numA - numB;
                 });
             setPages(filteredContent);
-            const parsedItem = content[0].key === 'canvasBookCover' ? content[0].item : null;
+
+            const parsedItem = content.find((item) => item.key === 'canvasBookCover').item ?? null;
             setParsedItem(parsedItem)
         }
     }, []);
@@ -31,6 +32,7 @@ export default function PhotoBook({content = [], projectId = null, projectName =
         const newPages = pages.filter((page, index) => index !== targetIndex)
         setPages(newPages)
     }
+
     return (
         <div className="flex flex-col items-center w-full relative">
             <h2 className="text-2xl text-gray-500 mt-4">Cover</h2>
@@ -56,7 +58,14 @@ export default function PhotoBook({content = [], projectId = null, projectName =
                             aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>
                         </div>
                         <h3>Pages {index + (index + 1)} and {index + (index + 2)}</h3>
-                        <PhotoCanvas item={content.item ?? null}  path="photobooks" disableHalf={index === 0} canvasId={`canvas-${index}`} projectId={projectId} existingProjectName={projectName}/>
+                        <PhotoCanvas
+                            item={content.item ?? null}
+                            path="photobooks"
+                            disableHalf={index === 0}
+                            canvasId={`canvas-${index}`}
+                            projectId={projectId}
+                            existingProjectName={projectName}
+                        />
                         <button onClick={() => deletePage(index)}
                                 className="absolute right-0 top-0 p-2 hover:text-red-600">Delete
                         </button>
