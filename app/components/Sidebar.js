@@ -33,7 +33,7 @@ export default function Sidebar({path}) {
     const [open, setOpen] = useState(false);
     const [isGradient, setIsGradient] = useState(false);
 
-    const onDrop = useCallback((acceptedFiles) => {
+    const onDrop = (acceptedFiles) => {
         acceptedFiles.forEach((file) => {
             const reader = new FileReader()
 
@@ -46,9 +46,10 @@ export default function Sidebar({path}) {
         })
 
         setImages((prevImages) => [...prevImages, ...acceptedFiles]);
-        path === 'photos' && setSelectedPhoto(acceptedFiles[0])
+        (path === 'photos' || path === 'my projects') && setSelectedPhoto(acceptedFiles[0])
 
-    }, [])
+    };
+
     const {getRootProps, getInputProps} = useDropzone({onDrop})
 
     const filters = [

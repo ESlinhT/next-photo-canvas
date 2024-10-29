@@ -14,6 +14,7 @@ export default function Page({params}) {
     const {setSelectedPhoto, setCanvasSize} = useCanvasOptionsContext()
     const [project, setProject] = useState({});
     const [item, setItem] = useState({});
+    const [size, setSize] = useState({});
     const {projectId} = params;
 
     async function getProject() {
@@ -22,8 +23,12 @@ export default function Page({params}) {
             await getSavedProject(projectId).then((res) => {
                 setProject(res);
                 setItem(JSON.parse(JSON.parse(res.content)[0].item));
+
+                if (JSON.parse(res.content)[1]) {
+                    setSize(JSON.parse(JSON.parse(res.content)[1].item))
+                }
             });
-            await blobUrlToFile(item.photoUrl, 'newFile.jpeg');
+            await blobUrlToFile(item, 'newFile.jpeg');
 
         } catch (e) {
             setProject([]);
@@ -32,11 +37,12 @@ export default function Page({params}) {
             setLoading(false)
         }
     }
+
     async function blobUrlToFile(blobUrl, fileName) {
         const response = await fetch(blobUrl);
         const blob = await response.blob();
 
-        const file = new File([blob], fileName, { type: blob.type });
+        const file = new File([blob], fileName, {type: blob.type});
         setSelectedPhoto(file);
     }
 
@@ -45,14 +51,12 @@ export default function Page({params}) {
     }, []);
 
     useEffect(() => {
-        if (project.type === 'photo') {
-            const size = {
-                height: item.objects[0].height * item.objects[0].scaleY,
-                width: item.objects[0].width * item.objects[0].scaleX
-            };
-            setCanvasSize(size)
-        }
-    }, [item, project]);
+        const newCanvasSize = {
+            height: size.height,
+            width: size.width
+        };
+        setCanvasSize(newCanvasSize)
+    }, [size, project]);
 
     if (loading) {
         return <Loading/>;
@@ -61,7 +65,7 @@ export default function Page({params}) {
         <PhotoBookLayout path={'my projects'} projectId={projectId}>
             {project.type === 'photobook'
                 ? <PhotoBook content={JSON.parse(project.content)} projectId={projectId} projectName={project.name}/>
-                : <PhotoCanvas item={item} projectId={projectId} existingProjectName={project.name} />
+                : <PhotoCanvas item={item} projectId={projectId} existingProjectName={project.name} canvasId={`photo`}/>
             }
 
         </PhotoBookLayout>

@@ -25,6 +25,11 @@ export const rotateCanvas = (canvas) => {
         activeObject.set('scaleX', canvas.getWidth() / activeObject.width);
         activeObject.set('scaleY', canvas.getHeight() / activeObject.height);
     }
+    const canvasSize = {
+        height: canvas.getHeight(),
+        width: canvas.getWidth()
+    }
+    localStorage.setItem('canvas-size', JSON.stringify(canvasSize))
     canvas.renderAll()
 }
 

@@ -1,6 +1,6 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 
-export default function ReusableDialog({ open, setOpen, title, children, handleConfirm, handleCancel }) {
+export default function ReusableDialog({ open, setOpen, title, children, handleConfirm, handleCancel, isSaving = false }) {
     return (
         <Dialog open={open} onClose={setOpen} className="relative z-20">
             <DialogBackdrop
@@ -27,7 +27,8 @@ export default function ReusableDialog({ open, setOpen, title, children, handleC
                             <button
                                 type="button"
                                 onClick={handleConfirm}
-                                className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                                disabled={isSaving}
+                                className={`inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2 ${isSaving ? 'disabled:bg-indigo-200' : ''}`}
                             >
                                 Confirm
                             </button>

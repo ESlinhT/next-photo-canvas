@@ -108,7 +108,7 @@ export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, g
 
         if (selectedPhoto || item) {
             const url = item
-                ? item.photoUrl
+                ? item
                 : URL.createObjectURL(selectedPhoto);
             fabric.Image.fromURL(url).then((_img) => {
                 img = _img;
@@ -121,7 +121,7 @@ export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, g
                     hasControls: false,
                 });
                 canvas.add(img);
-                canvas?.setActiveObject(img);
+                canvas.setActiveObject(img);
 
                 // initialize zoom
                 canvas.setZoom(1);
