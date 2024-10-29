@@ -52,8 +52,8 @@ export default function Page({params}) {
 
     useEffect(() => {
         const newCanvasSize = {
-            height: size.height,
-            width: size.width
+            height: Math.round(size.height),
+            width: Math.round(size.width)
         };
         setCanvasSize(newCanvasSize)
     }, [size, project]);

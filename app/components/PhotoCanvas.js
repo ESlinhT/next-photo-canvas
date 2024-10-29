@@ -18,10 +18,11 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         primaryBorder,
         secondaryBorder,
         canvasSize,
+        setCanvasSize,
         selectedPhoto,
         setSelectedPhoto,
         bookCoverColors,
-        selectedPhotoUrl
+        selectedPhotoUrl,
     } = useCanvasOptionsContext();
     const {saveProject, setSaveProject, user} = useGlobalContext();
     const canvasRef = useRef(null);
@@ -220,7 +221,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                             </svg>
                         </button>
                         <button onClick={() => {
-                            rotateCanvas(canvas);
+                            rotateCanvas(canvas, setCanvasSize);
                         }} disabled={!selectedPhoto}
                                 className="px-4 py-2 bg-blue-900 ml-2 text-white disabled:opacity-20 w-[100px]">
                             Rotate

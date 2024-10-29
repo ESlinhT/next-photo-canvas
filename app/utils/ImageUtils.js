@@ -15,21 +15,13 @@ export const flipImage = (flipType, canvas) => {
     canvas?.renderAll();
 };
 
-export const rotateCanvas = (canvas) => {
-    const activeObject = canvas?.getActiveObject();
-    const originalHeight = canvas.height;
-    const originalWidth = canvas.width;
-    canvas.setHeight(originalWidth);
-    canvas.setWidth(originalHeight);
-    if (activeObject) {
-        activeObject.set('scaleX', canvas.getWidth() / activeObject.width);
-        activeObject.set('scaleY', canvas.getHeight() / activeObject.height);
+export const rotateCanvas = (canvas, setCanvasSize) => {
+    const updatedCanvasSize = {
+        height: canvas.getWidth(),
+        width: canvas.getHeight()
     }
-    const canvasSize = {
-        height: canvas.getHeight(),
-        width: canvas.getWidth()
-    }
-    localStorage.setItem('canvas-size', JSON.stringify(canvasSize))
+    setCanvasSize(updatedCanvasSize)
+    localStorage.setItem('canvas-size', JSON.stringify(updatedCanvasSize))
     canvas.renderAll()
 }
 
