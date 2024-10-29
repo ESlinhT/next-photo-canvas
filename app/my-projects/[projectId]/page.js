@@ -11,7 +11,7 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
 export default function Page({params}) {
     const {loading, setLoading} = useGlobalContext();
-    const {setSelectedPhoto} = useCanvasOptionsContext()
+    const {setSelectedPhoto, setCanvasSize} = useCanvasOptionsContext()
     const [project, setProject] = useState({});
     const [item, setItem] = useState({});
     const {projectId} = params;
@@ -43,6 +43,16 @@ export default function Page({params}) {
     useEffect(() => {
         getProject();
     }, []);
+
+    useEffect(() => {
+        if (project.type === 'photo') {
+            const size = {
+                height: item.objects[0].height * item.objects[0].scaleY,
+                width: item.objects[0].width * item.objects[0].scaleX
+            };
+            setCanvasSize(size)
+        }
+    }, [item, project]);
 
     if (loading) {
         return <Loading/>;
