@@ -58,10 +58,10 @@ export default function Page({params}) {
         return <Loading/>;
     }
     return (
-        <PhotoBookLayout path={'my projects'}>
+        <PhotoBookLayout path={'my projects'} projectId={projectId}>
             {project.type === 'photobook'
-                ? <PhotoBook content={JSON.parse(project.content)}/>
-                : <PhotoCanvas item={item} />
+                ? <PhotoBook content={JSON.parse(project.content)} projectId={projectId} projectName={project.name}/>
+                : <PhotoCanvas item={item} projectId={projectId} existingProjectName={project.name} />
             }
 
         </PhotoBookLayout>

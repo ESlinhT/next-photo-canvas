@@ -10,10 +10,10 @@ import {applyCrop, deleteImage, enableCrop, flipImage, rotateCanvas,} from '../u
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import ReusableDialog from "@/app/components/ReusableDialog";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
-import {createSavedProject, getSavedProjects} from "@/app/lib/appwrite";
+import {createSavedProject, getSavedProjects, updateSavedProject} from "@/app/lib/appwrite";
 import * as fabric from "fabric";
 
-export default function PhotoCanvas({item = null, path = "photos", disableHalf = false, canvasId}) {
+export default function PhotoCanvas({item = null, path = "photos", disableHalf = false, canvasId, projectId = null, existingProjectName = ''}) {
     const {
         primaryBorder,
         secondaryBorder,
@@ -32,10 +32,9 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     const [guidelines, setGuidelines] = useState([]);
     const [open, setOpen] = useState(false);
     const [openBookCoverText, setOpenBookCoverText] = useState(false);
-    const [confirmSave, setConfirmSave] = useState(false);
     const [selectedBookCoverColor, setSelectedBookCoverColor] = useState({})
     const [bookCoverText, setBookCoverText] = useState('');
-    const [projectName, setProjectName] = useState('');
+    const [projectName, setProjectName] = useState(existingProjectName);
 
     const [croppedDimensions, setCroppedDimensions] = useState({
         height: 0,
@@ -65,12 +64,16 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         toggleBookCoverColor(canvas, selectedBookCoverColor);
     }, [canvas, selectedBookCoverColor]);
 
-    const handleConfirmSave = async (confirmSave) => {
-        if (confirmSave && user) {
+    const handleConfirmSave = async () => {
+        if (user) {
             saveCanvasAsJSON();
-            await createSavedProject(projectName, JSON.stringify(getCanvasItemsFromLocalStorage()), path === 'photos' ? 'photo' : 'photobook');
 
-            setConfirmSave(false)
+            if (projectId) {
+                await updateSavedProject(projectId, projectName, JSON.stringify(getCanvasItemsFromLocalStorage()))
+            } else {
+                await createSavedProject(projectName, JSON.stringify(getCanvasItemsFromLocalStorage()), path === 'photos' ? 'photo' : 'photobook');
+            }
+
             setSaveProject(!saveProject)
         }
     }
@@ -282,10 +285,10 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 open={saveProject}
                 setOpen={setSaveProject}
                 title="Enter a Project Name to Save"
-                handleConfirm={() => handleConfirmSave(true)}
+                handleConfirm={handleConfirmSave}
                 handleCancel={() => setSaveProject(!saveProject)}
             >
-                <input type="text" onChange={(e) => setProjectName(e.target.value)} className="px-2 w-[50%] text-center border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                <input type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} className="px-2 w-[50%] text-center border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
             </ReusableDialog>
         </div>
     );

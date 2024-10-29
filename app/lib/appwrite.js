@@ -130,6 +130,23 @@ export const getSavedProject = async (projectId) => {
     }
 }
 
+export const updateSavedProject = async (projectId, name, content) => {
+    try {
+        return await databases.updateDocument(
+            config.databaseId,
+            config.savedProjectsCollectionId,
+            projectId,
+            {
+                name,
+                content
+            }
+        );
+    } catch (e) {
+        console.error(e)
+        throw new Error(e)
+    }
+}
+
 export const deleteSavedProject = async (projectId) => {
     try {
         return await databases.deleteDocument(
