@@ -20,6 +20,7 @@ const CanvasOptionsProvider = ({children}) => {
     const [secondaryBorder, setSecondaryBorder] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(false);
     const [selectedPhotoUrl, setSelectedPhotoUrl] = useState(false);
+    const [itemsToSave, setItemsToSave] = useState([])
     const [canvasSize, setCanvasSize] = useState({
         height: 7 * dpi,
         width: 5 * dpi,
@@ -55,6 +56,16 @@ const CanvasOptionsProvider = ({children}) => {
             src: creme.src,
         },
     ];
+    const addCanvas = (canvasData = {}, canvasId) => {
+        if (canvasData !== {}) {
+            canvasData.canvasId = canvasId;
+
+            setItemsToSave((prevItems) => {
+                const updatedItems = prevItems.filter(item => item?.canvasId !== canvasId && item !== undefined && item?.canvasId !== 'canvasSize');
+                return [...updatedItems, canvasData];
+            });
+        }
+    };
 
     return (
         <CanvasOptionsContext.Provider
@@ -70,7 +81,10 @@ const CanvasOptionsProvider = ({children}) => {
                 setSelectedPhoto,
                 bookCoverColors,
                 selectedPhotoUrl,
-                setSelectedPhotoUrl
+                setSelectedPhotoUrl,
+                itemsToSave,
+                setItemsToSave,
+                addCanvas
             }}
         >
             {children}

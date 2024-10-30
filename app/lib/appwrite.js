@@ -5,7 +5,8 @@ export const config = {
     projectId: process.env.NEXT_PUBLIC_PROJECTID,
     databaseId: process.env.NEXT_PUBLIC_DATABASEID,
     userCollectionId: process.env.NEXT_PUBLIC_USERCOLLECTIONID,
-    savedProjectsCollectionId: process.env.NEXT_PUBLIC_SAVEDPROJECTCOLLECTIONSID
+    savedProjectsCollectionId: process.env.NEXT_PUBLIC_SAVEDPROJECTCOLLECTIONSID,
+    imageCollectionId: process.env.NEXT_PUBLIC_IMAGECOLLECTIONID
 }
 
 const client = new Client();
@@ -109,6 +110,38 @@ export const getSavedProjects = async () => {
         return await databases.listDocuments(
             config.databaseId,
             config.savedProjectsCollectionId,
+            [Query.equal('userId', currentUser.$id)]
+        );
+    } catch (e) {
+        console.error(e)
+        throw new Error(e)
+    }
+}
+export const createSavedImage = async (name, data) => {
+    try {
+        const currentUser = await getCurrentUser();
+        return await databases.createDocument(
+            config.databaseId,
+            config.imageCollectionId,
+            ID.unique(),
+            {
+                name,
+                data,
+                userId: currentUser.$id,
+            }
+        );
+    } catch (e) {
+        console.error(e);
+        throw new Error(e);
+    }
+}
+
+export const getSavedImages = async () => {
+    try {
+        const currentUser = await getCurrentUser();
+        return await databases.listDocuments(
+            config.databaseId,
+            config.imageCollectionId,
             [Query.equal('userId', currentUser.$id)]
         );
     } catch (e) {

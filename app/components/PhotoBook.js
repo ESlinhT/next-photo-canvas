@@ -11,16 +11,16 @@ export default function PhotoBook({content = [], projectId = null, projectName =
     useEffect(() => {
         if (content.length) {
             const filteredContent = content
-                .filter((item) => item.key !== 'canvasBookCover' && item.key !== 'canvas-size' && item.item !== 'undefined')
+                .filter((item) => item.canvasId !== 'canvasBookCover' && item.canvasId !== 'canvas-size')
                 .sort((a, b) => {
-                    const numA = parseInt(a.key.split('-')[1], 10);
-                    const numB = parseInt(b.key.split('-')[1], 10);
+                    const numA = parseInt(a.canvasId.split('-')[1], 10);
+                    const numB = parseInt(b.canvasId.split('-')[1], 10);
 
                     return numA - numB;
                 });
             setPages(filteredContent);
 
-            const parsedItem = content.find((item) => item.key === 'canvasBookCover').item ?? null;
+            const parsedItem = content.find((item) => item.canvasId === 'canvasBookCover') ?? null;
             setParsedItem(parsedItem)
         }
     }, []);
@@ -59,7 +59,7 @@ export default function PhotoBook({content = [], projectId = null, projectName =
                         </div>
                         <h3>Pages {index + (index + 1)} and {index + (index + 2)}</h3>
                         <PhotoCanvas
-                            item={content.item ?? null}
+                            item={content ?? null}
                             path="photobooks"
                             disableHalf={index === 0}
                             canvasId={`canvas-${index}`}

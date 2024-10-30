@@ -34,19 +34,21 @@ export default function Sidebar({path}) {
     const [isGradient, setIsGradient] = useState(false);
 
     const onDrop = (acceptedFiles) => {
-        acceptedFiles.forEach((file) => {
-            const reader = new FileReader()
+        if (acceptedFiles && acceptedFiles.length > 0) {
+            acceptedFiles.map((file) => {
+                const reader = new FileReader()
 
-            reader.onabort = () => console.log('file reading was aborted')
-            reader.onerror = () => console.log('file reading has failed')
-            reader.onload = () => {
-                setSelectedPhotoUrl(reader.result);
-            }
-            reader.readAsDataURL(file)
-        })
+                reader.onabort = () => console.log('file reading was aborted')
+                reader.onerror = () => console.log('file reading has failed')
+                reader.onload = () => {
+                    setSelectedPhoto(reader.result);
+                    setImages((prevImages) => [...prevImages, reader.result]);
+                }
+                reader.readAsDataURL(file)
+            })
 
-        setImages((prevImages) => [...prevImages, ...acceptedFiles]);
-        (path === 'photos' || path === 'my projects') && setSelectedPhoto(acceptedFiles[0])
+            (path === 'photos' || path === 'my projects') && setSelectedPhoto(acceptedFiles[0])
+        }
 
     };
 
@@ -99,17 +101,17 @@ export default function Sidebar({path}) {
     }
 
     const returnImage = (file, index) => {
-        const url = URL.createObjectURL(file);
-
+        // const url = URL.createObjectURL(file);
+        //
         return (
             <img
                 key={index}
-                src={url}
+                src={file}
                 alt={`img-${index}`}
                 className="cursor-pointer h-[100px] w-[150px] mb-2 border"
                 onClick={() => setSelectedPhoto(file)}
                 draggable={true}
-                onDragStart={(e) => e.dataTransfer.setData('imageUrl', url)}
+                onDragStart={(e) => e.dataTransfer.setData('imageUrl', file)}
             />
         )
     }

@@ -21,7 +21,6 @@ export const rotateCanvas = (canvas, setCanvasSize) => {
         width: canvas.getHeight()
     }
     setCanvasSize(updatedCanvasSize)
-    localStorage.setItem('canvas-size', JSON.stringify(updatedCanvasSize))
     canvas.renderAll()
 }
 

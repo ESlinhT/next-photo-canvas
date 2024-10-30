@@ -1,7 +1,7 @@
 import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
 
-export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, setSelectedPhoto, path, disableHalf, primaryBorder, secondaryBorder) => {
+export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, setSelectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId) => {
     let canvasWidth;
     let canvasHeight;
     switch (path) {
@@ -22,11 +22,13 @@ export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, g
         selection: true,
     });
 
-    if (path !== 'photos' && item !== 'undefined' && item !== null && item !== []) {
-        canvas.loadFromJSON(item).then((canvas) => {
-            canvas.renderAll()
-        });
-        setCanvas(canvas)
+    if (path !== 'photos' && projectId) {
+        if (item && item.version) {
+            canvas.loadFromJSON(item).then(() => {
+                canvas.renderAll()
+            });
+            setCanvas(canvas)
+        }
     }
 
     if (path === 'photobookcover') {
@@ -91,6 +93,18 @@ export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, g
 
     canvas.on('object:modified', (event) => {
         clearGuideLines(canvas, event.target, guidelines, setGuidelines)
+        const json = canvas.toJSON();
+        addCanvas(json, canvasId);
+    })
+
+    canvas.on('object:added', () => {
+        const json = canvas.toJSON();
+        addCanvas(json, canvasId);
+    })
+
+    canvas.on('after:render', (e) => {
+        const json = canvas.toJSON();
+        addCanvas(json, canvasId);
     })
 
     if (path !== 'photobookcover' && primaryBorder) {
@@ -109,10 +123,11 @@ export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, g
         let img;
 
         if (selectedPhoto || item) {
-            const url = item
-                ? item
-                : URL.createObjectURL(selectedPhoto);
-            fabric.Image.fromURL(url).then((_img) => {
+            // const url = item
+            //     ? item
+            //     : URL.createObjectURL(selectedPhoto);
+            // console.log(url)
+            fabric.Image.fromURL(selectedPhoto).then((_img) => {
                 img = _img;
                 img.set({
                     left: 0,
@@ -340,7 +355,7 @@ export const toggleBorder = (primaryBorder, secondaryBorder, canvas) => {
     }
 }
 
-export const toggleBookCoverColor = (canvas, color) => {
+export const toggleBookCoverColor = (canvas, color, addCanvas, canvasId) => {
     toggleLineColors(canvas, color.name);
     fabric.Image.fromURL(color.src).then((img) => {
         img.scaleToWidth(1200);
@@ -348,6 +363,8 @@ export const toggleBookCoverColor = (canvas, color) => {
         canvas?.set('backgroundImage', img);
         canvas?.renderAll()
     });
+    const json = canvas?.toJSON();
+    addCanvas(json, canvasId)
 }
 
 export const addText = (canvas) => {

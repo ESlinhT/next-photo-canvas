@@ -11,7 +11,7 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
 export default function Page({params}) {
     const {loading, setLoading} = useGlobalContext();
-    const {selectedPhoto, setSelectedPhoto, canvasSize, setCanvasSize} = useCanvasOptionsContext()
+    const {selectedPhoto, setSelectedPhoto, canvasSize, setCanvasSize, setItemsToSave} = useCanvasOptionsContext()
     const [project, setProject] = useState({});
     const [item, setItem] = useState({});
     const [size, setSize] = useState({});
@@ -23,18 +23,23 @@ export default function Page({params}) {
             await getSavedProject(projectId).then((res) => {
                 setProject(res);
 
+                console.log(JSON.parse(res.content))
                 if (res.type === 'photo') {
-                    setItem(JSON.parse(JSON.parse(res.content)[0].item));
+                    setSelectedPhoto(JSON.parse(res.content)[0].objects[0].src)
+                    setItem(JSON.parse(res.content)[0].objects[0]);
                 }
 
-                if (JSON.parse(res.content).find((item) => item.key === 'canvas-size')) {
-                    const resSize = JSON.parse(res.content).find((item) => item.key === 'canvas-size').item;
+                if (JSON.parse(res.content).length) {
+                    setItemsToSave(JSON.parse(res.content))
+                }
+                if (JSON.parse(res.content).find((item) => item.canvasId === 'canvasSize')) {
+                    const resSize = JSON.parse(res.content).find((item) => item.canvasId === 'canvasSize').size;
                     if (resSize) {
-                        setSize(JSON.parse(resSize))
+                        setSize(resSize)
                     }
                 }
             });
-            await blobUrlToFile(item, 'newFile.jpeg');
+            // await blobUrlToFile(item, 'newFile.jpeg');
 
         } catch (e) {
             setProject([]);

@@ -23,6 +23,8 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         setSelectedPhoto,
         bookCoverColors,
         selectedPhotoUrl,
+        addCanvas,
+        itemsToSave
     } = useCanvasOptionsContext();
     const {saveProject, setSaveProject, user} = useGlobalContext();
     const canvasRef = useRef(null);
@@ -51,7 +53,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         if (passedInItem === '[]') {
             passedInItem = [];
         }
-        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, setSelectedPhoto, path, disableHalf, primaryBorder, secondaryBorder);
+        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, setSelectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
 
 
@@ -68,27 +70,22 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         };
     }, [item, updatedItem, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf]);
 
-    useEffect(() => {
-        saveCanvasAsJSON();
-    }, [selectedPhotoUrl]);
-
-    useEffect(() => {
-        toggleBookCoverColor(canvas, selectedBookCoverColor);
-    }, [canvas, selectedBookCoverColor]);
-
     const handleConfirmSave = async () => {
         if (user) {
             setIsSaving(true);
-            saveCanvasAsJSON();
+            let currentItemsToSave = [...itemsToSave];
+            currentItemsToSave.filter((item) => item.canvasId !== 'canvasSize').push({
+                canvasId: 'canvasSize',
+                size: canvasSize
+            })
 
             if (projectId) {
-                await updateSavedProject(projectId, projectName, JSON.stringify(getCanvasItemsFromLocalStorage()))
+                await updateSavedProject(projectId, projectName, JSON.stringify(currentItemsToSave))
             } else {
-                await createSavedProject(projectName, JSON.stringify(getCanvasItemsFromLocalStorage()), path === 'photos' ? 'photo' : 'photobook');
+                await createSavedProject(projectName, JSON.stringify(currentItemsToSave), path === 'photos' ? 'photo' : 'photobook');
             }
 
             canvas.renderAll()
-            localStorage.clear();
             setSaveProject(!saveProject)
             setIsSaving(false)
         }
@@ -96,6 +93,8 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
 
     const handleRemoveObject = (selectedObject, setSelectedObject) => {
         deleteImage(canvas, selectedObject, setSelectedObject);
+        // const json = canvas?.toJSON();
+        // addCanvas(json, canvasId)
         setUpdatedItem('')
     }
 
@@ -142,26 +141,15 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         } else {
             setSelectedBookCoverColor(color)
         }
-        saveCanvasAsJSON();
+        toggleBookCoverColor(canvas, color, addCanvas, canvasId);
     }
 
     const handleBookCoverTextConfirm = () => {
         displayBookCoverText(canvas, bookCoverText);
+        const json = canvas?.toJSON();
+        addCanvas(json, canvasId)
         setOpenBookCoverText(false)
-        saveCanvasAsJSON();
     }
-
-    const saveCanvasAsJSON = () => {
-        let canvasJSON;
-
-        if (path === 'photos') {
-            canvasJSON = canvas?.toDataURL() ?? [];
-        } else {
-            canvasJSON = canvas?.toJSON() ?? [];
-        }
-
-        localStorage.setItem(canvasId, JSON.stringify(canvasJSON));
-    };
 
     return (
         <div className="relative">
