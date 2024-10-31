@@ -69,9 +69,17 @@ export const applyCrop = (croppedObject, selectedImage, croppedDimensions, canva
     }
 };
 
-export const deleteImage = (canvas, selectedObject, setSelectedObject) => {
-    canvas.remove(selectedObject);
-    canvas.requestRenderAll();
-    setSelectedObject(null);
-    canvas.renderAll()
+export const deleteImage = (canvas, setSelectedObject) => {
+    const activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        try {
+            canvas.discardActiveObject();
+            canvas.remove(activeObject);
+        } catch (e) {
+            console.error(e)
+        } finally {
+            setSelectedObject(null);
+            canvas.renderAll();
+        }
+    }
 }

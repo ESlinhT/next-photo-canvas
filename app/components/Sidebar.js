@@ -1,7 +1,6 @@
 'use client'
 
-import React, {useCallback, useState} from 'react';
-import {useDropzone} from 'react-dropzone';
+import React, {useEffect, useRef, useState} from 'react';
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import {
     Disclosure,
@@ -24,35 +23,30 @@ export default function Sidebar({path}) {
         dpi,
         canvasSize,
         setCanvasSize,
-        selectedPhoto,
         setSelectedPhoto,
-        setSelectedPhotoUrl
+        selectedPhoto
     } = useCanvasOptionsContext();
     const [color, setColor] = useColor("#fff");
     const [secondColor, setSecondColor] = useColor("#fff");
     const [open, setOpen] = useState(false);
     const [isGradient, setIsGradient] = useState(false);
+    const inputRef = useRef(null);
 
-    const onDrop = (acceptedFiles) => {
-        if (acceptedFiles && acceptedFiles.length > 0) {
-            acceptedFiles.map((file) => {
+    const handleFileChange = (e) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            for (let i = 0; i < files.length; i++) {
                 const reader = new FileReader()
 
                 reader.onabort = () => console.log('file reading was aborted')
                 reader.onerror = () => console.log('file reading has failed')
                 reader.onload = () => {
-                    setSelectedPhoto(reader.result);
                     setImages((prevImages) => [...prevImages, reader.result]);
                 }
-                reader.readAsDataURL(file)
-            })
-
-            (path === 'photos' || path === 'my projects') && setSelectedPhoto(acceptedFiles[0])
+                reader.readAsDataURL(files[i])
+            }
         }
-
     };
-
-    const {getRootProps, getInputProps} = useDropzone({onDrop})
 
     const filters = [
         {
@@ -101,20 +95,29 @@ export default function Sidebar({path}) {
     }
 
     const returnImage = (file, index) => {
-        // const url = URL.createObjectURL(file);
-        //
         return (
             <img
                 key={index}
                 src={file}
                 alt={`img-${index}`}
                 className="cursor-pointer h-[100px] w-[150px] mb-2 border"
-                onClick={() => setSelectedPhoto(file)}
+                onClick={() => path === 'photos' && setSelectedPhoto(file)}
                 draggable={true}
                 onDragStart={(e) => e.dataTransfer.setData('imageUrl', file)}
             />
         )
     }
+
+    const handleFileInputClick = () => {
+        inputRef.current.click();
+    }
+
+    useEffect(() => {
+       if (images.length > 0 && (path === 'photos' || path === 'my projects')) {
+           setSelectedPhoto(images[0])
+       }
+    }, [images]);
+
 
     return (
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
@@ -141,11 +144,13 @@ export default function Sidebar({path}) {
                                         </DisclosureButton>
                                     </h3>
                                     <DisclosurePanel className="pt-6">
-                                        <div className={`${section.id === 'border' ? 'flex flex-col' : 'grid grid-cols-2 gap-y-2'}`}>
+                                        <div
+                                            className={`${section.id === 'border' ? 'flex flex-col' : 'grid grid-cols-2 gap-y-2'}`}>
                                             {section.options.map((option, optionIdx) => (
                                                 section.id === 'border'
                                                     ?
-                                                    <div key={optionIdx} className={`flex flex-col justify-center items-center`}>
+                                                    <div key={optionIdx}
+                                                         className={`flex flex-col justify-center items-center`}>
                                                         <button
                                                             className={`w-[120px] text-white border border-gray-200 px-4 py-1 hover:bg-gray-500 uppercase ${primaryBorder && !secondaryBorder ? 'bg-gray-500' : ''}`}
                                                             onClick={() => handleChooseBorderColor(false)}>Solid
@@ -177,9 +182,10 @@ export default function Sidebar({path}) {
                         <li>
                             <ul className="-mx-2 space-y-1">
                                 <div className="w-full p-2">
-                                    <div {...getRootProps()}
-                                         className="border border-gray-200 p-2 cursor-pointer text-center text-white font-bold uppercase hover:bg-gray-400">
-                                        <input {...getInputProps()} />
+                                    <div onClick={handleFileInputClick}
+                                         className="w-full border border-gray-200 p-2 cursor-pointer text-center text-white font-bold uppercase hover:bg-gray-400">
+                                        <input multiple ref={inputRef} type="file" className="hidden"
+                                               onChange={handleFileChange}/>
                                         <p className="text-sm">Upload some images</p>
                                     </div>
                                     <div className="flex flex-col items-center overflow-y-scroll h-[75vh] mt-4">

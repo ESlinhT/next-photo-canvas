@@ -22,7 +22,6 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         selectedPhoto,
         setSelectedPhoto,
         bookCoverColors,
-        selectedPhotoUrl,
         addCanvas,
         itemsToSave
     } = useCanvasOptionsContext();
@@ -39,7 +38,8 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     const [bookCoverText, setBookCoverText] = useState('');
     const [projectName, setProjectName] = useState(existingProjectName);
     const [updatedItem, setUpdatedItem] = useState(item);
-    const [isSaving, setIsSaving] = useState(false)
+    const [isSaving, setIsSaving] = useState(false);
+    const [itemDeleted, setItemDeleted] = useState(false)
 
     const [croppedDimensions, setCroppedDimensions] = useState({
         height: 0,
@@ -51,9 +51,9 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     useEffect(() => {
         let passedInItem = path !== 'photos' ? item : updatedItem;
         if (passedInItem === '[]') {
-            passedInItem = [];
+            passedInItem = '';
         }
-        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, setSelectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId);
+        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
 
 
@@ -68,21 +68,21 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
             cleanupDragAndDrop();
             canvas.dispose();
         };
-    }, [item, updatedItem, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf]);
+    }, [item, updatedItem, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf, itemDeleted]);
 
     const handleConfirmSave = async () => {
         if (user) {
             setIsSaving(true);
-            let currentItemsToSave = [...itemsToSave];
-            currentItemsToSave.filter((item) => item.canvasId !== 'canvasSize').push({
+            const filtered = [...itemsToSave].filter((item) => item.canvasId !== 'canvasSize');
+            filtered.push({
                 canvasId: 'canvasSize',
                 size: canvasSize
             })
 
             if (projectId) {
-                await updateSavedProject(projectId, projectName, JSON.stringify(currentItemsToSave))
+                await updateSavedProject(projectId, projectName, JSON.stringify(filtered))
             } else {
-                await createSavedProject(projectName, JSON.stringify(currentItemsToSave), path === 'photos' ? 'photo' : 'photobook');
+                await createSavedProject(projectName, JSON.stringify(filtered), path === 'photos' ? 'photo' : 'photobook');
             }
 
             canvas.renderAll()
@@ -92,10 +92,15 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     }
 
     const handleRemoveObject = (selectedObject, setSelectedObject) => {
-        deleteImage(canvas, selectedObject, setSelectedObject);
-        // const json = canvas?.toJSON();
-        // addCanvas(json, canvasId)
-        setUpdatedItem('')
+        try {
+            deleteImage(canvas, setSelectedObject);
+            setCanvas(canvas)
+        } catch (e) {
+            console.error(e)
+        } finally {
+            setUpdatedItem('')
+            setItemDeleted(true)
+        }
     }
 
     const handleAddToCart = () => {
@@ -160,7 +165,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                                 className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 w-[150px]">
                             Add Text
                         </button>
-                        <button onClick={() => flipImage('horizontal', canvas)} disabled={!selectedImage}
+                        <button onClick={() => flipImage('horizontal', canvas)} disabled={!canvas?.getActiveObject()}
                                 className="flex justify-center px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20 w-[150px]">
                             <p className="mr-2">Flip</p>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
@@ -169,7 +174,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                                       d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
                             </svg>
                         </button>
-                        <button onClick={() => flipImage('vertical', canvas)} disabled={!selectedImage}
+                        <button onClick={() => flipImage('vertical', canvas)} disabled={!canvas?.getActiveObject()}
                                 className="flex justify-center px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20 w-[150px]">
                             <p className="mr-2">Flip</p>
 
@@ -181,18 +186,18 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                         </button>
                         <button
                             onClick={() => enableCrop(selectedImage, isCropping, setIsCropping, canvas, croppedObject, setCroppedObject)}
-                            disabled={!selectedImage}
+                            disabled={!canvas?.getActiveObject()}
                             className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20 w-[150px]">
                             Crop Image
                         </button>
                         <button
                             onClick={() => applyCrop(croppedObject, selectedImage, croppedDimensions, canvas, setCroppedObject, setIsCropping)}
-                            disabled={!selectedImage}
+                            disabled={!canvas?.getActiveObject()}
                             className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20 w-[150px]">
                             Apply Crop
                         </button>
                         <button onClick={() => handleRemoveObject(selectedImage, setSelectedImage)}
-                                className={`px-4 py-2 bg-red-500 text-white disabled:opacity-20 w-[100px] ml-2 ${selectedImage ? 'block' : 'hidden'}`}>
+                                className={`px-4 py-2 bg-red-500 text-white disabled:opacity-20 w-[100px] ml-2 ${canvas?.getActiveObject() ? 'block' : 'hidden'}`}>
                             Remove
                         </button>
                     </div>

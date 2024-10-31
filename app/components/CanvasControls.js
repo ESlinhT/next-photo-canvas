@@ -1,7 +1,7 @@
 import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
 
-export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, guidelines, setGuidelines, canvasSize, selectedPhoto, setSelectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId) => {
+export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted) => {
     let canvasWidth;
     let canvasHeight;
     switch (path) {
@@ -22,7 +22,7 @@ export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, g
         selection: true,
     });
 
-    if (path !== 'photos' && projectId) {
+    if (path !== 'photos' && projectId && !itemDeleted) {
         if (item && item.version) {
             canvas.loadFromJSON(item).then(() => {
                 canvas.renderAll()
@@ -75,13 +75,13 @@ export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, g
         canvas.renderAll()
     }
 
-    canvas.on('selection:created', (e) => {
-        setSelectedImage(e.selected[0]);
-    });
-
-    canvas.on('selection:cleared', () => {
-        setSelectedImage(null);
-    });
+    // canvas.on('selection:created', (e) => {
+    //     setSelectedImage(e.selected[0]);
+    // });
+    //
+    // canvas.on('selection:cleared', () => {
+    //     setSelectedImage(null);
+    // });
 
     canvas.on('object:moving', (event) => {
         if (disableHalf && event.target.left < canvas.getWidth() / 2) {
@@ -123,10 +123,6 @@ export const initializeCanvas = (item, canvasRef, setCanvas, setSelectedImage, g
         let img;
 
         if (selectedPhoto || item) {
-            // const url = item
-            //     ? item
-            //     : URL.createObjectURL(selectedPhoto);
-            // console.log(url)
             fabric.Image.fromURL(selectedPhoto).then((_img) => {
                 img = _img;
                 img.set({
@@ -361,10 +357,9 @@ export const toggleBookCoverColor = (canvas, color, addCanvas, canvasId) => {
         img.scaleToWidth(1200);
         img.scaleToHeight(1200);
         canvas?.set('backgroundImage', img);
+        canvas.src = color.src;
         canvas?.renderAll()
     });
-    const json = canvas?.toJSON();
-    addCanvas(json, canvasId)
 }
 
 export const addText = (canvas) => {

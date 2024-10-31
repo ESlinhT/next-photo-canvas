@@ -11,7 +11,7 @@ export default function PhotoBook({content = [], projectId = null, projectName =
     useEffect(() => {
         if (content.length) {
             const filteredContent = content
-                .filter((item) => item.canvasId !== 'canvasBookCover' && item.canvasId !== 'canvas-size')
+                .filter((item) => item.canvasId !== 'canvasBookCover' && item.canvasId !== 'canvasSize')
                 .sort((a, b) => {
                     const numA = parseInt(a.canvasId.split('-')[1], 10);
                     const numB = parseInt(b.canvasId.split('-')[1], 10);

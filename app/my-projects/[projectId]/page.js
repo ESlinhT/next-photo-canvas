@@ -11,7 +11,7 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
 export default function Page({params}) {
     const {loading, setLoading} = useGlobalContext();
-    const {selectedPhoto, setSelectedPhoto, canvasSize, setCanvasSize, setItemsToSave} = useCanvasOptionsContext()
+    const {setSelectedPhoto, canvasSize, setCanvasSize, setItemsToSave} = useCanvasOptionsContext()
     const [project, setProject] = useState({});
     const [item, setItem] = useState({});
     const [size, setSize] = useState({});
@@ -23,7 +23,6 @@ export default function Page({params}) {
             await getSavedProject(projectId).then((res) => {
                 setProject(res);
 
-                console.log(JSON.parse(res.content))
                 if (res.type === 'photo') {
                     setSelectedPhoto(JSON.parse(res.content)[0].objects[0].src)
                     setItem(JSON.parse(res.content)[0].objects[0]);
@@ -39,7 +38,6 @@ export default function Page({params}) {
                     }
                 }
             });
-            // await blobUrlToFile(item, 'newFile.jpeg');
 
         } catch (e) {
             setProject([]);
@@ -47,14 +45,6 @@ export default function Page({params}) {
         } finally {
             setLoading(false)
         }
-    }
-
-    async function blobUrlToFile(blobUrl, fileName) {
-        const response = await fetch(blobUrl);
-        const blob = await response.blob();
-
-        const file = new File([blob], fileName, {type: blob.type});
-        setSelectedPhoto(file);
     }
 
     useEffect(() => {
