@@ -12,6 +12,7 @@ import ReusableDialog from "@/app/components/ReusableDialog";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
 import {createSavedProject, getSavedProjects, updateSavedProject} from "@/app/lib/appwrite";
 import * as fabric from "fabric";
+import {useRouter} from "next/navigation";
 
 export default function PhotoCanvas({item = null, path = "photos", disableHalf = false, canvasId, projectId = null, existingProjectName = ''}) {
     const {
@@ -44,6 +45,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     const [updatedItem, setUpdatedItem] = useState(item);
     const [isSaving, setIsSaving] = useState(false);
     const [itemDeleted, setItemDeleted] = useState(false);
+    const router = useRouter();
 
     const [croppedDimensions, setCroppedDimensions] = useState({
         height: 0,
@@ -75,33 +77,39 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     }, [item, updatedItem, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf, itemDeleted]);
 
     const handleConfirmSave = async () => {
+        let newRoute;
         if (user) {
-            setIsSaving(true);
-            const filtered = [...itemsToSave].filter((item) => item.canvasId !== 'canvasSize' && item.canvasId !== 'lastOffset' && item.canvasId !== 'viewport');
-            filtered.push({
-                canvasId: 'canvasSize',
-                size: canvasSize
-            });
-            if (path === 'photos') {
+            try {
+                setIsSaving(true);
+                const filtered = [...itemsToSave].filter((item) => item.canvasId !== 'canvasSize' && item.canvasId !== 'lastOffset' && item.canvasId !== 'viewport');
                 filtered.push({
-                    canvasId: 'lastOffset',
-                    lastOffset
+                    canvasId: 'canvasSize',
+                    size: canvasSize
                 });
-                filtered.push({
-                    canvasId: 'viewport',
-                    viewport
-                })
-            }
+                if (path === 'photos') {
+                    filtered.push({
+                        canvasId: 'lastOffset',
+                        lastOffset
+                    });
+                    filtered.push({
+                        canvasId: 'viewport',
+                        viewport
+                    })
+                }
 
-            if (projectId) {
-                await updateSavedProject(projectId, projectName, JSON.stringify(filtered))
-            } else {
-                await createSavedProject(projectName, JSON.stringify(filtered), path === 'photos' ? 'photo' : 'photobook');
-            }
+                if (projectId) {
+                    await updateSavedProject(projectId, projectName, JSON.stringify(filtered))
+                } else {
+                    newRoute = await createSavedProject(projectName, JSON.stringify(filtered), path === 'photos' ? 'photo' : 'photobook');
+                }
 
-            canvas.renderAll()
-            setSaveProject(!saveProject)
-            setIsSaving(false)
+                canvas.renderAll()
+                setSaveProject(!saveProject)
+                setIsSaving(false)
+                projectId ? router.refresh() : router.replace(`/my-projects/${newRoute.$id}`);
+            } catch (e) {
+                console.error(e)
+            }
         }
     }
 
