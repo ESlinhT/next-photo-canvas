@@ -2,7 +2,7 @@ import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
 import {Point} from "fabric";
 
-export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset) => {
+export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport) => {
     let canvasWidth;
     let canvasHeight;
     switch (path) {
@@ -142,6 +142,8 @@ export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuid
                     const {x, y, zoom} = lastOffset;
                     const point = new Point(x, y);
                     canvas.zoomToPoint(point, zoom);
+                    canvas.setViewportTransform(viewport)
+                    enclose(canvas, img);
                 } else {
                     canvas.setZoom(1);
                 }
@@ -169,6 +171,7 @@ export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuid
             const point = new Point(x, y);
             canvas.zoomToPoint(point, zoom);
             setLastOffset({x, y, zoom});
+            setViewport(canvas.viewportTransform);
         }
 
         function enclose(canvas, object) {
@@ -266,6 +269,8 @@ export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuid
         }
 
         function onMouseUp() {
+            setViewport(canvas.viewportTransform);
+
             canvas.setViewportTransform(canvas.viewportTransform);
             isDragging = false;
             canvas.selection = true;

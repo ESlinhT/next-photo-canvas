@@ -25,7 +25,9 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         addCanvas,
         itemsToSave,
         lastOffset,
-        setLastOffset
+        setLastOffset,
+        viewport,
+        setViewport
     } = useCanvasOptionsContext();
     const {saveProject, setSaveProject, user} = useGlobalContext();
     const canvasRef = useRef(null);
@@ -55,7 +57,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         if (passedInItem === '[]') {
             passedInItem = '';
         }
-        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset);
+        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
 
 
@@ -75,7 +77,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     const handleConfirmSave = async () => {
         if (user) {
             setIsSaving(true);
-            const filtered = [...itemsToSave].filter((item) => item.canvasId !== 'canvasSize' && item.canvasId !== 'lastOffset');
+            const filtered = [...itemsToSave].filter((item) => item.canvasId !== 'canvasSize' && item.canvasId !== 'lastOffset' && item.canvasId !== 'viewport');
             filtered.push({
                 canvasId: 'canvasSize',
                 size: canvasSize
@@ -84,6 +86,10 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 filtered.push({
                     canvasId: 'lastOffset',
                     lastOffset
+                });
+                filtered.push({
+                    canvasId: 'viewport',
+                    viewport
                 })
             }
 
