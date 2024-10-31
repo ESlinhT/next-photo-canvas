@@ -39,7 +39,7 @@ export default function ProjectItemMenu({item, getProjects}) {
                     <MenuItem key={option.name}>
                         <button
                             onClick={() => handleItemClick(option.name)}
-                            className={`w-full text-start block pl-2 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50 h-full`}
+                            className={`w-full text-center block py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50 h-full`}
                         >
                             {option.name}
                         </button>

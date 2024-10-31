@@ -23,7 +23,9 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         setSelectedPhoto,
         bookCoverColors,
         addCanvas,
-        itemsToSave
+        itemsToSave,
+        lastOffset,
+        setLastOffset
     } = useCanvasOptionsContext();
     const {saveProject, setSaveProject, user} = useGlobalContext();
     const canvasRef = useRef(null);
@@ -39,7 +41,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     const [projectName, setProjectName] = useState(existingProjectName);
     const [updatedItem, setUpdatedItem] = useState(item);
     const [isSaving, setIsSaving] = useState(false);
-    const [itemDeleted, setItemDeleted] = useState(false)
+    const [itemDeleted, setItemDeleted] = useState(false);
 
     const [croppedDimensions, setCroppedDimensions] = useState({
         height: 0,
@@ -53,7 +55,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         if (passedInItem === '[]') {
             passedInItem = '';
         }
-        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted);
+        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
 
 
@@ -73,11 +75,17 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     const handleConfirmSave = async () => {
         if (user) {
             setIsSaving(true);
-            const filtered = [...itemsToSave].filter((item) => item.canvasId !== 'canvasSize');
+            const filtered = [...itemsToSave].filter((item) => item.canvasId !== 'canvasSize' && item.canvasId !== 'lastOffset');
             filtered.push({
                 canvasId: 'canvasSize',
                 size: canvasSize
-            })
+            });
+            if (path === 'photos') {
+                filtered.push({
+                    canvasId: 'lastOffset',
+                    lastOffset
+                })
+            }
 
             if (projectId) {
                 await updateSavedProject(projectId, projectName, JSON.stringify(filtered))

@@ -11,7 +11,7 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
 export default function Page({params}) {
     const {loading, setLoading} = useGlobalContext();
-    const {setSelectedPhoto, canvasSize, setCanvasSize, setItemsToSave} = useCanvasOptionsContext()
+    const {setSelectedPhoto, canvasSize, setCanvasSize, setItemsToSave, setLastOffset} = useCanvasOptionsContext()
     const [project, setProject] = useState({});
     const [item, setItem] = useState({});
     const [size, setSize] = useState({});
@@ -24,8 +24,13 @@ export default function Page({params}) {
                 setProject(res);
 
                 if (res.type === 'photo') {
-                    setSelectedPhoto(JSON.parse(res.content)[0].objects[0].src)
-                    setItem(JSON.parse(res.content)[0].objects[0]);
+                    const photo = JSON.parse(res.content).find((obj) => obj.canvasId === 'photo');
+                    setSelectedPhoto(photo.objects[0].src)
+                    setItem(photo.objects[0]);
+                    if (JSON.parse(res.content).find((item) => item.canvasId === 'lastOffset')) {
+                        const lastOffset = JSON.parse(res.content).find((item) => item.canvasId === 'lastOffset').lastOffset;
+                        setLastOffset(lastOffset)
+                    }
                 }
 
                 if (JSON.parse(res.content).length) {

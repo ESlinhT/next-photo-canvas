@@ -1,7 +1,8 @@
 import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
+import {Point} from "fabric";
 
-export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted) => {
+export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset) => {
     let canvasWidth;
     let canvasHeight;
     switch (path) {
@@ -137,7 +138,13 @@ export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuid
                 canvas.setActiveObject(img);
 
                 // initialize zoom
-                canvas.setZoom(1);
+                if (lastOffset.zoom > 1) {
+                    const {x, y, zoom} = lastOffset;
+                    const point = new Point(x, y);
+                    canvas.zoomToPoint(point, zoom);
+                } else {
+                    canvas.setZoom(1);
+                }
 
                 canvas.requestRenderAll();
             })
@@ -145,10 +152,13 @@ export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuid
 
         function onMouseWheel(opt) {
             const {e} = opt;
-            zoomDelta(canvas, e.deltaY, e.offsetX, e.offsetY);
-            enclose(canvas, img);
             e.preventDefault();
             e.stopPropagation();
+
+            const {deltaY, offsetX, offsetY} = e;
+            zoomDelta(canvas, deltaY, offsetX, offsetY);
+
+            enclose(canvas, img);
         }
 
         function zoomDelta(canvas, delta, x, y, maxZoom = 20, minZoom = 1) {
@@ -156,8 +166,9 @@ export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuid
             zoom *= 0.999 ** delta;
             zoom = Math.min(zoom, maxZoom);
             zoom = Math.max(zoom, minZoom);
-            const point = {x, y};
+            const point = new Point(x, y);
             canvas.zoomToPoint(point, zoom);
+            setLastOffset({x, y, zoom});
         }
 
         function enclose(canvas, object) {

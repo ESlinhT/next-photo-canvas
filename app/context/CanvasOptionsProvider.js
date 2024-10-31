@@ -19,7 +19,8 @@ const CanvasOptionsProvider = ({children}) => {
     const [primaryBorder, setPrimaryBorder] = useState(false);
     const [secondaryBorder, setSecondaryBorder] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(false);
-    const [itemsToSave, setItemsToSave] = useState([])
+    const [itemsToSave, setItemsToSave] = useState([]);
+    const [lastOffset, setLastOffset] = useState({ x: 0, y: 0, zoom: 0 });
     const [canvasSize, setCanvasSize] = useState({
         height: 7 * dpi,
         width: 5 * dpi,
@@ -81,6 +82,8 @@ const CanvasOptionsProvider = ({children}) => {
                 bookCoverColors,
                 itemsToSave,
                 setItemsToSave,
+                lastOffset,
+                setLastOffset,
                 addCanvas
             }}
         >
