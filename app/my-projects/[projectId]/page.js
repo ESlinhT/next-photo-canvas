@@ -22,7 +22,7 @@ export default function Page({params}) {
             setLoading(true)
             await getSavedProject(projectId).then((res) => {
                 setProject(res);
-g
+
                 if (res.type === 'photo') {
                     const photo = JSON.parse(res.content).find((obj) => obj.canvasId === 'photo');
                     setSelectedPhoto(photo.objects[0].src)
