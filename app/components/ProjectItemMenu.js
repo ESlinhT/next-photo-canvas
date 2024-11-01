@@ -10,7 +10,7 @@ export default function ProjectItemMenu({item, getProjects}) {
 
     const handleItemClick = async (name) => {
         if (name === 'Duplicate') {
-            await createSavedProject(`${item.name} - duplicate`, JSON.stringify(item.content), item.type)
+            await createSavedProject(`${item.name} - duplicate`, item.content, item.type)
                 .then(() => {
                     getProjects();
                 })
