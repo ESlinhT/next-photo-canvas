@@ -81,7 +81,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         if (user) {
             try {
                 setIsSaving(true);
-                const filtered = [...itemsToSave].filter((item) => item.canvasId !== 'canvasSize' && item.canvasId !== 'lastOffset' && item.canvasId !== 'viewport');
+                const filtered = [...itemsToSave].filter((item) => item.canvasId !== 'canvasSize' && item.canvasId !== 'lastOffset' && item.canvasId !== 'viewport' && item.canvasId !== 'border');
                 filtered.push({
                     canvasId: 'canvasSize',
                     size: canvasSize
@@ -94,6 +94,13 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                     filtered.push({
                         canvasId: 'viewport',
                         viewport
+                    });
+                    filtered.push({
+                        canvasId: 'border',
+                        border: {
+                            primaryBorder,
+                            secondaryBorder
+                        }
                     })
                 }
 

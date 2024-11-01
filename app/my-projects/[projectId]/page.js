@@ -11,7 +11,7 @@ import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 
 export default function Page({params}) {
     const {loading, setLoading} = useGlobalContext();
-    const {setSelectedPhoto, canvasSize, setCanvasSize, setItemsToSave, setLastOffset, setViewport} = useCanvasOptionsContext()
+    const {setSelectedPhoto, canvasSize, setCanvasSize, setItemsToSave, setLastOffset, setViewport, setPrimaryBorder, setSecondaryBorder} = useCanvasOptionsContext()
     const [project, setProject] = useState({});
     const [item, setItem] = useState({});
     const [size, setSize] = useState({});
@@ -22,7 +22,7 @@ export default function Page({params}) {
             setLoading(true)
             await getSavedProject(projectId).then((res) => {
                 setProject(res);
-
+g
                 if (res.type === 'photo') {
                     const photo = JSON.parse(res.content).find((obj) => obj.canvasId === 'photo');
                     setSelectedPhoto(photo.objects[0].src)
@@ -34,6 +34,11 @@ export default function Page({params}) {
                     if (JSON.parse(res.content).find((item) => item.canvasId === 'viewport')) {
                         const viewport = JSON.parse(res.content).find((item) => item.canvasId === 'viewport').viewport;
                         setViewport(viewport)
+                    }
+                    if (JSON.parse(res.content).find((item) => item.canvasId === 'border')) {
+                        const border = JSON.parse(res.content).find((item) => item.canvasId === 'border').border;
+                        setPrimaryBorder(border.primaryBorder);
+                        setSecondaryBorder(border.secondaryBorder);
                     }
                 }
 
