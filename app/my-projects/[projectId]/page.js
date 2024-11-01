@@ -27,16 +27,17 @@ export default function Page({params}) {
                     const photo = JSON.parse(res.content).find((obj) => obj.canvasId === 'photo');
                     setSelectedPhoto(photo.objects[0].src)
                     setItem(photo.objects[0]);
-                    if (JSON.parse(res.content).find((item) => item.canvasId === 'lastOffset')) {
-                        const lastOffset = JSON.parse(res.content).find((item) => item.canvasId === 'lastOffset').lastOffset;
+                    
+                    if (keyExists(res.content, 'lastOffset')) {
+                        const lastOffset = keyExists(res.content, 'lastOffset').lastOffset;
                         setLastOffset(lastOffset)
                     }
-                    if (JSON.parse(res.content).find((item) => item.canvasId === 'viewport')) {
-                        const viewport = JSON.parse(res.content).find((item) => item.canvasId === 'viewport').viewport;
+                    if (keyExists(res.content, 'viewport')) {
+                        const viewport = keyExists(res.content, 'viewport').viewport;
                         setViewport(viewport)
                     }
-                    if (JSON.parse(res.content).find((item) => item.canvasId === 'border')) {
-                        const border = JSON.parse(res.content).find((item) => item.canvasId === 'border').border;
+                    if (keyExists(res.content, 'border')) {
+                        const border = keyExists(res.content, 'border').border;
                         setPrimaryBorder(border.primaryBorder);
                         setSecondaryBorder(border.secondaryBorder);
                     }
@@ -59,6 +60,10 @@ export default function Page({params}) {
         } finally {
             setLoading(false)
         }
+    }
+
+    const keyExists = (content, key) => {
+        return JSON.parse(content).find((item) => item.canvasId === key)
     }
 
     useEffect(() => {
