@@ -74,8 +74,8 @@ export default function MyProjects() {
                         </div>
                     </div>
 
-                    <main className="py-2 mt-14 flex flex-col justify-center items-center">
-                        <div className="items-start">
+                    <main className="py-2 mt-14 flex flex-col justify-center items-center w-[100vw]">
+                        <div className="items-start w-[75%]">
                             <p className="text-5xl text-sky-500 font-extrabold my-10 uppercase textst">My Projects</p>
                             <span className="block text-xs font-bold text-gray-500">Project Type</span>
                             <div className="mb-16 flex items-center">
