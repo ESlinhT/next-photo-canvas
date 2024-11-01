@@ -227,10 +227,10 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 }
                 {path === 'photos' && <>
                     <div className="flex my-5 mb-10">
-                        <button onClick={() => addText(canvas)}
-                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 w-[100px]">
-                            Add Text
-                        </button>
+                        {/*<button onClick={() => addText(canvas)}*/}
+                        {/*        className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 w-[100px]">*/}
+                        {/*    Add Text*/}
+                        {/*</button>*/}
                         <button onClick={() => flipImage('horizontal', canvas)} disabled={!selectedPhoto}
                                 className="flex justify-center px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20 w-[100px]">
                             <p className="mr-2">Flip</p>
