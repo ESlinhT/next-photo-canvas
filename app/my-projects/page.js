@@ -7,7 +7,7 @@ import UserMenu from "@/app/components/UserMenu";
 import Loading from "@/app/components/Loading";
 import {getSavedProjects} from "@/app/lib/appwrite";
 import projectBookImage from '@/app/assets/projectBookImage.png'
-import projectPhotoImage from '@/app/assets/projectPhotoImage.jpg'
+import projectPhotoImage from '@/app/assets/projectPhotoImage.png'
 import ProjectItemMenu from "@/app/components/ProjectItemMenu";
 
 export default function MyProjects() {
@@ -64,16 +64,20 @@ export default function MyProjects() {
                                     key={index}
                                     className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow-2xl border border-gray-200"
                                 >
-                                    <div className="flex flex-1 flex-col p-8">
+                                    <a href={`/my-projects/${item.$id}`} className="flex flex-1 flex-col p-4 hover:bg-gray-100">
+                                        <dl className="mb-3 flex flex-grow flex-col justify-between">
+                                            <dt className="sr-only">Title</dt>
+                                            <dd className="text-md font-bold text-gray-300 uppercase">{item.type}</dd>
+                                        </dl>
                                         <img alt=""
                                              src={item.type === 'photobook' ? projectBookImage.src : projectPhotoImage.src}
-                                             className="mx-auto h-40 w-40 flex-shrink-0 "/>
-                                        <h3 className="mt-6 text-sm font-bold text-gray-900">{item.name}</h3>
+                                             className="mx-auto h-40 w-50 flex-shrink-0 "/>
+                                        <h3 className="mt-6 text-sm font-bold text-gray-900 uppercase">{item.name}</h3>
                                         <dl className="mt-1 flex flex-grow flex-col justify-between">
                                             <dt className="sr-only">Title</dt>
                                             <dd className="text-sm text-gray-500">{returnDate(item.$createdAt)}</dd>
                                         </dl>
-                                    </div>
+                                    </a>
                                     <div>
                                         <div className="-mt-px flex divide-x divide-gray-200">
                                             <div className="flex w-0 flex-1">
