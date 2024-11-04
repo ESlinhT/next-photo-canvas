@@ -59,7 +59,7 @@ export default function AuthLayout({children, path = 'Next Photo Canvas', projec
                             </button>
                             <div className="flex items-center justify-end">
                                 <button onClick={() => setSaveProject(true)}
-                                        className="flex items-center space-x-2 group pb-1">
+                                        className={`flex items-center space-x-2 group pb-1 ${path === 'my projects' ? 'hidden' : ''}`}>
                                     <svg className="h-6 w-6 stroke-blue-500 group-hover:stroke-blue-400" fill="none"
                                          viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -70,7 +70,7 @@ export default function AuthLayout({children, path = 'Next Photo Canvas', projec
                                     <h3 className="text-gray-800 group-hover:text-blue-400 text-sm font-bold">{projectId ? 'Update' : 'Save'}</h3>
                                 </button>
 
-                                <div aria-hidden="true" className="h-6 w-px mx-2 bg-gray-900/10"/>
+                                <div aria-hidden="true" className={`h-6 w-px mx-2 bg-gray-900/10 ${path === 'my projects' ? 'hidden' : ''}`}/>
 
                                 <div className="flex gap-x-4 lg:gap-x-6">
                                     <div className="flex items-center">
