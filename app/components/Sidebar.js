@@ -13,7 +13,7 @@ import "react-color-palette/css";
 import ReusableDialog from "@/app/components/ReusableDialog";
 
 
-export default function Sidebar({path, isHidden = false}) {
+export default function Sidebar({path, isHidden = false, isMobile = false, type = 'photobook'}) {
     const [images, setImages] = useState([]);
     const {
         primaryBorder,
@@ -31,7 +31,7 @@ export default function Sidebar({path, isHidden = false}) {
     const [isGradient, setIsGradient] = useState(false);
     const inputRef = useRef(null);
     const styles = isHidden
-        ? 'flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10'
+        ? 'flex grow flex-col gap-y-5 bg-gray-900 pb-4 ring-1 ring-white/10'
         : 'hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col';
 
     const handleFileChange = (e) => {
@@ -151,7 +151,7 @@ export default function Sidebar({path, isHidden = false}) {
                                                 section.id === 'border'
                                                     ?
                                                     <div key={optionIdx}
-                                                         className={`flex flex-col justify-center items-center`}>
+                                                         className={`${type === 'photobook' ? 'hidden' : 'flex'} flex-col justify-center items-center`}>
                                                         <button
                                                             className={`w-[120px] text-white border border-gray-200 px-4 py-1 hover:bg-gray-500 uppercase ${primaryBorder && !secondaryBorder ? 'bg-gray-500' : ''}`}
                                                             onClick={() => handleChooseBorderColor(false)}>Solid
@@ -205,8 +205,9 @@ export default function Sidebar({path, isHidden = false}) {
                     title={isGradient ? 'Choose your colors' : 'Choose a color'}
                     handleConfirm={handleBorderConfirm}
                     handleCancel={handleClearBorders}
+                    isMobile={isMobile}
                 >
-                    <div className="flex justify-center gap-5">
+                    <div className={`flex justify-center gap-5 ${isMobile ? 'scale-75' : ''}`}>
                         <ColorPicker
                             hideInput={["rgb", "hsv"]}
                             color={color}

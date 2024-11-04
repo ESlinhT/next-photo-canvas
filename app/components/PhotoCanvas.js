@@ -61,6 +61,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         }
         const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
+        resizeCanvas(canvas);
 
 
         if (croppedObject) {
@@ -75,6 +76,60 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
             canvas.dispose();
         };
     }, [item, updatedItem, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf, itemDeleted]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            resizeCanvas(canvas);
+        };
+
+        // Attach resize listener
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [canvas]);
+
+    const resizeCanvas = (canvas) => {
+        if (canvas) {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            let canvasWidth;
+            let canvasHeight;
+
+            switch (path) {
+                case "photos":
+                    canvasWidth = canvasSize?.width;
+                    canvasHeight = canvasSize?.height;
+                    break;
+                case "photobooks":
+                case "photobookcover":
+                    canvasWidth = 1200;
+                    canvasHeight = canvasSize?.width === canvasSize?.height ? 600 : 800;
+            }
+
+
+            // Define breakpoints and canvas size for each
+            if (width > 1400) {
+                canvas.setWidth(canvasWidth);
+                canvas.setHeight(canvasHeight);
+                canvas.setZoom(1)
+            } else if (width > 1200) {
+                canvas.setWidth(canvasWidth * 0.80);
+                canvas.setHeight(canvasHeight * 0.80);
+                canvas.setZoom(0.80)
+            } else if (width > 768) {
+                canvas.setWidth(canvasWidth * 0.60);
+                canvas.setHeight(canvasHeight * 0.60);
+                canvas.setZoom(0.60)
+            } else {
+                canvas.setWidth(canvasWidth * 0.30);
+                canvas.setHeight(canvasHeight * 0.30);
+                canvas.setZoom(0.30)
+            }
+            canvas.renderAll();
+        }
+    };
 
     const handleConfirmSave = async () => {
         let newRoute;
@@ -191,11 +246,11 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 {path === 'photobooks' && <>
                     <div className="flex my-5 mb-10">
                         <button onClick={() => addText(canvas)}
-                                className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 w-[150px]">
+                                className="px-2 py-2 bg-blue-500 text-white disabled:opacity-20 text-center w-[4rem] xl:w-[10rem]">
                             Add Text
                         </button>
                         <button onClick={() => flipImage('horizontal', canvas)} disabled={!canvas?.getActiveObject()}
-                                className="flex justify-center px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20 w-[150px]">
+                                className="flex justify-center px-2 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20 text-center w-[4rem] xl:w-[10rem]">
                             <p className="mr-2">Flip</p>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
                                  stroke="currentColor" className="size-6">
@@ -204,7 +259,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                             </svg>
                         </button>
                         <button onClick={() => flipImage('vertical', canvas)} disabled={!canvas?.getActiveObject()}
-                                className="flex justify-center px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20 w-[150px]">
+                                className="flex justify-center px-2 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20 text-center w-[4rem] xl:w-[10rem]">
                             <p className="mr-2">Flip</p>
 
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
@@ -216,17 +271,17 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                         <button
                             onClick={() => enableCrop(selectedImage, isCropping, setIsCropping, canvas, croppedObject, setCroppedObject)}
                             disabled={!canvas?.getActiveObject()}
-                            className="px-4 py-2 bg-green-800 text-white ml-2 disabled:opacity-20 w-[150px]">
+                            className="px-2 py-2 bg-green-800 text-white ml-2 disabled:opacity-20 text-center w-[4rem] xl:w-[10rem]">
                             Crop Image
                         </button>
                         <button
                             onClick={() => applyCrop(croppedObject, selectedImage, croppedDimensions, canvas, setCroppedObject, setIsCropping)}
                             disabled={!canvas?.getActiveObject()}
-                            className="px-4 py-2 bg-green-500 text-white ml-2 disabled:opacity-20 w-[150px]">
+                            className="px-2 py-2 bg-green-500 text-white ml-2 disabled:opacity-20 text-center w-[4rem] xl:w-[10rem]">
                             Apply Crop
                         </button>
                         <button onClick={() => handleRemoveObject(selectedImage, setSelectedImage)}
-                                className={`px-4 py-2 bg-red-500 text-white disabled:opacity-20 w-[100px] ml-2 ${canvas?.getActiveObject() ? 'block' : 'hidden'}`}>
+                                className={`px-2 py-2 bg-red-500 text-white disabled:opacity-20 w-[4rem] xl:w-[10rem] text-sm xl:text-lg text-center ml-2 ${canvas?.getActiveObject() ? 'block' : 'hidden'}`}>
                             Remove
                         </button>
                     </div>
@@ -235,11 +290,11 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 {path === 'photos' && <>
                     <div className="flex my-5 mb-10">
                         {/*<button onClick={() => addText(canvas)}*/}
-                        {/*        className="px-4 py-2 bg-blue-500 text-white disabled:opacity-20 w-[100px]">*/}
+                        {/*        className="px-2 py-2 bg-blue-500 text-white disabled:opacity-20 w-[4rem] xl:w-[10rem] text-sm xl:text-lg text-center">*/}
                         {/*    Add Text*/}
                         {/*</button>*/}
                         <button onClick={() => flipImage('horizontal', canvas)} disabled={!selectedPhoto}
-                                className="flex justify-center px-4 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20 w-[100px]">
+                                className="flex justify-center px-2 py-2 bg-blue-900 text-white ml-2 disabled:opacity-20 w-[4rem] xl:w-[10rem] text-sm xl:text-lg text-center">
                             <p className="mr-2">Flip</p>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
                                  stroke="currentColor" className="size-6">
@@ -248,7 +303,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                             </svg>
                         </button>
                         <button onClick={() => flipImage('vertical', canvas)} disabled={!selectedPhoto}
-                                className="flex justify-center px-4 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20 w-[100px]">
+                                className="flex justify-center px-2 py-2 bg-blue-500 text-white ml-2 disabled:opacity-20 w-[4rem] xl:w-[10rem] text-sm xl:text-lg text-center">
                             <p className="mr-2">Flip</p>
 
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
@@ -260,11 +315,11 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                         <button onClick={() => {
                             rotateCanvas(canvas, setCanvasSize);
                         }} disabled={!selectedPhoto}
-                                className="px-4 py-2 bg-blue-900 ml-2 text-white disabled:opacity-20 w-[100px]">
+                                className="px-2 py-2 bg-blue-900 ml-2 text-white disabled:opacity-20 w-[4rem] xl:w-[10rem] text-sm xl:text-lg text-center">
                             Rotate
                         </button>
                         <button onClick={() => handleRemoveObject(selectedPhoto, setSelectedPhoto)}
-                                className={`px-4 py-2 bg-red-500 text-white disabled:opacity-20 w-[100px] ml-2 ${selectedPhoto ? 'block' : 'hidden'}`}>
+                                className={`px-2 py-2 bg-red-500 text-white disabled:opacity-20 w-[4rem] xl:w-[10rem] text-sm xl:text-lg text-center ml-2 ${selectedPhoto ? 'block' : 'hidden'}`}>
                             Remove
                         </button>
                     </div>
@@ -273,11 +328,11 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 {path === 'photobookcover' && <>
                     <div className="flex my-5 mb-10">
                         <button onClick={() => setOpenBookCoverText(true)}
-                                className="w-[150px] px-4 py-2 bg-blue-700 text-white hover:bg-blue-500">
+                                className="text-center w-[4rem] xl:w-[10rem] px-2 py-2 bg-blue-700 text-white hover:bg-blue-500">
                             Text
                         </button>
                         <button onClick={() => setOpen(true)}
-                                className="w-[150px] px-4 py-2 bg-indigo-500 text-white hover:bg-indigo-300 ml-2">
+                                className="text-center w-[4rem] xl:w-[10rem] px-2 py-2 bg-indigo-500 text-white hover:bg-indigo-300 ml-2">
                             Color
                         </button>
                     </div>
@@ -285,8 +340,8 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
 
                 <div className="relative bg-white pb-5">
                     {path === 'photobooks' &&
-                        <div
-                            className={`${canvasSize.height === canvasSize.width ? 'h-[97%]' : 'h-[97.5%]'} w-[2px] bg-gray-600 opacity-30 z-20 absolute right-[50%]`}/>}
+                        <div style={{height: `${canvas?.height}px`}}
+                            className={`w-[2px] bg-gray-600 opacity-30 z-20 absolute right-[50%]`}/>}
                     <canvas id={canvasId} ref={canvasRef}></canvas>
                 </div>
                 {selectedPhoto &&
@@ -308,7 +363,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                              className={`flex flex-col items-center justify-center px-1 py-2 rounded-md ${bookCoverColor.src === selectedBookCoverColor.src ? 'border-2 border-indigo-200' : ''}`}>
                             <button
                                 onClick={() => handleBookCoverBackgroundColorSelect(bookCoverColor)}
-                                className="h-[100px] w-[150px] rounded-md shadow-2xl book-cover-button"
+                                className="h-[100px] text-center w-[4rem] xl:w-[10rem] rounded-md shadow-2xl book-cover-button"
                                 style={{backgroundImage: `url(${bookCoverColor.src})`}}
                             />
                             <span className="text-xs text-gray-600 pt-1">{bookCoverColor.name}</span>

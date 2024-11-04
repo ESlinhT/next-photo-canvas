@@ -7,7 +7,7 @@ import AuthCheck from "@/app/components/AuthCheck";
 import UserMenu from "@/app/components/UserMenu";
 import Loading from "@/app/components/Loading";
 import PhotoBook from "@/app/components/PhotoBook";
-import PhotoBookLayout from "@/app/layouts/PhotoBookLayout";
+import AuthLayout from "@/app/layouts/AuthLayout";
 
 export default function Photobooks() {
     const {loading} = useGlobalContext();
@@ -16,8 +16,8 @@ export default function Photobooks() {
         return <Loading/>;
     }
     return (
-        <PhotoBookLayout>
+        <AuthLayout path={'photobooks'}>
             <PhotoBook/>
-        </PhotoBookLayout>
+        </AuthLayout>
     )
 }

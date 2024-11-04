@@ -4,7 +4,7 @@ import {getSavedProject} from "@/app/lib/appwrite";
 import React, {useEffect, useState} from "react";
 import Loading from "@/app/components/Loading";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
-import PhotoBookLayout from "@/app/layouts/PhotoBookLayout";
+import AuthLayout from "@/app/layouts/AuthLayout";
 import PhotoBook from "@/app/components/PhotoBook";
 import PhotoCanvas from "@/app/components/PhotoCanvas";
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
@@ -27,7 +27,7 @@ export default function Page({params}) {
                     const photo = JSON.parse(res.content).find((obj) => obj.canvasId === 'photo');
                     setSelectedPhoto(photo.objects[0].src)
                     setItem(photo.objects[0]);
-                    
+
                     if (keyExists(res.content, 'lastOffset')) {
                         const lastOffset = keyExists(res.content, 'lastOffset').lastOffset;
                         setLastOffset(lastOffset)
@@ -82,11 +82,11 @@ export default function Page({params}) {
         return <Loading/>;
     }
     return (
-        <PhotoBookLayout path={'my projects'} projectId={projectId}>
+        <AuthLayout path={'my projects'} projectId={projectId} type={project.type}>
             {project.type === 'photobook'
                 ? <PhotoBook content={JSON.parse(project.content)} projectId={projectId} projectName={project.name}/>
                 : <PhotoCanvas item={item} projectId={projectId} existingProjectName={project.name} canvasId={`photo`}/>
             }
-        </PhotoBookLayout>
+        </AuthLayout>
     )
 }

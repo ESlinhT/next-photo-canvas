@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Sidebar from "@/app/components/Sidebar";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
 import AuthCheck from "@/app/components/AuthCheck";
@@ -9,7 +9,7 @@ import Loading from "@/app/components/Loading";
 import {Dialog, DialogBackdrop, DialogPanel, TransitionChild} from "@headlessui/react";
 import {Bars3Icon, XMarkIcon} from "@heroicons/react/16/solid";
 
-export default function PhotoBookLayout({children, path = 'photobooks', projectId = null}) {
+export default function AuthLayout({children, path = 'Next Photo Canvas', projectId = null, type = 'photobook'}) {
     const {user, loading, setSaveProject} = useGlobalContext();
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -22,7 +22,7 @@ export default function PhotoBookLayout({children, path = 'photobooks', projectI
                 <AuthCheck/>
             ) : (
                 <>
-                    <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 lg:hidden">
+                    <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-20 lg:hidden">
                         <DialogBackdrop
                             transition
                             className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
@@ -43,14 +43,14 @@ export default function PhotoBookLayout({children, path = 'photobooks', projectI
                                         </button>
                                     </div>
                                 </TransitionChild>
-                                <Sidebar path={path} isHidden={sidebarOpen}/>
+                                <Sidebar path={path} isHidden={sidebarOpen} isMobile={true} type={type} />
                             </DialogPanel>
                         </div>
                     </Dialog>
-                    <Sidebar path={path}/>
+                    <Sidebar path={path} type={type}/>
                     <div className="lg:pl-56">
                         <div
-                            className="sticky top-0 z-40 w-full flex justify-between lg:justify-end h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm">
+                            className="sticky top-0 z-20 w-full flex justify-between lg:justify-end h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm">
                             <button type="button" onClick={() => setSidebarOpen(true)}
                                     className="-m-2.5 p-2.5 text-gray-700 lg:hidden">
                                 <span className="sr-only">Open sidebar</span>
@@ -58,7 +58,7 @@ export default function PhotoBookLayout({children, path = 'photobooks', projectI
                             </button>
                             <div className="flex items-center justify-end">
                                 <button onClick={() => setSaveProject(true)}
-                                        className="flex items-center space-x-2 group">
+                                        className="flex items-center space-x-2 group pb-1">
                                     <svg className="h-6 w-6 stroke-blue-500 group-hover:stroke-blue-400" fill="none"
                                          viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -66,7 +66,7 @@ export default function PhotoBookLayout({children, path = 'photobooks', projectI
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                               d="M14 7.64L13.042 6c-.36-.616-1.053-1-1.806-1H7.057C5.921 5 5 5.86 5 6.92V11M17 15v4M19 17h-4"></path>
                                     </svg>
-                                    <h3 className="text-black group-hover:text-blue-400 text-sm font-semibold">{projectId ? 'Update' : ''}</h3>
+                                    <h3 className="text-gray-800 group-hover:text-blue-400 text-sm font-bold">{projectId ? 'Update' : 'Save'}</h3>
                                 </button>
 
                                 <div aria-hidden="true" className="h-6 w-px mx-2 bg-gray-900/10"/>

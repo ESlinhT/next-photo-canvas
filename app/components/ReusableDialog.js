@@ -1,13 +1,13 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 
-export default function ReusableDialog({ open, setOpen, title, children, handleConfirm, handleCancel, isSaving = false }) {
+export default function ReusableDialog({ open, setOpen, title, children, handleConfirm, handleCancel, isSaving = false, isMobile = false }) {
     return (
         <Dialog open={open} onClose={setOpen} className="relative z-20">
             <DialogBackdrop
                 transition
                 className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
             />
-            <div className="fixed left-[7rem] inset-0 z-10 w-screen overflow-y-auto">
+            <div className={`fixed ${isMobile ? 'left-0' : 'left-[7rem]'} inset-0 z-50 w-screen`}>
                 <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <DialogPanel
                         transition

@@ -35,7 +35,7 @@ export default function PhotoBook({content = [], projectId = null, projectName =
 
     return (
         <div className="flex flex-col items-center w-full relative">
-            <h2 className="text-2xl text-gray-500 mt-4">Cover</h2>
+            <h2 className="text-2xl text-gray-500">Cover</h2>
             <div className="h-[2px] bg-gray-300 w-[300px] mb-3"></div>
             <div className="flex flex-row mb-8 relative">
                 <div className="vertical-text absolute -left-8 bottom-2 flex justify-center items-center">

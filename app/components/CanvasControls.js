@@ -5,20 +5,20 @@ import {Point} from "fabric";
 export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport) => {
     let canvasWidth;
     let canvasHeight;
-    switch (path) {
-        case "photos":
-            canvasWidth = canvasSize?.width;
-            canvasHeight = canvasSize?.height;
-            break;
-        case "photobooks":
-        case "photobookcover":
-            canvasWidth = 1200;
-            canvasHeight = canvasSize?.width === canvasSize?.height ? 600 : 800;
-    }
+    // switch (path) {
+    //     case "photos":
+    //         canvasWidth = canvasSize?.width;
+    //         canvasHeight = canvasSize?.height;
+    //         break;
+    //     case "photobooks":
+    //     case "photobookcover":
+    //         canvasWidth = 1200;
+    //         canvasHeight = canvasSize?.width === canvasSize?.height ? 600 : 800;
+    // }
 
     const canvas = new fabric.Canvas(canvasRef.current, {
-        width: canvasWidth,
-        height: canvasHeight,
+        // width: canvasWidth,
+        // height: canvasHeight,
         backgroundColor: '#fff',
         selection: true,
     });
