@@ -2,8 +2,23 @@ import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
 import {Point} from "fabric";
 
-export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuidelines, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport) => {
+export const initializeCanvas = (item, canvasRef, setCanvas, canvasSize, guidelines, setGuidelines, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport) => {
+    let canvasWidth;
+    let canvasHeight;
+
+    switch (path) {
+        case "photos":
+            canvasWidth = canvasSize?.width;
+            canvasHeight = canvasSize?.height;
+            break;
+        case "photobooks":
+        case "photobookcover":
+            canvasWidth = 1200;
+            canvasHeight = canvasSize?.width === canvasSize?.height ? 600 : 800;
+    }
     const canvas = new fabric.Canvas(canvasRef.current, {
+        height: canvasHeight,
+        width: canvasWidth,
         backgroundColor: '#fff',
         selection: true,
     });

@@ -59,7 +59,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         if (passedInItem === '[]') {
             passedInItem = '';
         }
-        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, guidelines, setGuidelines, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport);
+        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, canvasSize, guidelines, setGuidelines, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
         resizeCanvas(canvas);
 
@@ -110,7 +110,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 canvas.setWidth(canvasWidth);
                 canvas.setHeight(canvasHeight);
                 canvas.setZoom(1)
-            } else if (width > 1200) {
+            } else if (width > 1300) {
                 canvas.setWidth(canvasWidth * 0.80);
                 canvas.setHeight(canvasHeight * 0.80);
                 canvas.setZoom(0.80)
