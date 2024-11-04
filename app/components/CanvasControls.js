@@ -367,7 +367,7 @@ export const toggleBorder = (primaryBorder, secondaryBorder, canvas) => {
     }
 }
 
-export const toggleBookCoverColor = (canvas, color, addCanvas, canvasId) => {
+export const toggleBookCoverColor = (canvas, color) => {
     toggleLineColors(canvas, color.name);
     fabric.Image.fromURL(color.src).then((img) => {
         img.scaleToWidth(1200);

@@ -119,9 +119,9 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 canvas.setHeight(canvasHeight * 0.60);
                 canvas.setZoom(0.60)
             } else {
-                canvas.setWidth(canvasWidth * 0.30);
-                canvas.setHeight(canvasHeight * 0.30);
-                canvas.setZoom(0.30)
+                canvas.setWidth(canvasWidth * (path === 'photos' ? 0.60 : 0.30));
+                canvas.setHeight(canvasHeight * (path === 'photos' ? 0.60 : 0.30));
+                canvas.setZoom((path === 'photos' ? 0.60 : 0.30))
             }
             canvas.renderAll();
         }
@@ -226,7 +226,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         } else {
             setSelectedBookCoverColor(color)
         }
-        toggleBookCoverColor(canvas, color, addCanvas, canvasId);
+        toggleBookCoverColor(canvas, color);
     }
 
     const handleBookCoverTextConfirm = () => {
