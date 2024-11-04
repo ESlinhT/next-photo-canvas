@@ -1,14 +1,14 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 
-export default function ReusableDialog({ open, setOpen, title, children, handleConfirm, handleCancel, isSaving = false, isMobile = false }) {
+export default function ReusableDialog({ open, setOpen, title, children, handleConfirm, handleCancel, isSaving = false }) {
     return (
         <Dialog open={open} onClose={setOpen} className="relative z-20">
             <DialogBackdrop
                 transition
                 className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
             />
-            <div className={`fixed ${isMobile ? 'left-0' : 'left-[7rem]'} inset-0 z-50 w-screen`}>
-                <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div className={`fixed left-0 lg:left-[7rem] inset-0 z-50 w-screen`}>
+                <div className="flex lg:min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <DialogPanel
                         transition
                         className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-xl sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
@@ -19,7 +19,7 @@ export default function ReusableDialog({ open, setOpen, title, children, handleC
                                     {title}
                                 </DialogTitle>
                                 <div className="mt-2">
-                                    {children} {/* Dynamic content will be inserted here */}
+                                    {children}
                                 </div>
                             </div>
                         </div>

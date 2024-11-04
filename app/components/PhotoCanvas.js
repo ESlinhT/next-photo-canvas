@@ -59,7 +59,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         if (passedInItem === '[]') {
             passedInItem = '';
         }
-        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport);
+        const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, guidelines, setGuidelines, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
         resizeCanvas(canvas);
 
@@ -75,14 +75,13 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
             cleanupDragAndDrop();
             canvas.dispose();
         };
-    }, [item, updatedItem, canvasSize.height, canvasSize.width, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf, itemDeleted]);
+    }, [item, updatedItem, selectedPhoto, path, primaryBorder, secondaryBorder, croppedObject, guidelines, canvasSize, disableHalf, itemDeleted]);
 
     useEffect(() => {
         const handleResize = () => {
             resizeCanvas(canvas);
         };
 
-        // Attach resize listener
         window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize);
@@ -92,7 +91,6 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
     const resizeCanvas = (canvas) => {
         if (canvas) {
             const width = window.innerWidth;
-            const height = window.innerHeight;
 
             let canvasWidth;
             let canvasHeight;
@@ -108,8 +106,6 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                     canvasHeight = canvasSize?.width === canvasSize?.height ? 600 : 800;
             }
 
-
-            // Define breakpoints and canvas size for each
             if (width > 1400) {
                 canvas.setWidth(canvasWidth);
                 canvas.setHeight(canvasHeight);
@@ -391,7 +387,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 handleCancel={() => setSaveProject(!saveProject)}
                 isSaving={isSaving}
             >
-                <input type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} className="px-2 w-[50%] text-center border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                <input type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} className="px-2 w-full lg:w-[50%] text-center border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
             </ReusableDialog>
         </div>
     );

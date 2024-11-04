@@ -13,8 +13,7 @@ import "react-color-palette/css";
 import ReusableDialog from "@/app/components/ReusableDialog";
 
 
-export default function Sidebar({path, isHidden = false, isMobile = false, type = 'photobook'}) {
-    const [images, setImages] = useState([]);
+export default function Sidebar({path, isHidden = false, type = 'photobook', images, setImages}) {
     const {
         primaryBorder,
         setPrimaryBorder,
@@ -124,12 +123,12 @@ export default function Sidebar({path, isHidden = false, isMobile = false, type 
         <div className={styles}>
             <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 pb-4">
                 <div className="flex h-16 shrink-0 items-center justify-center w-full">
-                    <p className="text-white font-bold text-2xl uppercase">{path}</p>
+                    <p className="text-white font-bold text-xl uppercase text-center">{path}</p>
                 </div>
                 <nav className="flex flex-1 flex-col px-6">
                     <ul className="flex flex-1 flex-col gap-y-7">
                         <li>
-                            {filters.map((section, index) => (
+                            {path !== 'my projects' ? filters.map((section, index) => (
                                 <Disclosure key={section.id} as="div"
                                             className={`${index === 0 ? '' : 'border-t border-gray-200'} relative py-6 ${path === 'photobooks' && section.id === 'border' ? 'hidden' : ''}`}>
                                     <h3 className="-mx-2 -my-3 flow-root">
@@ -178,9 +177,12 @@ export default function Sidebar({path, isHidden = false, isMobile = false, type 
                                         </div>
                                     </DisclosurePanel>
                                 </Disclosure>
-                            ))}
+                            )) : <div className="flex flex-col justify-center text-white ">
+                                <a href="/photos" className="py-1 px-2 border border-white mb-2 hover:bg-gray-400 text-center">Create a Photo</a>
+                                <a href="/photobooks" className="py-1 px-2 border border-white mb-2 hover:bg-gray-400 text-center">Create a PhotoBook</a>
+                            </div>}
                         </li>
-                        <li>
+                        <li className={`${path !== 'my projects' ? 'block' : 'hidden'}`}>
                             <ul className="-mx-2 space-y-1">
                                 <div className="w-full p-2">
                                     <div onClick={handleFileInputClick}
@@ -205,9 +207,8 @@ export default function Sidebar({path, isHidden = false, isMobile = false, type 
                     title={isGradient ? 'Choose your colors' : 'Choose a color'}
                     handleConfirm={handleBorderConfirm}
                     handleCancel={handleClearBorders}
-                    isMobile={isMobile}
                 >
-                    <div className={`flex justify-center gap-5 ${isMobile ? 'scale-75' : ''}`}>
+                    <div className={`flex justify-center gap-5 scale-75 lg:scale-100`}>
                         <ColorPicker
                             hideInput={["rgb", "hsv"]}
                             color={color}

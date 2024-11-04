@@ -34,7 +34,7 @@ export default function Home() {
                             src={randomBg.src}
                             width={540}
                             height={540}
-                            className="w-[76rem] bg-white/5 shadow-2xl ring-1 ring-white/10 max-w-[540px]"
+                            className="w-[76rem] bg-white/5 shadow-2xl ring-1 ring-white/10 max-w-sm lg:max-w-[540px]"
                         />
                     </div>
                 </div>

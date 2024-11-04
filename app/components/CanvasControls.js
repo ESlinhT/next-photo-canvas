@@ -2,23 +2,8 @@ import * as fabric from "fabric";
 import {clearGuideLines, handleObjectMoving} from "@/app/utils/SnappingHelpers";
 import {Point} from "fabric";
 
-export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuidelines, canvasSize, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport) => {
-    let canvasWidth;
-    let canvasHeight;
-    // switch (path) {
-    //     case "photos":
-    //         canvasWidth = canvasSize?.width;
-    //         canvasHeight = canvasSize?.height;
-    //         break;
-    //     case "photobooks":
-    //     case "photobookcover":
-    //         canvasWidth = 1200;
-    //         canvasHeight = canvasSize?.width === canvasSize?.height ? 600 : 800;
-    // }
-
+export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuidelines, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport) => {
     const canvas = new fabric.Canvas(canvasRef.current, {
-        // width: canvasWidth,
-        // height: canvasHeight,
         backgroundColor: '#fff',
         selection: true,
     });
@@ -33,13 +18,13 @@ export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuid
     }
 
     if (path === 'photobookcover') {
-        const line1 = new fabric.Line([canvas.width / 2 - 15, 0, canvas.width / 2 - 15, canvas.height], {
+        const line1 = new fabric.Line([canvas.getWidth() / 2 - 15, 0, canvas.getWidth() / 2 - 15, canvas.getHeight()], {
             strokeDashArray: [3, 3],
             stroke: 'black',
             selectable: false,
         });
 
-        const line2 = new fabric.Line([canvas.width / 2 + 15, 0, canvas.width / 2 + 15, canvas.height], {
+        const line2 = new fabric.Line([canvas.getWidth() / 2 + 15, 0, canvas.getWidth() / 2 + 15, canvas.getHeight()], {
             strokeDashArray: [3, 3],
             stroke: 'black',
             selectable: false
@@ -52,7 +37,7 @@ export const initializeCanvas = (item, canvasRef, setCanvas, guidelines, setGuid
     if (disableHalf) {
         canvas.on('mouse:down', (options) => {
             const pointer = canvas.getPointer(options.e);
-            if (pointer.x < canvas.width / 2) {
+            if (pointer.x < canvas.getWidth() / 2) {
                 canvas.discardActiveObject();
                 canvas.renderAll();
             }

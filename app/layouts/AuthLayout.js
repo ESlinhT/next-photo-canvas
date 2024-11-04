@@ -11,7 +11,8 @@ import {Bars3Icon, XMarkIcon} from "@heroicons/react/16/solid";
 
 export default function AuthLayout({children, path = 'Next Photo Canvas', projectId = null, type = 'photobook'}) {
     const {user, loading, setSaveProject} = useGlobalContext();
-    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [images, setImages] = useState([]);
 
     if (loading) {
         return <Loading/>;
@@ -43,11 +44,11 @@ export default function AuthLayout({children, path = 'Next Photo Canvas', projec
                                         </button>
                                     </div>
                                 </TransitionChild>
-                                <Sidebar path={path} isHidden={sidebarOpen} isMobile={true} type={type} />
+                                <Sidebar path={path} isHidden={sidebarOpen} type={type} images={images} setImages={setImages}/>
                             </DialogPanel>
                         </div>
                     </Dialog>
-                    <Sidebar path={path} type={type}/>
+                    <Sidebar path={path} type={type} images={images} setImages={setImages}/>
                     <div className="lg:pl-56">
                         <div
                             className="sticky top-0 z-20 w-full flex justify-between lg:justify-end h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm">
@@ -77,6 +78,19 @@ export default function AuthLayout({children, path = 'Next Photo Canvas', projec
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div
+                            className={`${images.length ? 'flex' : 'hidden'} lg:hidden sticky top-0 z-20 w-full overflow-x-scroll justify-between h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm`}>
+                            {images.map((image, key) => (
+                                <img
+                                    key={key}
+                                    src={image}
+                                    alt={`img-${key}`}
+                                    className="cursor-pointer h-[60px] w-[80px] border"
+                                    draggable={true}
+                                    onDragStart={(e) => e.dataTransfer.setData('imageUrl', image)}
+                                />
+                            ))}
                         </div>
 
                         <main className="py-2 mt-14">

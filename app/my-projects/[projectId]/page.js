@@ -82,7 +82,7 @@ export default function Page({params}) {
         return <Loading/>;
     }
     return (
-        <AuthLayout path={'my projects'} projectId={projectId} type={project.type}>
+        <AuthLayout path={project.name} projectId={projectId} type={project.type}>
             {project.type === 'photobook'
                 ? <PhotoBook content={JSON.parse(project.content)} projectId={projectId} projectName={project.name}/>
                 : <PhotoCanvas item={item} projectId={projectId} existingProjectName={project.name} canvasId={`photo`}/>
