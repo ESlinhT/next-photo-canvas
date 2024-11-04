@@ -13,7 +13,7 @@ import "react-color-palette/css";
 import ReusableDialog from "@/app/components/ReusableDialog";
 
 
-export default function Sidebar({path}) {
+export default function Sidebar({path, isHidden = false}) {
     const [images, setImages] = useState([]);
     const {
         primaryBorder,
@@ -24,13 +24,15 @@ export default function Sidebar({path}) {
         canvasSize,
         setCanvasSize,
         setSelectedPhoto,
-        selectedPhoto
     } = useCanvasOptionsContext();
     const [color, setColor] = useColor("#fff");
     const [secondColor, setSecondColor] = useColor("#fff");
     const [open, setOpen] = useState(false);
     const [isGradient, setIsGradient] = useState(false);
     const inputRef = useRef(null);
+    const styles = isHidden
+        ? 'flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10'
+        : 'hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col';
 
     const handleFileChange = (e) => {
         const files = e.target.files;
@@ -118,9 +120,8 @@ export default function Sidebar({path}) {
        }
     }, [images]);
 
-
     return (
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
+        <div className={styles}>
             <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 pb-4">
                 <div className="flex h-16 shrink-0 items-center justify-center w-full">
                     <p className="text-white font-bold text-2xl uppercase">{path}</p>
