@@ -36,7 +36,8 @@ export default function PhotoCanvas({
         lastOffset,
         setLastOffset,
         viewport,
-        setViewport
+        setViewport,
+        dpi
     } = useCanvasOptionsContext();
     const {saveProject, setSaveProject, user} = useGlobalContext();
     const canvasRef = useRef(null);
@@ -311,14 +312,14 @@ export default function PhotoCanvas({
                              className={`w-[2px] bg-gray-600 opacity-30 z-20 absolute right-[50%]`}/>}
                     <div
                         className={`${path === 'photos' ? 'flex' : 'hidden'} vertical-text absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-14 -bottom-2' : '-left-8 bottom-8'} justify-center items-center`}>
-                        <p className="text-gray-500 text-sm">{canvasSize.height / 96} in </p>
+                        <p className="text-gray-500 text-sm">{canvasSize.height / dpi} in </p>
                         <ArrowLongDownIcon
                             aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>
                     </div>
                     <canvas id={canvasId} ref={canvasRef}></canvas>
                     <div
                         className={`${path === 'photos' ? 'flex' : 'hidden'} absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-4 -bottom-[3.5rem]' : 'left-3 -bottom-3'} justify-center items-center`}>
-                        <p className="text-gray-500 text-sm">{canvasSize.width / 96} in </p>
+                        <p className="text-gray-500 text-sm">{canvasSize.width / dpi} in </p>
                         <ArrowLongRightIcon
                             aria-hidden="true" className="h-[30px] w-8 text-gray-400"/>
                     </div>
