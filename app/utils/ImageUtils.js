@@ -24,6 +24,37 @@ export const rotateCanvas = (canvas, setCanvasSize) => {
     canvas.renderAll()
 }
 
+export const resizeCanvas = (canvas, path, canvasSize) => {
+    if (canvas) {
+        const windowWidth = window.innerWidth;
+
+        let baseWidth = canvasSize?.width || 800;
+        let baseHeight = canvasSize?.height || 600;
+
+        if (path === "photobooks" || path === "photobookcover") {
+            baseWidth = 1200;
+            baseHeight = baseWidth === baseHeight ? 600 : 800;
+        }
+
+        let scaleFactor;
+        if (windowWidth > 1400) {
+            scaleFactor = 1;
+        } else if (windowWidth > 1300) {
+            scaleFactor = 0.80;
+        } else if (windowWidth > 768) {
+            scaleFactor = 0.60;
+        } else {
+            scaleFactor = path === 'photos' ? 0.60 : 0.30;
+        }
+
+        canvas.setWidth(baseWidth * scaleFactor);
+        canvas.setHeight(baseHeight * scaleFactor);
+        canvas.setZoom(scaleFactor);
+
+        canvas.renderAll();
+    }
+};
+
 export const enableCrop = (selectedImage, isCropping, setIsCropping, canvas, croppedObject, setCroppedObject) => {
     if (selectedImage && !isCropping) {
         setIsCropping(true)

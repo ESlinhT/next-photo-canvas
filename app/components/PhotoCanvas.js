@@ -6,7 +6,7 @@ import {
     setupDragAndDrop,
     toggleBookCoverColor
 } from './CanvasControls';
-import {applyCrop, deleteImage, enableCrop, flipImage, rotateCanvas,} from '../utils/ImageUtils';
+import {applyCrop, deleteImage, enableCrop, flipImage, resizeCanvas, rotateCanvas,} from '../utils/ImageUtils';
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import ReusableDialog from "@/app/components/ReusableDialog";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
@@ -61,8 +61,6 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         }
         const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, canvasSize, guidelines, setGuidelines, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
-        resizeCanvas(canvas);
-
 
         if (croppedObject) {
             croppedObject.on('modified', () => {
@@ -79,7 +77,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
 
     useEffect(() => {
         const handleResize = () => {
-            resizeCanvas(canvas);
+            resizeCanvas(canvas, path, canvasSize);
         };
 
         window.addEventListener('resize', handleResize);
@@ -87,45 +85,6 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
             window.removeEventListener('resize', handleResize);
         };
     }, [canvas]);
-
-    const resizeCanvas = (canvas) => {
-        if (canvas) {
-            const width = window.innerWidth;
-
-            let canvasWidth;
-            let canvasHeight;
-
-            switch (path) {
-                case "photos":
-                    canvasWidth = canvasSize?.width;
-                    canvasHeight = canvasSize?.height;
-                    break;
-                case "photobooks":
-                case "photobookcover":
-                    canvasWidth = 1200;
-                    canvasHeight = canvasSize?.width === canvasSize?.height ? 600 : 800;
-            }
-
-            if (width > 1400) {
-                canvas.setWidth(canvasWidth);
-                canvas.setHeight(canvasHeight);
-                canvas.setZoom(1)
-            } else if (width > 1300) {
-                canvas.setWidth(canvasWidth * 0.80);
-                canvas.setHeight(canvasHeight * 0.80);
-                canvas.setZoom(0.80)
-            } else if (width > 768) {
-                canvas.setWidth(canvasWidth * 0.60);
-                canvas.setHeight(canvasHeight * 0.60);
-                canvas.setZoom(0.60)
-            } else {
-                canvas.setWidth(canvasWidth * (path === 'photos' ? 0.60 : 0.30));
-                canvas.setHeight(canvasHeight * (path === 'photos' ? 0.60 : 0.30));
-                canvas.setZoom((path === 'photos' ? 0.60 : 0.30))
-            }
-            canvas.renderAll();
-        }
-    };
 
     const handleConfirmSave = async () => {
         let newRoute;
