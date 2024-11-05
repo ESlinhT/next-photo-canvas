@@ -203,7 +203,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         <div className="relative">
             <div className="flex flex-col items-center">
                 {path === 'photobooks' && <>
-                    <div className="flex my-5 mb-10">
+                    <div className="flex my-5">
                         <button onClick={() => addText(canvas)}
                                 className="px-2 py-2 bg-blue-500 text-white disabled:opacity-20 text-center w-[4rem] xl:w-[10rem]">
                             Add Text
@@ -247,7 +247,7 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 </>
                 }
                 {path === 'photos' && <>
-                    <div className="flex my-5 mb-10">
+                    <div className="flex mb-10">
                         {/*<button onClick={() => addText(canvas)}*/}
                         {/*        className="px-2 py-2 bg-blue-500 text-white disabled:opacity-20 w-[4rem] xl:w-[10rem] text-sm xl:text-lg text-center">*/}
                         {/*    Add Text*/}

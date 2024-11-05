@@ -18,9 +18,9 @@ export default function Photos() {
 
     return (
         <AuthLayout path={'photos'} type="photo">
-            <main className="py-2 mt-14">
+            <main className="py-2">
                 <div className="flex flex-col justify-center items-center">
-                    <div className="my-1 p-2 relative">
+                    <div className="mb-1 p-2 relative">
                         <div
                             className={`vertical-text absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-12 bottom-0' : '-left-8 bottom-8'} flex justify-center items-center`}>
                             <p className="text-gray-500 text-sm">{canvasSize.height / dpi} in </p>

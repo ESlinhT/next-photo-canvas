@@ -93,7 +93,7 @@ export default function AuthLayout({children, path = 'Next Photo Canvas', projec
                             ))}
                         </div>
 
-                        <main className="py-2 mt-14">
+                        <main className="py-2 mt-10">
                             <div className="flex m-2 justify-center">
                                 {children}
                             </div>
