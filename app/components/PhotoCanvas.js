@@ -13,8 +13,16 @@ import {useGlobalContext} from "@/app/context/GlobalProvider";
 import {createSavedProject, getSavedProjects, updateSavedProject} from "@/app/lib/appwrite";
 import * as fabric from "fabric";
 import {useRouter} from "next/navigation";
+import {ArrowLongDownIcon, ArrowLongRightIcon} from "@heroicons/react/16/solid";
 
-export default function PhotoCanvas({item = null, path = "photos", disableHalf = false, canvasId, projectId = null, existingProjectName = ''}) {
+export default function PhotoCanvas({
+                                        item = null,
+                                        path = "photos",
+                                        disableHalf = false,
+                                        canvasId,
+                                        projectId = null,
+                                        existingProjectName = ''
+                                    }) {
     const {
         primaryBorder,
         secondaryBorder,
@@ -168,15 +176,15 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
 
             if (key.includes('canvas') && path !== 'photos') {
                 const item = localStorage.getItem(key);
-                canvasItems.push({ key, item });
+                canvasItems.push({key, item});
             }
             if (path === 'photos' && key === 'photo') {
                 const item = localStorage.getItem(key);
-                canvasItems.push({ key, item });
+                canvasItems.push({key, item});
             }
             if (key === 'canvas-size') {
                 const item = localStorage.getItem(key);
-                canvasItems.push({ key, item });
+                canvasItems.push({key, item});
             }
         }
 
@@ -300,8 +308,20 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 <div className="relative bg-white pb-5">
                     {path === 'photobooks' &&
                         <div style={{height: `${canvas?.height}px`}}
-                            className={`w-[2px] bg-gray-600 opacity-30 z-20 absolute right-[50%]`}/>}
+                             className={`w-[2px] bg-gray-600 opacity-30 z-20 absolute right-[50%]`}/>}
+                    <div
+                        className={`${path === 'photos' ? 'flex' : 'hidden'} vertical-text absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-14 -bottom-2' : '-left-8 bottom-8'} justify-center items-center`}>
+                        <p className="text-gray-500 text-sm">{canvasSize.height / 96} in </p>
+                        <ArrowLongDownIcon
+                            aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>
+                    </div>
                     <canvas id={canvasId} ref={canvasRef}></canvas>
+                    <div
+                        className={`${path === 'photos' ? 'flex' : 'hidden'} absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-4 -bottom-[3.5rem]' : 'left-3 -bottom-3'} justify-center items-center`}>
+                        <p className="text-gray-500 text-sm">{canvasSize.width / 96} in </p>
+                        <ArrowLongRightIcon
+                            aria-hidden="true" className="h-[30px] w-8 text-gray-400"/>
+                    </div>
                 </div>
                 {selectedPhoto &&
                     <p className={`text-xl text-center ${JSON.stringify(primaryBorder).includes('#') ? 'pt-6' : 'pt-1'}`}>
@@ -350,7 +370,8 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
                 handleCancel={() => setSaveProject(!saveProject)}
                 isSaving={isSaving}
             >
-                <input type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)} className="px-2 w-full lg:w-[50%] text-center border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                <input type="text" value={projectName} onChange={(e) => setProjectName(e.target.value)}
+                       className="px-2 w-full lg:w-[50%] text-center border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
             </ReusableDialog>
         </div>
     );
