@@ -21,19 +21,7 @@ export default function Photos() {
             <main className="py-2">
                 <div className="flex flex-col justify-center items-center">
                     <div className="mb-1 p-2 relative">
-                        {/*<div*/}
-                        {/*    className={`vertical-text absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-12 bottom-0' : '-left-8 bottom-8'} flex justify-center items-center`}>*/}
-                        {/*    <p className="text-gray-500 text-sm">{canvasSize.height / dpi} in </p>*/}
-                        {/*    <ArrowLongDownIcon*/}
-                        {/*        aria-hidden="true" className="h-[30px] w-10 text-gray-400"/>*/}
-                        {/*</div>*/}
                         <PhotoCanvas canvasId={`photo`} path="photos"/>
-                        {/*<div*/}
-                        {/*    className={`absolute ${JSON.stringify(primaryBorder).includes('#') ? '-left-1 -bottom-[1rem]' : 'left-3 -bottom-3'} flex justify-center items-center`}>*/}
-                        {/*    <p className="text-gray-500 text-sm">{canvasSize.width / dpi} in </p>*/}
-                        {/*    <ArrowLongRightIcon*/}
-                        {/*        aria-hidden="true" className="h-[30px] w-8 text-gray-400"/>*/}
-                        {/*</div>*/}
                     </div>
                 </div>
             </main>
