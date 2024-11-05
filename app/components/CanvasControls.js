@@ -133,6 +133,8 @@ export const initializeCanvas = (item, canvasRef, setCanvas, canvasSize, guideli
                     scaleY: canvas?.height / img.height,
                     selectable: true,
                     hasControls: false,
+                    flipX: item?.flipX ?? false,
+                    flipY: item?.flipY ?? false,
                 });
                 canvas.add(img);
                 canvas.setActiveObject(img);
