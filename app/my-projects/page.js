@@ -83,7 +83,7 @@ export default function MyProjects() {
 
     return (
         <AuthLayout path="my projects">
-            <main className="pb-2 flex flex-col justify-center items-center w-[100vw]">
+            <main className="pb-14 flex flex-col justify-center items-center w-[100vw]">
                 <div className="items-start w-[75%]">
                     <p className="text-4xl lg:text-5xl text-sky-500 font-extrabold mb-10 uppercase">My Projects</p>
                     <span className="block text-xs font-bold text-gray-500">Project Type</span>
