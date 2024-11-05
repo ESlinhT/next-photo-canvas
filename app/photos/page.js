@@ -15,13 +15,7 @@ export default function Photos() {
 
     return (
         <AuthLayout path={'photos'} type="photo">
-            <main className="py-2">
-                <div className="flex flex-col justify-center items-center">
-                    <div className="mb-1 p-2 relative">
-                        <PhotoCanvas canvasId={`photo`} path="photos"/>
-                    </div>
-                </div>
-            </main>
+            <PhotoCanvas canvasId={`photo`} path="photos"/>
         </AuthLayout>
     )
 }
