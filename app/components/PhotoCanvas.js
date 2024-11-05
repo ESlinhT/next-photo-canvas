@@ -62,6 +62,10 @@ export default function PhotoCanvas({item = null, path = "photos", disableHalf =
         const canvas = initializeCanvas(passedInItem, canvasRef, setCanvas, canvasSize, guidelines, setGuidelines, selectedPhoto, path, disableHalf, primaryBorder, secondaryBorder, canvasId, addCanvas, projectId, itemDeleted, lastOffset, setLastOffset, viewport, setViewport);
         const cleanupDragAndDrop = setupDragAndDrop(canvasRef, canvas, disableHalf);
 
+        if (path !== 'photos') {
+            resizeCanvas(canvas, path, canvasSize)
+        }
+
         if (croppedObject) {
             croppedObject.on('modified', () => {
                 const {top, left, width, height} = croppedObject.getBoundingRect();
