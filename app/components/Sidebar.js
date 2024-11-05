@@ -130,7 +130,7 @@ export default function Sidebar({path, isHidden = false, type = 'photobook', ima
                         <li>
                             {path !== 'my projects' ? filters.map((section, index) => (
                                 <Disclosure key={section.id} as="div"
-                                            className={`${index === 0 ? '' : 'border-t border-gray-200'} relative py-6 ${path === 'photobooks' && section.id === 'border' ? 'hidden' : ''}`}>
+                                            className={`${index === 0 ? '' : 'border-t border-gray-200'} relative py-6 ${type.includes('photobook') && section.id === 'border' ? 'hidden' : ''}`}>
                                     <h3 className="-mx-2 -my-3 flow-root">
                                         <DisclosureButton
                                             className="group flex w-full items-center justify-between bg-transparent px-2 py-3 text-white hover:text-gray-500">

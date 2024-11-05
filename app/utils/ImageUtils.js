@@ -46,7 +46,6 @@ export const resizeCanvas = (canvas, path, canvasSize) => {
         } else {
             scaleFactor = path === 'photos' ? 0.60 : 0.30;
         }
-        console.log(scaleFactor, windowWidth)
 
         canvas.setWidth(baseWidth * scaleFactor);
         canvas.setHeight(baseHeight * scaleFactor);

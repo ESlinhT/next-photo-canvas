@@ -17,7 +17,7 @@ export default function Photos() {
     }
 
     return (
-        <AuthLayout path={'photos'}>
+        <AuthLayout path={'photos'} type="photo">
             <main className="py-2 mt-14">
                 <div className="flex flex-col justify-center items-center">
                     <div className="my-1 p-2 relative">
