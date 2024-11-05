@@ -4,7 +4,7 @@ export default function BlueBackgroundLayout({children}) {
     return (
         <div className="bg-gray-900">
             <main>
-                <div className="relative isolate overflow-hidden">
+                <div className="relative isolate overflow-auto">
                     <svg
                         aria-hidden="true"
                         className="absolute inset-0 -z-10 h-full w-full stroke-white/10 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]"
