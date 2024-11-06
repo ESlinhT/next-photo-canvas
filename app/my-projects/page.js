@@ -17,7 +17,7 @@ export default function MyProjects() {
     const [selectedTypeToSearch, setSelectedTypeToSearch] = useState('all');
     const [nameToSearch, setNameToSearch] = useState('');
     const [sortBy, setSortBy] = useState('date');
-    const [pageSize, setPageSize] = useState(8); // Allow dynamic control of items per page
+    const [pageSize, setPageSize] = useState(8);
     const [currentPage, setCurrentPage] = useState(1);
 
     const notificationMethods = [
@@ -52,7 +52,7 @@ export default function MyProjects() {
             });
 
         setFilteredProjects(filtered);
-        setCurrentPage(1); // Reset to first page on filter change
+        setCurrentPage(1);
     };
 
     const returnCurrentItems = () => {
