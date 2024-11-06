@@ -102,7 +102,7 @@ export default function MyProjects() {
                                         value={selectedTypeToSearch}
                                         onChange={handleSelectTypeChange}
                                         autoComplete="projectType"
-                                        className="block rounded-md border-0 p-1.5 mr-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6"
+                                        className="block rounded-md border-0 p-1.5 mr-2 text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-300 sm:max-w-xs sm:text-sm/6"
                                     >
                                         <option value="all">All</option>
                                         {projectTypes.map((type, index) => (
@@ -113,7 +113,7 @@ export default function MyProjects() {
                                 </div>
                                 <div className="mt-2">
                                     <div
-                                        className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-lg">
+                                        className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-sky-300 sm:max-w-lg">
                                         <input
                                             disabled={projectsLoading}
                                             id="projectName"
@@ -123,7 +123,7 @@ export default function MyProjects() {
                                             value={nameToSearch}
                                             onChange={(e) => setNameToSearch(e.target.value)}
                                             autoComplete="projectName"
-                                            className="block w-[12rem] lg:w-[20rem] flex-1 border-0 bg-transparent p-1.5 text-gray-900 placeholder:text-gray-500 focus:ring-0 sm:text-sm"
+                                            className="block w-[12rem] lg:w-[20rem] flex-1 border-0 bg-transparent p-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
                                         />
                                     </div>
                                 </div>
