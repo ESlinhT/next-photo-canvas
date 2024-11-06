@@ -24,8 +24,8 @@ export default function Sidebar({path, isHidden = false, type = 'photobook', ima
         setCanvasSize,
         setSelectedPhoto,
     } = useCanvasOptionsContext();
-    const [color, setColor] = useColor("#fff");
-    const [secondColor, setSecondColor] = useColor("#fff");
+    const [color, setColor] = useColor(primaryBorder ? primaryBorder : '#fff');
+    const [secondColor, setSecondColor] = useColor(secondaryBorder ? secondaryBorder : '#fff');
     const [open, setOpen] = useState(false);
     const [isGradient, setIsGradient] = useState(false);
     const inputRef = useRef(null);
