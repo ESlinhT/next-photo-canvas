@@ -28,12 +28,12 @@ export const resizeCanvas = (canvas, path, canvasSize) => {
     if (canvas) {
         const windowWidth = window.innerWidth;
 
-        let baseWidth = canvasSize?.width || 800;
-        let baseHeight = canvasSize?.height || 600;
+        let baseWidth = canvasSize?.width;
+        let baseHeight = canvasSize?.height;
 
         if (path === "photobooks" || path === "photobookcover") {
             baseWidth = 1200;
-            baseHeight = baseWidth === baseHeight ? 600 : 800;
+            baseHeight = (canvasSize?.width === canvasSize?.height) ? 600 : 800;
         }
 
         let scaleFactor;
@@ -51,7 +51,7 @@ export const resizeCanvas = (canvas, path, canvasSize) => {
         canvas.setHeight(baseHeight * scaleFactor);
         canvas.setZoom(scaleFactor);
 
-        canvas.requestRenderAll();
+        canvas.renderAll();
     }
 };
 
