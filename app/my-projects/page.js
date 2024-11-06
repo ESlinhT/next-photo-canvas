@@ -38,7 +38,7 @@ export default function MyProjects() {
         }
     }
 
-    const returnFilteredProjects = (type, name) => {
+    const returnFilteredProjects = (type, name, sortBy) => {
         const filtered = projects
             .filter((project) => {
                 const matchesType = type === 'all' || project.type.toLowerCase() === type.toLowerCase();
@@ -82,8 +82,8 @@ export default function MyProjects() {
     }, []);
 
     useEffect(() => {
-        returnFilteredProjects(selectedTypeToSearch, nameToSearch)
-    }, [projects, selectedTypeToSearch, nameToSearch]);
+        returnFilteredProjects(selectedTypeToSearch, nameToSearch, sortBy)
+    }, [projects, selectedTypeToSearch, nameToSearch, sortBy]);
 
     return (
         <AuthLayout path="my projects">
@@ -188,7 +188,7 @@ export default function MyProjects() {
                                                 </a>
                                             </div>
                                             <div className="-ml-px flex w-0 flex-1">
-                                                <ProjectItemMenu item={item} getProjects={getProjects}/>
+                                                <ProjectItemMenu item={item} getProjects={getProjects} setLoading={setProjectsLoading}/>
                                             </div>
                                         </div>
                                     </div>

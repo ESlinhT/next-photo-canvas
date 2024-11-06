@@ -7,22 +7,26 @@ import {useRouter} from "next/navigation";
 
 const itemOptions = [{name: 'Duplicate'}, {name: 'Delete'},];
 
-export default function ProjectItemMenu({item, getProjects}) {
+export default function ProjectItemMenu({item, getProjects, setLoading}) {
     const router = useRouter();
 
     const handleItemClick = async (name) => {
+        setLoading(true);
         if (name === 'Duplicate') {
             await createSavedProject(`${item.name} - duplicate`, item.content, item.type)
                 .then(() => {
+                    getProjects();
                     router.refresh();
                 })
         } else {
             await deleteSavedProject(item.$id)
                 .then(() => {
                     getProjects();
+                    router.refresh();
                 })
 
         }
+        setLoading(false);
     };
 
     return (
