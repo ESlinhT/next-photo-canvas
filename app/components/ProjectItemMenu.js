@@ -3,16 +3,18 @@
 import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
 import {EllipsisHorizontalIcon} from "@heroicons/react/20/solid";
 import {createSavedProject, deleteSavedProject, signOut} from "@/app/lib/appwrite";
+import {useRouter} from "next/navigation";
 
 const itemOptions = [{name: 'Duplicate'}, {name: 'Delete'},];
 
 export default function ProjectItemMenu({item, getProjects}) {
+    const router = useRouter();
 
     const handleItemClick = async (name) => {
         if (name === 'Duplicate') {
             await createSavedProject(`${item.name} - duplicate`, item.content, item.type)
                 .then(() => {
-                    getProjects();
+                    router.refresh();
                 })
         } else {
             await deleteSavedProject(item.$id)
