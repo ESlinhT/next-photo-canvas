@@ -39,7 +39,7 @@ export default function Pagination({ totalItems, pageSize, currentPage, onPageCh
                 <button
                     disabled={currentPage === 1}
                     onClick={() => onPageChange(currentPage - 1)}
-                    className={`inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 ${currentPage === 1 ? '' : 'hover:border-gray-300 hover:text-gray-700'}`}
+                    className={`inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 ${currentPage === 1 ? 'hidden' : 'hover:border-gray-300 hover:text-gray-700'}`}
                 >
                     <ChevronLeftIcon aria-hidden="true" className="mr-1 h-5 w-5 text-gray-400" />
                     Prev
@@ -66,7 +66,7 @@ export default function Pagination({ totalItems, pageSize, currentPage, onPageCh
                 <button
                     disabled={currentPage === totalPages}
                     onClick={() => onPageChange(currentPage + 1)}
-                    className={`inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500  ${currentPage === totalPages ? '' : 'hover:border-gray-300 hover:text-gray-700'}`}
+                    className={`inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500  ${currentPage === totalPages ? 'hidden' : 'hover:border-gray-300 hover:text-gray-700'}`}
                 >
                     Next
                     <ChevronRightIcon aria-hidden="true" className="ml-1 h-5 w-5 text-gray-400" />

@@ -10,8 +10,7 @@ import {applyCrop, deleteImage, enableCrop, flipImage, resizeCanvas, rotateCanva
 import {useCanvasOptionsContext} from "@/app/context/CanvasOptionsProvider";
 import ReusableDialog from "@/app/components/ReusableDialog";
 import {useGlobalContext} from "@/app/context/GlobalProvider";
-import {createSavedProject, getSavedProjects, updateSavedProject} from "@/app/lib/appwrite";
-import * as fabric from "fabric";
+import {createSavedProject, updateSavedProject} from "@/app/lib/appwrite";
 import {useRouter} from "next/navigation";
 import {ArrowLongDownIcon, ArrowLongRightIcon} from "@heroicons/react/16/solid";
 
